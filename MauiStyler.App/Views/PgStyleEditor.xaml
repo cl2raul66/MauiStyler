@@ -12,6 +12,44 @@
     <Shell.BackButtonBehavior>
         <BackButtonBehavior IsVisible="False" />
     </Shell.BackButtonBehavior>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <DataTemplate x:Key="ItemColorTemplate" x:DataType="model:ItemColor">
+                <Border BackgroundColor="{Binding Value}" Style="{StaticResource colorItemBorder}">
+                    <VerticalStackLayout Spacing="4">
+                        <Grid ColumnDefinitions="*,auto" ColumnSpacing="4">
+                            <Label
+                                Padding="4,2"
+                                BackgroundColor="Black"
+                                FontFamily="iosevkaRegular"
+                                FontSize="16"
+                                HorizontalOptions="Start"
+                                Text="{Binding Name}"
+                                TextColor="White"
+                                TextTransform="Uppercase"
+                                VerticalOptions="Center" />
+                            <CheckBox x:Name="selectedCheckBox" Grid.Column="1" />
+                        </Grid>
+                        <Label
+                            Padding="4,2"
+                            BackgroundColor="Black"
+                            FontSize="16"
+                            HorizontalOptions="Start"
+                            Text="{Binding Value, Converter={ctk:ColorToHexRgbaStringConverter}}"
+                            TextColor="White"
+                            TextTransform="Uppercase"
+                            VerticalOptions="Center" />
+                    </VerticalStackLayout>
+                </Border>
+            </DataTemplate>
+        </ResourceDictionary>
+        <GridItemsLayout
+            x:Key="ItemColorLayout"
+            HorizontalItemSpacing="6"
+            Orientation="Vertical"
+            Span="3"
+            VerticalItemSpacing="4" />
+    </ContentPage.Resources>
 
     <Grid RowDefinitions="auto,auto,*">
         <!--#region ENCABEZADO-->
@@ -26,7 +64,10 @@
                 TextTransform="Uppercase"
                 VerticalOptions="Center" />
             <HorizontalStackLayout Grid.Column="1" Spacing="8">
-                <Button Text="Guardar" ToolTipProperties.Text="Guarda propiedades del estilo y color en una plantilla." />
+                <Button
+                    BackgroundColor="{StaticResource Accent}"
+                    Text="Guardar"
+                    ToolTipProperties.Text="Guarda propiedades del estilo y color en una plantilla." />
                 <Button
                     Command="{Binding GoToBackCommand}"
                     Text="Cancelar"
@@ -63,13 +104,15 @@
                 <HorizontalStackLayout Grid.Column="1" Spacing="8">
                     <Button
                         Command="{Binding SetVisibleStyleCommand}"
+                        FontFamily="icofont"
                         IsEnabled="{Binding IsVisibleStyle, Converter={ctk:InvertedBoolConverter}}"
-                        Text="Estilo"
+                        Text="{StaticResource UiTheme}"
                         ToolTipProperties.Text="Muestra los ajustes de estilo." />
                     <Button
                         Command="{Binding SetVisibleStyleCommand}"
+                        FontFamily="icofont"
                         IsEnabled="{Binding IsVisibleStyle}"
-                        Text="Color"
+                        Text="{StaticResource ColorBucket}"
                         ToolTipProperties.Text="Muestra los ajustes de color." />
                 </HorizontalStackLayout>
             </Grid>
@@ -85,145 +128,131 @@
                     Grid.Row="1"
                     ColumnDefinitions="*,*"
                     ColumnSpacing="16">
-                    <Frame Padding="8" BackgroundColor="White">
+                    <Frame BackgroundColor="White">
                         <VerticalStackLayout Spacing="8">
                             <Label
                                 FontSize="16"
                                 HorizontalOptions="CenterAndExpand"
                                 Text="Claro"
                                 TextTransform="Uppercase" />
-                            <Grid RowDefinitions="auto,auto" RowSpacing="8">
+                            <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
                                 <Label
                                     FontSize="16"
                                     Text="Principales"
-                                    TextTransform="Uppercase" />
-                                <CollectionView
-                                    Grid.Row="1"
-                                    ItemsSource="{Binding PrincipalsColors}"
-                                    SelectedItem="{Binding SelectedPrincipalColor}"
-                                    SelectionMode="Single">
-                                    <CollectionView.ItemsLayout>
-                                        <GridItemsLayout
-                                            HorizontalItemSpacing="6"
-                                            Orientation="Vertical"
-                                            Span="3"
-                                            VerticalItemSpacing="2" />
-                                    </CollectionView.ItemsLayout>
-                                    <CollectionView.ItemTemplate>
-                                        <DataTemplate x:DataType="model:ItemColor">
-                                            <Border BackgroundColor="{Binding Value}" Style="{StaticResource colorItemBorder}">
-                                                <VerticalStackLayout Spacing="4">
-                                                    <Label
-                                                        Padding="2"
-                                                        BackgroundColor="Black"
-                                                        FontSize="16"
-                                                        HorizontalOptions="Start"
-                                                        Text="{Binding Name}"
-                                                        TextColor="White"
-                                                        TextTransform="Uppercase" />
-                                                    <Label
-                                                        Padding="2"
-                                                        BackgroundColor="Black"
-                                                        FontFamily="iosevkaRegular"
-                                                        FontSize="16"
-                                                        HorizontalOptions="Start"
-                                                        Text="{Binding Value, Converter={ctk:ColorToHexRgbaStringConverter}}"
-                                                        TextColor="White"
-                                                        TextTransform="Uppercase" />
-                                                </VerticalStackLayout>
-                                            </Border>
-                                        </DataTemplate>
-                                    </CollectionView.ItemTemplate>
-                                </CollectionView>
+                                    TextTransform="Uppercase"
+                                    VerticalOptions="Center" />
+                                <HorizontalStackLayout Grid.Column="1" Spacing="4">
+                                    <Button
+                                        Padding="0"
+                                        FontFamily="icofont"
+                                        FontSize="16"
+                                        HeightRequest="16"
+                                        IsEnabled="{Binding SelectedPrincipalColor, Converter={ctk:IsNotNullConverter}}"
+                                        Text="{StaticResource UiEdit}"
+                                        ToolTipProperties.Text="Modificar."
+                                        WidthRequest="16" />
+                                    <Button
+                                        Padding="0"
+                                        FontFamily="icofont"
+                                        FontSize="16"
+                                        HeightRequest="16"
+                                        IsEnabled="{Binding SelectedPrincipalColor, Converter={ctk:IsNotNullConverter}}"
+                                        Text="{StaticResource Undo}"
+                                        ToolTipProperties.Text="Restaura color anterior."
+                                        WidthRequest="16" />
+                                </HorizontalStackLayout>
                             </Grid>
-                            <Grid RowDefinitions="auto,auto" RowSpacing="8">
+                            <CollectionView
+                                Grid.Row="1"
+                                ItemTemplate="{StaticResource ItemColorTemplate}"
+                                ItemsLayout="{StaticResource ItemColorLayout}"
+                                ItemsSource="{Binding PrincipalsColors}"
+                                SelectedItem="{Binding SelectedPrincipalColor}"
+                                SelectionMode="Single" />
+                            <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
                                 <Label
                                     FontSize="16"
                                     Text="Semánticos"
-                                    TextTransform="Uppercase" />
-                                <CollectionView
-                                    Grid.Row="1"
-                                    ItemsSource="{Binding SemanticsColors}"
-                                    SelectedItem="{Binding SelectedSemanticColor}"
-                                    SelectionMode="Single">
-                                    <CollectionView.ItemsLayout>
-                                        <GridItemsLayout
-                                            HorizontalItemSpacing="6"
-                                            Orientation="Vertical"
-                                            Span="3"
-                                            VerticalItemSpacing="2" />
-                                    </CollectionView.ItemsLayout>
-                                    <CollectionView.ItemTemplate>
-                                        <DataTemplate x:DataType="model:ItemColor">
-                                            <Border BackgroundColor="{Binding Value}" Style="{StaticResource colorItemBorder}">
-                                                <VerticalStackLayout Spacing="4">
-                                                    <Label
-                                                        Padding="2"
-                                                        BackgroundColor="Black"
-                                                        FontSize="16"
-                                                        HorizontalOptions="Start"
-                                                        Text="{Binding Name}"
-                                                        TextColor="White"
-                                                        TextTransform="Uppercase" />
-                                                    <Label
-                                                        Padding="2"
-                                                        BackgroundColor="Black"
-                                                        FontFamily="iosevkaRegular"
-                                                        FontSize="16"
-                                                        HorizontalOptions="Start"
-                                                        Text="{Binding Value, Converter={ctk:ColorToHexRgbaStringConverter}}"
-                                                        TextColor="White"
-                                                        TextTransform="Uppercase" />
-                                                </VerticalStackLayout>
-                                            </Border>
-                                        </DataTemplate>
-                                    </CollectionView.ItemTemplate>
-                                </CollectionView>
+                                    TextTransform="Uppercase"
+                                    VerticalOptions="Center" />
+                                <HorizontalStackLayout Grid.Column="1" Spacing="4">
+                                    <Button
+                                        Padding="0"
+                                        FontFamily="icofont"
+                                        FontSize="16"
+                                        HeightRequest="16"
+                                        Text="{StaticResource UiAdd}"
+                                        ToolTipProperties.Text="Nuevo"
+                                        WidthRequest="16" />
+                                    <Button
+                                        Padding="0"
+                                        FontFamily="icofont"
+                                        FontSize="16"
+                                        HeightRequest="16"
+                                        IsEnabled="{Binding SelectedSemanticColor, Converter={ctk:IsNotNullConverter}}"
+                                        Text="{StaticResource UiEdit}"
+                                        ToolTipProperties.Text="Modificar."
+                                        WidthRequest="16" />
+                                    <Button
+                                        Padding="0"
+                                        FontFamily="icofont"
+                                        FontSize="16"
+                                        HeightRequest="16"
+                                        IsEnabled="{Binding SelectedSemanticColor, Converter={ctk:IsNotNullConverter}}"
+                                        Text="{StaticResource Undo}"
+                                        ToolTipProperties.Text="Restaurar color anterior"
+                                        WidthRequest="16" />
+                                </HorizontalStackLayout>
                             </Grid>
-                            <Grid RowDefinitions="auto,auto" RowSpacing="8">
+                            <CollectionView
+                                Grid.Row="1"
+                                ItemTemplate="{StaticResource ItemColorTemplate}"
+                                ItemsLayout="{StaticResource ItemColorLayout}"
+                                ItemsSource="{Binding SemanticsColors}"
+                                SelectedItem="{Binding SelectedSemanticColor}"
+                                SelectionMode="Single" />
+                            <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
                                 <Label
                                     FontSize="16"
                                     Text="Neutrales"
-                                    TextTransform="Uppercase" />
-                                <CollectionView
-                                    Grid.Row="1"
-                                    ItemsSource="{Binding NeutralsColors}"
-                                    SelectedItem="{Binding SelectedNeutralColor}"
-                                    SelectionMode="Single">
-                                    <CollectionView.ItemsLayout>
-                                        <GridItemsLayout
-                                            HorizontalItemSpacing="6"
-                                            Orientation="Vertical"
-                                            Span="3"
-                                            VerticalItemSpacing="2" />
-                                    </CollectionView.ItemsLayout>
-                                    <CollectionView.ItemTemplate>
-                                        <DataTemplate x:DataType="model:ItemColor">
-                                            <Border BackgroundColor="{Binding Value}" Style="{StaticResource colorItemBorder}">
-                                                <VerticalStackLayout Spacing="4">
-                                                    <Label
-                                                        Padding="2"
-                                                        BackgroundColor="Black"
-                                                        FontSize="16"
-                                                        HorizontalOptions="Start"
-                                                        Text="{Binding Name}"
-                                                        TextColor="White"
-                                                        TextTransform="Uppercase" />
-                                                    <Label
-                                                        Padding="2"
-                                                        BackgroundColor="Black"
-                                                        FontFamily="iosevkaRegular"
-                                                        FontSize="16"
-                                                        HorizontalOptions="Start"
-                                                        Text="{Binding Value, Converter={ctk:ColorToHexRgbaStringConverter}}"
-                                                        TextColor="White"
-                                                        TextTransform="Uppercase" />
-                                                </VerticalStackLayout>
-                                            </Border>
-                                        </DataTemplate>
-                                    </CollectionView.ItemTemplate>
-                                </CollectionView>
+                                    TextTransform="Uppercase"
+                                    VerticalOptions="Center" />
+                                <HorizontalStackLayout Grid.Column="1" Spacing="4">
+                                    <Button
+                                        Padding="0"
+                                        FontFamily="icofont"
+                                        FontSize="16"
+                                        HeightRequest="16"
+                                        Text="{StaticResource UiAdd}"
+                                        ToolTipProperties.Text="Nuevo"
+                                        WidthRequest="16" />
+                                    <Button
+                                        Padding="0"
+                                        FontFamily="icofont"
+                                        FontSize="16"
+                                        HeightRequest="16"
+                                        IsEnabled="{Binding SelectedNeutralColor, Converter={ctk:IsNotNullConverter}}"
+                                        Text="{StaticResource UiEdit}"
+                                        ToolTipProperties.Text="Modificar."
+                                        WidthRequest="16" />
+                                    <Button
+                                        Padding="0"
+                                        FontFamily="icofont"
+                                        FontSize="16"
+                                        HeightRequest="16"
+                                        IsEnabled="{Binding SelectedNeutralColor, Converter={ctk:IsNotNullConverter}}"
+                                        Text="{StaticResource Undo}"
+                                        ToolTipProperties.Text="Restaurar color anterior"
+                                        WidthRequest="16" />
+                                </HorizontalStackLayout>
                             </Grid>
+                            <CollectionView
+                                Grid.Row="1"
+                                ItemTemplate="{StaticResource ItemColorTemplate}"
+                                ItemsLayout="{StaticResource ItemColorLayout}"
+                                ItemsSource="{Binding NeutralsColors}"
+                                SelectedItem="{Binding SelectedNeutralColor}"
+                                SelectionMode="Single" />
                         </VerticalStackLayout>
                     </Frame>
                     <Frame
@@ -237,153 +266,145 @@
                                 Text="Oscuro"
                                 TextColor="White"
                                 TextTransform="Uppercase" />
-                            <Grid RowDefinitions="auto,auto" RowSpacing="8">
+                            <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
                                 <Label
                                     FontSize="16"
                                     Text="Principales"
                                     TextColor="White"
-                                    TextTransform="Uppercase" />
-                                <CollectionView
-                                    Grid.Row="1"
-                                    ItemsSource="{Binding PrincipalsDarkColors}"
-                                    SelectedItem="{Binding SelectedPrincipalDarkColor}"
-                                    SelectionMode="Single">
-                                    <CollectionView.ItemsLayout>
-                                        <GridItemsLayout
-                                            HorizontalItemSpacing="6"
-                                            Orientation="Vertical"
-                                            Span="3"
-                                            VerticalItemSpacing="2" />
-                                    </CollectionView.ItemsLayout>
-                                    <CollectionView.ItemTemplate>
-                                        <DataTemplate x:DataType="model:ItemColor">
-                                            <Border BackgroundColor="{Binding Value}" Style="{StaticResource colorItemBorder}">
-                                                <VerticalStackLayout Spacing="4">
-                                                    <Label
-                                                        Padding="2"
-                                                        BackgroundColor="Black"
-                                                        FontSize="16"
-                                                        HorizontalOptions="Start"
-                                                        Text="{Binding Name}"
-                                                        TextColor="White"
-                                                        TextTransform="Uppercase" />
-                                                    <Label
-                                                        Padding="2"
-                                                        BackgroundColor="Black"
-                                                        FontFamily="iosevkaRegular"
-                                                        FontSize="16"
-                                                        HorizontalOptions="Start"
-                                                        Text="{Binding Value, Converter={ctk:ColorToHexRgbaStringConverter}}"
-                                                        TextColor="White"
-                                                        TextTransform="Uppercase" />
-                                                </VerticalStackLayout>
-                                            </Border>
-                                        </DataTemplate>
-                                    </CollectionView.ItemTemplate>
-                                </CollectionView>
+                                    TextTransform="Uppercase"
+                                    VerticalOptions="Center" />
+                                <HorizontalStackLayout Grid.Column="1" Spacing="4">
+                                    <Button
+                                        Padding="0"
+                                        FontFamily="icofont"
+                                        FontSize="16"
+                                        HeightRequest="16"
+                                        IsEnabled="{Binding SelectedPrincipalDarkColor, Converter={ctk:IsNotNullConverter}}"
+                                        Text="{StaticResource UiEdit}"
+                                        ToolTipProperties.Text="Modificar."
+                                        WidthRequest="16" />
+                                    <Button
+                                        Padding="0"
+                                        FontFamily="icofont"
+                                        FontSize="16"
+                                        HeightRequest="16"
+                                        IsEnabled="{Binding SelectedPrincipalDarkColor, Converter={ctk:IsNotNullConverter}}"
+                                        Text="{StaticResource Undo}"
+                                        ToolTipProperties.Text="Restaurar color anterior"
+                                        WidthRequest="16" />
+                                </HorizontalStackLayout>
                             </Grid>
-                            <Grid RowDefinitions="auto,auto" RowSpacing="8">
+                            <CollectionView
+                                Grid.Row="1"
+                                ItemTemplate="{StaticResource ItemColorTemplate}"
+                                ItemsLayout="{StaticResource ItemColorLayout}"
+                                ItemsSource="{Binding PrincipalsDarkColors}"
+                                SelectedItem="{Binding SelectedPrincipalDarkColor}"
+                                SelectionMode="Single" />
+                            <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
                                 <Label
                                     FontSize="16"
                                     Text="Semánticos"
                                     TextColor="White"
-                                    TextTransform="Uppercase" />
-                                <CollectionView
-                                    Grid.Row="1"
-                                    ItemsSource="{Binding SemanticsDarkColors}"
-                                    SelectedItem="{Binding SelectedSemanticDarkColor}"
-                                    SelectionMode="Single">
-                                    <CollectionView.ItemsLayout>
-                                        <GridItemsLayout
-                                            HorizontalItemSpacing="6"
-                                            Orientation="Vertical"
-                                            Span="3"
-                                            VerticalItemSpacing="2" />
-                                    </CollectionView.ItemsLayout>
-                                    <CollectionView.ItemTemplate>
-                                        <DataTemplate x:DataType="model:ItemColor">
-                                            <Border BackgroundColor="{Binding Value}" Style="{StaticResource colorItemBorder}">
-                                                <VerticalStackLayout Spacing="4">
-                                                    <Label
-                                                        Padding="2"
-                                                        BackgroundColor="Black"
-                                                        FontSize="16"
-                                                        HorizontalOptions="Start"
-                                                        Text="{Binding Name}"
-                                                        TextColor="White"
-                                                        TextTransform="Uppercase" />
-                                                    <Label
-                                                        Padding="2"
-                                                        BackgroundColor="Black"
-                                                        FontFamily="iosevkaRegular"
-                                                        FontSize="16"
-                                                        HorizontalOptions="Start"
-                                                        Text="{Binding Value, Converter={ctk:ColorToHexRgbaStringConverter}}"
-                                                        TextColor="White"
-                                                        TextTransform="Uppercase" />
-                                                </VerticalStackLayout>
-                                            </Border>
-                                        </DataTemplate>
-                                    </CollectionView.ItemTemplate>
-                                </CollectionView>
+                                    TextTransform="Uppercase"
+                                    VerticalOptions="Center" />
+                                <HorizontalStackLayout Grid.Column="1" Spacing="4">
+                                    <Button
+                                        Padding="0"
+                                        FontFamily="icofont"
+                                        FontSize="16"
+                                        HeightRequest="16"
+                                        Text="{StaticResource UiAdd}"
+                                        ToolTipProperties.Text="Nuevo"
+                                        WidthRequest="16" />
+                                    <Button
+                                        Padding="0"
+                                        FontFamily="icofont"
+                                        FontSize="16"
+                                        HeightRequest="16"
+                                        IsEnabled="{Binding SelectedSemanticDarkColor, Converter={ctk:IsNotNullConverter}}"
+                                        Text="{StaticResource UiEdit}"
+                                        ToolTipProperties.Text="Modificar."
+                                        WidthRequest="16" />
+                                    <Button
+                                        Padding="0"
+                                        FontFamily="icofont"
+                                        FontSize="16"
+                                        HeightRequest="16"
+                                        IsEnabled="{Binding SelectedSemanticDarkColor, Converter={ctk:IsNotNullConverter}}"
+                                        Text="{StaticResource Undo}"
+                                        ToolTipProperties.Text="Restaurar color anterior"
+                                        WidthRequest="16" />
+                                </HorizontalStackLayout>
                             </Grid>
-                            <Grid RowDefinitions="auto,auto" RowSpacing="8">
+                            <CollectionView
+                                Grid.Row="1"
+                                ItemTemplate="{StaticResource ItemColorTemplate}"
+                                ItemsLayout="{StaticResource ItemColorLayout}"
+                                ItemsSource="{Binding SemanticsDarkColors}"
+                                SelectedItem="{Binding SelectedSemanticDarkColor}"
+                                SelectionMode="Single" />
+                            <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
                                 <Label
                                     FontSize="16"
                                     Text="Neutrales"
                                     TextColor="White"
-                                    TextTransform="Uppercase" />
-                                <CollectionView
-                                    Grid.Row="1"
-                                    ItemsSource="{Binding NeutralsDarkColors}"
-                                    SelectedItem="{Binding SelectedNeutralDarkColor}"
-                                    SelectionMode="Single">
-                                    <CollectionView.ItemsLayout>
-                                        <GridItemsLayout
-                                            HorizontalItemSpacing="6"
-                                            Orientation="Vertical"
-                                            Span="3"
-                                            VerticalItemSpacing="2" />
-                                    </CollectionView.ItemsLayout>
-                                    <CollectionView.ItemTemplate>
-                                        <DataTemplate x:DataType="model:ItemColor">
-                                            <Border BackgroundColor="{Binding Value}" Style="{StaticResource colorItemBorder}">
-                                                <VerticalStackLayout Spacing="4">
-                                                    <Label
-                                                        Padding="2"
-                                                        BackgroundColor="Black"
-                                                        FontSize="16"
-                                                        HorizontalOptions="Start"
-                                                        Text="{Binding Name}"
-                                                        TextColor="White"
-                                                        TextTransform="Uppercase" />
-                                                    <Label
-                                                        Padding="2"
-                                                        BackgroundColor="Black"
-                                                        FontFamily="iosevkaRegular"
-                                                        FontSize="16"
-                                                        HorizontalOptions="Start"
-                                                        Text="{Binding Value, Converter={ctk:ColorToHexRgbaStringConverter}}"
-                                                        TextColor="White"
-                                                        TextTransform="Uppercase" />
-                                                </VerticalStackLayout>
-                                            </Border>
-                                        </DataTemplate>
-                                    </CollectionView.ItemTemplate>
-                                </CollectionView>
+                                    TextTransform="Uppercase"
+                                    VerticalOptions="Center" />
+                                <HorizontalStackLayout Grid.Column="1" Spacing="4">
+                                    <Button
+                                        Padding="0"
+                                        FontFamily="icofont"
+                                        FontSize="16"
+                                        HeightRequest="16"
+                                        Text="{StaticResource UiAdd}"
+                                        ToolTipProperties.Text="Nuevo"
+                                        WidthRequest="16" />
+                                    <Button
+                                        Padding="0"
+                                        FontFamily="icofont"
+                                        FontSize="16"
+                                        HeightRequest="16"
+                                        IsEnabled="{Binding SelectedNeutralDarkColor, Converter={ctk:IsNotNullConverter}}"
+                                        Text="{StaticResource UiEdit}"
+                                        ToolTipProperties.Text="Modificar."
+                                        WidthRequest="16" />
+                                    <Button
+                                        Padding="0"
+                                        FontFamily="icofont"
+                                        FontSize="16"
+                                        HeightRequest="16"
+                                        IsEnabled="{Binding SelectedNeutralDarkColor, Converter={ctk:IsNotNullConverter}}"
+                                        Text="{StaticResource Undo}"
+                                        ToolTipProperties.Text="Restaurar color anterior"
+                                        WidthRequest="16" />
+                                </HorizontalStackLayout>
                             </Grid>
+                            <CollectionView
+                                Grid.Row="1"
+                                ItemTemplate="{StaticResource ItemColorTemplate}"
+                                ItemsLayout="{StaticResource ItemColorLayout}"
+                                ItemsSource="{Binding NeutralsDarkColors}"
+                                SelectedItem="{Binding SelectedNeutralDarkColor}"
+                                SelectionMode="Single" />
                         </VerticalStackLayout>
                     </Frame>
                 </Grid>
             </ScrollView>
             <Frame
                 Grid.Row="1"
-                Margin="8"
+                Margin="0,8,0,0"
                 Padding="8">
                 <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
                     <HorizontalStackLayout Grid.Column="1" Spacing="8">
-                        <Button Text="Restablecer" ToolTipProperties.Text="Restablece todos los cambios a valores predeterminados." />
-                        <Button Text="Deshacer" ToolTipProperties.Text="Deshace ultima modificacion." />
+                        <Button
+                            FontFamily="icofont"
+                            Text="{StaticResource Stamp}"
+                            ToolTipProperties.Text="Clona todos los colores de un modo a otro." />
+                        <Button
+                            FontFamily="icofont"
+                            Text="{StaticResource Undo}"
+                            ToolTipProperties.Text="Restaurar los colores por defecto." />
                     </HorizontalStackLayout>
                 </Grid>
             </Frame>
