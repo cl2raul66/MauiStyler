@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using MauiStyler.App.Models;
 using MauiStyler.App.Services;
+using MauiStyler.App.Views;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
@@ -76,6 +77,29 @@ public partial class PgStyleEditorViewModel : ObservableObject
 
     [ObservableProperty]
     ItemColor? selectedNeutralDarkColor;
+
+    [RelayCommand]
+    async Task ShowNewItemColor(ItemColor currentItemColor)
+    {
+        Dictionary<string, object> sendData = new()
+        {
+            { "NameCurrent", nameof(currentItemColor) }
+        };
+
+        await Shell.Current.GoToAsync(nameof(PgNewEditItemColor), true, sendData);
+    }
+
+    [RelayCommand]
+    async Task ShowEditItemColor(ItemColor currentItemColor)
+    {
+        Dictionary<string, object> sendData = new()
+        {
+            { "NameCurrent", nameof(currentItemColor) },
+            { "CurrentItemColor", currentItemColor }
+        };
+
+        await Shell.Current.GoToAsync(nameof(PgNewEditItemColor), true, sendData);
+    }
     #endregion
 
     protected override void OnPropertyChanged(PropertyChangedEventArgs e)
@@ -123,9 +147,79 @@ public partial class PgStyleEditorViewModel : ObservableObject
             }
         }
 
+        if (e.PropertyName == nameof(SelectedPrincipalColor))
+        {
+            if (SelectedPrincipalColor is not null)
+            {
+                SelectedNeutralDarkColor = null;
+                SelectedNeutralColor = null;
+                SelectedSemanticDarkColor = null;
+                SelectedSemanticColor = null;
+                SelectedPrincipalDarkColor = null;
+            }
+        }
+
+        if (e.PropertyName == nameof(SelectedPrincipalDarkColor))
+        {
+            if (SelectedPrincipalDarkColor is not null)
+            {
+                SelectedNeutralDarkColor = null;
+                SelectedNeutralColor = null;
+                SelectedSemanticDarkColor = null;
+                SelectedSemanticColor = null;
+                SelectedPrincipalColor = null;
+            }
+        }
+
+        if (e.PropertyName == nameof(SelectedSemanticColor))
+        {
+            if (SelectedSemanticColor is not null)
+            {
+                SelectedNeutralDarkColor = null;
+                SelectedNeutralColor = null;
+                SelectedSemanticDarkColor = null;
+                SelectedPrincipalDarkColor = null;
+                SelectedPrincipalColor = null;
+            }
+        }
+
+        if (e.PropertyName == nameof(SelectedSemanticDarkColor))
+        {
+            if (SelectedSemanticDarkColor is not null)
+            {
+                SelectedNeutralDarkColor = null;
+                SelectedNeutralColor = null;
+                SelectedSemanticColor = null;
+                SelectedPrincipalDarkColor = null;
+                SelectedPrincipalColor = null;
+            }
+        }
+
+        if (e.PropertyName == nameof(SelectedNeutralColor))
+        {
+            if (SelectedNeutralColor is not null)
+            {
+                SelectedNeutralDarkColor = null;
+                SelectedSemanticDarkColor = null;
+                SelectedSemanticColor = null;
+                SelectedPrincipalDarkColor = null;
+                SelectedPrincipalColor = null;
+            }
+        }
+
+        if (e.PropertyName == nameof(SelectedNeutralDarkColor))
+        {
+            if (SelectedNeutralDarkColor is not null)
+            {
+                SelectedNeutralColor = null;
+                SelectedSemanticDarkColor = null;
+                SelectedSemanticColor = null;
+                SelectedPrincipalDarkColor = null;
+                SelectedPrincipalColor = null;
+            }
+        }
     }
     #region EXTRA
-
     void InitializerProperty()
     {
         var assembly = typeof(View).Assembly;
@@ -135,6 +229,5 @@ public partial class PgStyleEditorViewModel : ObservableObject
 
         GetAllViews = [.. types];
     }
-
     #endregion
 }

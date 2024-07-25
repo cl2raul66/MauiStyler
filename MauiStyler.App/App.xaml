@@ -13,16 +13,15 @@
             </ResourceDictionary.MergedDictionaries>
             <Style x:Key="colorItemBorder" TargetType="Border">
                 <Setter Property="Padding" Value="8" />
-                <Setter Property="StrokeShape" Value="RoundRectangle 8" />
+                <Setter Property="StrokeShape" Value="RoundRectangle 6" />
                 <Setter Property="StrokeThickness" Value="1" />
+                <Setter Property="Stroke" Value="{StaticResource Gray500}" />
                 <Setter Property="VisualStateManager.VisualStateGroups">
                     <VisualStateGroupList>
                         <VisualStateGroup Name="CommonStates">
                             <VisualState Name="Normal" />
                             <VisualState Name="Selected">
                                 <VisualState.Setters>
-                                    <!--<Setter Property="Stroke" Value="{StaticResource Accent}" />
-                                    <Setter Property="Opacity" Value="0.7" />-->
                                     <Setter TargetName="selectedCheckBox" Property="CheckBox.IsChecked" Value="True" />
                                 </VisualState.Setters>
                             </VisualState>

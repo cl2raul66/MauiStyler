@@ -49,6 +49,30 @@
             Orientation="Vertical"
             Span="3"
             VerticalItemSpacing="4" />
+        <Style x:Key="addButton" TargetType="Button">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="FontFamily" Value="icofont" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="HeightRequest" Value="16" />
+            <Setter Property="WidthRequest" Value="16" />
+            <Setter Property="Text" Value="{StaticResource UiAdd}" />
+        </Style>
+        <Style x:Key="editButton" TargetType="Button">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="FontFamily" Value="icofont" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="HeightRequest" Value="16" />
+            <Setter Property="WidthRequest" Value="16" />
+            <Setter Property="Text" Value="{StaticResource UiEdit}" />
+        </Style>
+        <Style x:Key="undoButton" TargetType="Button">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="FontFamily" Value="icofont" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="HeightRequest" Value="16" />
+            <Setter Property="WidthRequest" Value="16" />
+            <Setter Property="Text" Value="{StaticResource Undo}" />
+        </Style>
     </ContentPage.Resources>
 
     <Grid RowDefinitions="auto,auto,*">
@@ -76,10 +100,7 @@
         </Grid>
         <!--#endregion-->
         <!--#region CONTENIDO-->
-        <Frame
-            Grid.Row="1"
-            Margin="8,0"
-            Padding="8">
+        <Frame Grid.Row="1" Margin="8,0">
             <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
                 <Label
                     FontAttributes="Bold"
@@ -143,23 +164,15 @@
                                     VerticalOptions="Center" />
                                 <HorizontalStackLayout Grid.Column="1" Spacing="4">
                                     <Button
-                                        Padding="0"
-                                        FontFamily="icofont"
-                                        FontSize="16"
-                                        HeightRequest="16"
+                                        Command="{Binding ShowEditItemColorCommand}"
+                                        CommandParameter="{Binding SelectedPrincipalColor}"
                                         IsEnabled="{Binding SelectedPrincipalColor, Converter={ctk:IsNotNullConverter}}"
-                                        Text="{StaticResource UiEdit}"
-                                        ToolTipProperties.Text="Modificar."
-                                        WidthRequest="16" />
+                                        Style="{StaticResource editButton}"
+                                        ToolTipProperties.Text="Modificar." />
                                     <Button
-                                        Padding="0"
-                                        FontFamily="icofont"
-                                        FontSize="16"
-                                        HeightRequest="16"
                                         IsEnabled="{Binding SelectedPrincipalColor, Converter={ctk:IsNotNullConverter}}"
-                                        Text="{StaticResource Undo}"
-                                        ToolTipProperties.Text="Restaura color anterior."
-                                        WidthRequest="16" />
+                                        Style="{StaticResource undoButton}"
+                                        ToolTipProperties.Text="Restaura color anterior." />
                                 </HorizontalStackLayout>
                             </Grid>
                             <CollectionView
@@ -168,6 +181,7 @@
                                 ItemsLayout="{StaticResource ItemColorLayout}"
                                 ItemsSource="{Binding PrincipalsColors}"
                                 SelectedItem="{Binding SelectedPrincipalColor}"
+                                SelectionChanged="CollectionView_SelectionChanged"
                                 SelectionMode="Single" />
                             <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
                                 <Label
@@ -177,31 +191,20 @@
                                     VerticalOptions="Center" />
                                 <HorizontalStackLayout Grid.Column="1" Spacing="4">
                                     <Button
-                                        Padding="0"
-                                        FontFamily="icofont"
-                                        FontSize="16"
-                                        HeightRequest="16"
-                                        Text="{StaticResource UiAdd}"
-                                        ToolTipProperties.Text="Nuevo"
-                                        WidthRequest="16" />
+                                        Command="{Binding ShowNewItemColorCommand}"
+                                        CommandParameter="{Binding SelectedSemanticColor}"
+                                        Style="{StaticResource addButton}"
+                                        ToolTipProperties.Text="Nuevo" />
                                     <Button
-                                        Padding="0"
-                                        FontFamily="icofont"
-                                        FontSize="16"
-                                        HeightRequest="16"
+                                        Command="{Binding ShowEditItemColorCommand}"
+                                        CommandParameter="{Binding SelectedSemanticColor}"
                                         IsEnabled="{Binding SelectedSemanticColor, Converter={ctk:IsNotNullConverter}}"
-                                        Text="{StaticResource UiEdit}"
-                                        ToolTipProperties.Text="Modificar."
-                                        WidthRequest="16" />
+                                        Style="{StaticResource editButton}"
+                                        ToolTipProperties.Text="Modificar." />
                                     <Button
-                                        Padding="0"
-                                        FontFamily="icofont"
-                                        FontSize="16"
-                                        HeightRequest="16"
                                         IsEnabled="{Binding SelectedSemanticColor, Converter={ctk:IsNotNullConverter}}"
-                                        Text="{StaticResource Undo}"
-                                        ToolTipProperties.Text="Restaurar color anterior"
-                                        WidthRequest="16" />
+                                        Style="{StaticResource undoButton}"
+                                        ToolTipProperties.Text="Restaurar color anterior" />
                                 </HorizontalStackLayout>
                             </Grid>
                             <CollectionView
@@ -210,6 +213,7 @@
                                 ItemsLayout="{StaticResource ItemColorLayout}"
                                 ItemsSource="{Binding SemanticsColors}"
                                 SelectedItem="{Binding SelectedSemanticColor}"
+                                SelectionChanged="CollectionView_SelectionChanged"
                                 SelectionMode="Single" />
                             <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
                                 <Label
@@ -219,31 +223,20 @@
                                     VerticalOptions="Center" />
                                 <HorizontalStackLayout Grid.Column="1" Spacing="4">
                                     <Button
-                                        Padding="0"
-                                        FontFamily="icofont"
-                                        FontSize="16"
-                                        HeightRequest="16"
-                                        Text="{StaticResource UiAdd}"
-                                        ToolTipProperties.Text="Nuevo"
-                                        WidthRequest="16" />
+                                        Command="{Binding ShowNewItemColorCommand}"
+                                        CommandParameter="{Binding SelectedNeutralColor}"
+                                        Style="{StaticResource addButton}"
+                                        ToolTipProperties.Text="Nuevo" />
                                     <Button
-                                        Padding="0"
-                                        FontFamily="icofont"
-                                        FontSize="16"
-                                        HeightRequest="16"
+                                        Command="{Binding ShowEditItemColorCommand}"
+                                        CommandParameter="{Binding SelectedNeutralColor}"
                                         IsEnabled="{Binding SelectedNeutralColor, Converter={ctk:IsNotNullConverter}}"
-                                        Text="{StaticResource UiEdit}"
-                                        ToolTipProperties.Text="Modificar."
-                                        WidthRequest="16" />
+                                        Style="{StaticResource editButton}"
+                                        ToolTipProperties.Text="Modificar." />
                                     <Button
-                                        Padding="0"
-                                        FontFamily="icofont"
-                                        FontSize="16"
-                                        HeightRequest="16"
                                         IsEnabled="{Binding SelectedNeutralColor, Converter={ctk:IsNotNullConverter}}"
-                                        Text="{StaticResource Undo}"
-                                        ToolTipProperties.Text="Restaurar color anterior"
-                                        WidthRequest="16" />
+                                        Style="{StaticResource undoButton}"
+                                        ToolTipProperties.Text="Restaurar color anterior" />
                                 </HorizontalStackLayout>
                             </Grid>
                             <CollectionView
@@ -252,13 +245,11 @@
                                 ItemsLayout="{StaticResource ItemColorLayout}"
                                 ItemsSource="{Binding NeutralsColors}"
                                 SelectedItem="{Binding SelectedNeutralColor}"
+                                SelectionChanged="CollectionView_SelectionChanged"
                                 SelectionMode="Single" />
                         </VerticalStackLayout>
                     </Frame>
-                    <Frame
-                        Grid.Column="1"
-                        Padding="8"
-                        BackgroundColor="Black">
+                    <Frame Grid.Column="1" BackgroundColor="Black">
                         <VerticalStackLayout Spacing="8">
                             <Label
                                 FontSize="16"
@@ -275,23 +266,15 @@
                                     VerticalOptions="Center" />
                                 <HorizontalStackLayout Grid.Column="1" Spacing="4">
                                     <Button
-                                        Padding="0"
-                                        FontFamily="icofont"
-                                        FontSize="16"
-                                        HeightRequest="16"
+                                        Command="{Binding ShowEditItemColorCommand}"
+                                        CommandParameter="{Binding SelectedPrincipalDarkColor}"
                                         IsEnabled="{Binding SelectedPrincipalDarkColor, Converter={ctk:IsNotNullConverter}}"
-                                        Text="{StaticResource UiEdit}"
-                                        ToolTipProperties.Text="Modificar."
-                                        WidthRequest="16" />
+                                        Style="{StaticResource editButton}"
+                                        ToolTipProperties.Text="Modificar." />
                                     <Button
-                                        Padding="0"
-                                        FontFamily="icofont"
-                                        FontSize="16"
-                                        HeightRequest="16"
                                         IsEnabled="{Binding SelectedPrincipalDarkColor, Converter={ctk:IsNotNullConverter}}"
-                                        Text="{StaticResource Undo}"
-                                        ToolTipProperties.Text="Restaurar color anterior"
-                                        WidthRequest="16" />
+                                        Style="{StaticResource undoButton}"
+                                        ToolTipProperties.Text="Restaurar color anterior" />
                                 </HorizontalStackLayout>
                             </Grid>
                             <CollectionView
@@ -300,6 +283,7 @@
                                 ItemsLayout="{StaticResource ItemColorLayout}"
                                 ItemsSource="{Binding PrincipalsDarkColors}"
                                 SelectedItem="{Binding SelectedPrincipalDarkColor}"
+                                SelectionChanged="CollectionView_SelectionChanged"
                                 SelectionMode="Single" />
                             <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
                                 <Label
@@ -310,31 +294,20 @@
                                     VerticalOptions="Center" />
                                 <HorizontalStackLayout Grid.Column="1" Spacing="4">
                                     <Button
-                                        Padding="0"
-                                        FontFamily="icofont"
-                                        FontSize="16"
-                                        HeightRequest="16"
-                                        Text="{StaticResource UiAdd}"
-                                        ToolTipProperties.Text="Nuevo"
-                                        WidthRequest="16" />
+                                        Command="{Binding ShowNewItemColorCommand}"
+                                        CommandParameter="{Binding SelectedSemanticDarkColor}"
+                                        Style="{StaticResource addButton}"
+                                        ToolTipProperties.Text="Nuevo" />
                                     <Button
-                                        Padding="0"
-                                        FontFamily="icofont"
-                                        FontSize="16"
-                                        HeightRequest="16"
+                                        Command="{Binding ShowEditItemColorCommand}"
+                                        CommandParameter="{Binding SelectedSemanticDarkColor}"
                                         IsEnabled="{Binding SelectedSemanticDarkColor, Converter={ctk:IsNotNullConverter}}"
-                                        Text="{StaticResource UiEdit}"
-                                        ToolTipProperties.Text="Modificar."
-                                        WidthRequest="16" />
+                                        Style="{StaticResource editButton}"
+                                        ToolTipProperties.Text="Modificar." />
                                     <Button
-                                        Padding="0"
-                                        FontFamily="icofont"
-                                        FontSize="16"
-                                        HeightRequest="16"
                                         IsEnabled="{Binding SelectedSemanticDarkColor, Converter={ctk:IsNotNullConverter}}"
-                                        Text="{StaticResource Undo}"
-                                        ToolTipProperties.Text="Restaurar color anterior"
-                                        WidthRequest="16" />
+                                        Style="{StaticResource undoButton}"
+                                        ToolTipProperties.Text="Restaurar color anterior" />
                                 </HorizontalStackLayout>
                             </Grid>
                             <CollectionView
@@ -343,6 +316,7 @@
                                 ItemsLayout="{StaticResource ItemColorLayout}"
                                 ItemsSource="{Binding SemanticsDarkColors}"
                                 SelectedItem="{Binding SelectedSemanticDarkColor}"
+                                SelectionChanged="CollectionView_SelectionChanged"
                                 SelectionMode="Single" />
                             <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
                                 <Label
@@ -353,31 +327,20 @@
                                     VerticalOptions="Center" />
                                 <HorizontalStackLayout Grid.Column="1" Spacing="4">
                                     <Button
-                                        Padding="0"
-                                        FontFamily="icofont"
-                                        FontSize="16"
-                                        HeightRequest="16"
-                                        Text="{StaticResource UiAdd}"
-                                        ToolTipProperties.Text="Nuevo"
-                                        WidthRequest="16" />
+                                        Command="{Binding ShowNewItemColorCommand}"
+                                        CommandParameter="{Binding SelectedNeutralDarkColor}"
+                                        Style="{StaticResource addButton}"
+                                        ToolTipProperties.Text="Nuevo" />
                                     <Button
-                                        Padding="0"
-                                        FontFamily="icofont"
-                                        FontSize="16"
-                                        HeightRequest="16"
+                                        Command="{Binding ShowEditItemColorCommand}"
+                                        CommandParameter="{Binding SelectedNeutralDarkColor}"
                                         IsEnabled="{Binding SelectedNeutralDarkColor, Converter={ctk:IsNotNullConverter}}"
-                                        Text="{StaticResource UiEdit}"
-                                        ToolTipProperties.Text="Modificar."
-                                        WidthRequest="16" />
+                                        Style="{StaticResource editButton}"
+                                        ToolTipProperties.Text="Modificar." />
                                     <Button
-                                        Padding="0"
-                                        FontFamily="icofont"
-                                        FontSize="16"
-                                        HeightRequest="16"
                                         IsEnabled="{Binding SelectedNeutralDarkColor, Converter={ctk:IsNotNullConverter}}"
-                                        Text="{StaticResource Undo}"
-                                        ToolTipProperties.Text="Restaurar color anterior"
-                                        WidthRequest="16" />
+                                        Style="{StaticResource undoButton}"
+                                        ToolTipProperties.Text="Restaurar color anterior" />
                                 </HorizontalStackLayout>
                             </Grid>
                             <CollectionView
@@ -386,15 +349,13 @@
                                 ItemsLayout="{StaticResource ItemColorLayout}"
                                 ItemsSource="{Binding NeutralsDarkColors}"
                                 SelectedItem="{Binding SelectedNeutralDarkColor}"
+                                SelectionChanged="CollectionView_SelectionChanged"
                                 SelectionMode="Single" />
                         </VerticalStackLayout>
                     </Frame>
                 </Grid>
             </ScrollView>
-            <Frame
-                Grid.Row="1"
-                Margin="0,8,0,0"
-                Padding="8">
+            <Frame Grid.Row="1" Margin="0,8,0,0">
                 <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
                     <HorizontalStackLayout Grid.Column="1" Spacing="8">
                         <Button
