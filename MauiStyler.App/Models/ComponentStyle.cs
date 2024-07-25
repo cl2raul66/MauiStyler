@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MauiStyler.App.Models
 {
-    internal class ComponentStyle
+    public class ComponentStyle
     {
     }
 }

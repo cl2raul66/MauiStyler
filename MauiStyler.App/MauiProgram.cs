@@ -1,27 +1,35 @@
 ﻿using CommunityToolkit.Maui;
+using MauiStyler.App.Services;
+using MauiStyler.App.ViewModels;
+using MauiStyler.App.Views;
 using Microsoft.Extensions.Logging;
 
-namespace MauiStyler.App
+namespace MauiStyler.App;
+
+public static class MauiProgram
 {
-    public static class MauiProgram
+    public static MauiApp CreateMauiApp()
     {
-        public static MauiApp CreateMauiApp()
-        {
-            var builder = MauiApp.CreateBuilder();
-            builder
-                .UseMauiApp<App>()
-                .UseMauiCommunityToolkit()
-                .ConfigureFonts(fonts =>
-                {
-                    fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-                    fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-                });
+        var builder = MauiApp.CreateBuilder();
+        builder
+            .UseMauiApp<App>()
+            .UseMauiCommunityToolkit()
+            .ConfigureFonts(fonts =>
+            {
+                fonts.AddFont("icofont.ttf", "icofont");
+                fonts.AddFont("Iosevka-Regular.ttf", "iosevkaRegular");
+                fonts.AddFont("NFCode-Regular.ttf", "nfcodeRegular");
+            });
+
+        builder.Services.AddSingleton<IColorStyleService, ColorStyleService>();
+
+        builder.Services.AddTransient<PgMain, PgMainViewModel>();
+        builder.Services.AddTransient<PgStyleEditor, PgStyleEditorViewModel>();
 
 #if DEBUG
-    		builder.Logging.AddDebug();
+		builder.Logging.AddDebug();
 #endif
 
-            return builder.Build();
-        }
+        return builder.Build();
     }
 }

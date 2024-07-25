@@ -1,12 +1,394 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="MauiStyler.App.Views.PgStyleEditor"
-             Title="PgStyleEditor">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+<ContentPage
+    x:Class="MauiStyler.App.Views.PgStyleEditor"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:ctk="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:model="clr-namespace:MauiStyler.App.Models"
+    xmlns:vm="clr-namespace:MauiStyler.App.ViewModels"
+    Title="Editar estilo"
+    x:DataType="vm:PgStyleEditorViewModel"
+    Shell.NavBarIsVisible="False">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior IsVisible="False" />
+    </Shell.BackButtonBehavior>
+
+    <Grid RowDefinitions="auto,auto,*">
+        <!--#region ENCABEZADO-->
+        <Grid
+            Padding="8"
+            ColumnDefinitions="*,auto"
+            ColumnSpacing="8">
+            <Label
+                FontAttributes="Bold"
+                FontSize="18"
+                Text="{Binding Title}"
+                TextTransform="Uppercase"
+                VerticalOptions="Center" />
+            <HorizontalStackLayout Grid.Column="1" Spacing="8">
+                <Button Text="Guardar" ToolTipProperties.Text="Guarda propiedades del estilo y color en una plantilla." />
+                <Button
+                    Command="{Binding GoToBackCommand}"
+                    Text="Cancelar"
+                    ToolTipProperties.Text="Cancela las operaciones y regresa al inicio." />
+            </HorizontalStackLayout>
+        </Grid>
+        <!--#endregion-->
+        <!--#region CONTENIDO-->
+        <Frame
+            Grid.Row="1"
+            Margin="8,0"
+            Padding="8">
+            <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="18"
+                    TextTransform="Uppercase"
+                    VerticalOptions="Center">
+                    <Label.Triggers>
+                        <DataTrigger
+                            Binding="{Binding IsVisibleStyle}"
+                            TargetType="Label"
+                            Value="True">
+                            <Setter Property="Text" Value="Estilo" />
+                        </DataTrigger>
+                        <DataTrigger
+                            Binding="{Binding IsVisibleStyle}"
+                            TargetType="Label"
+                            Value="False">
+                            <Setter Property="Text" Value="Color" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
+                <HorizontalStackLayout Grid.Column="1" Spacing="8">
+                    <Button
+                        Command="{Binding SetVisibleStyleCommand}"
+                        IsEnabled="{Binding IsVisibleStyle, Converter={ctk:InvertedBoolConverter}}"
+                        Text="Estilo"
+                        ToolTipProperties.Text="Muestra los ajustes de estilo." />
+                    <Button
+                        Command="{Binding SetVisibleStyleCommand}"
+                        IsEnabled="{Binding IsVisibleStyle}"
+                        Text="Color"
+                        ToolTipProperties.Text="Muestra los ajustes de color." />
+                </HorizontalStackLayout>
+            </Grid>
+        </Frame>
+        <Grid Grid.Row="2" IsVisible="{Binding IsVisibleStyle}" />
+        <Grid
+            Grid.Row="2"
+            Margin="8"
+            IsVisible="{Binding IsVisibleStyle, Converter={ctk:InvertedBoolConverter}}"
+            RowDefinitions="*,auto">
+            <ScrollView>
+                <Grid
+                    Grid.Row="1"
+                    ColumnDefinitions="*,*"
+                    ColumnSpacing="16">
+                    <Frame Padding="8" BackgroundColor="White">
+                        <VerticalStackLayout Spacing="8">
+                            <Label
+                                FontSize="16"
+                                HorizontalOptions="CenterAndExpand"
+                                Text="Claro"
+                                TextTransform="Uppercase" />
+                            <Grid RowDefinitions="auto,auto" RowSpacing="8">
+                                <Label
+                                    FontSize="16"
+                                    Text="Principales"
+                                    TextTransform="Uppercase" />
+                                <CollectionView
+                                    Grid.Row="1"
+                                    ItemsSource="{Binding PrincipalsColors}"
+                                    SelectedItem="{Binding SelectedPrincipalColor}"
+                                    SelectionMode="Single">
+                                    <CollectionView.ItemsLayout>
+                                        <GridItemsLayout
+                                            HorizontalItemSpacing="6"
+                                            Orientation="Vertical"
+                                            Span="3"
+                                            VerticalItemSpacing="2" />
+                                    </CollectionView.ItemsLayout>
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate x:DataType="model:ItemColor">
+                                            <Border BackgroundColor="{Binding Value}" Style="{StaticResource colorItemBorder}">
+                                                <VerticalStackLayout Spacing="4">
+                                                    <Label
+                                                        Padding="2"
+                                                        BackgroundColor="Black"
+                                                        FontSize="16"
+                                                        HorizontalOptions="Start"
+                                                        Text="{Binding Name}"
+                                                        TextColor="White"
+                                                        TextTransform="Uppercase" />
+                                                    <Label
+                                                        Padding="2"
+                                                        BackgroundColor="Black"
+                                                        FontFamily="iosevkaRegular"
+                                                        FontSize="16"
+                                                        HorizontalOptions="Start"
+                                                        Text="{Binding Value, Converter={ctk:ColorToHexRgbaStringConverter}}"
+                                                        TextColor="White"
+                                                        TextTransform="Uppercase" />
+                                                </VerticalStackLayout>
+                                            </Border>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                            </Grid>
+                            <Grid RowDefinitions="auto,auto" RowSpacing="8">
+                                <Label
+                                    FontSize="16"
+                                    Text="Semánticos"
+                                    TextTransform="Uppercase" />
+                                <CollectionView
+                                    Grid.Row="1"
+                                    ItemsSource="{Binding SemanticsColors}"
+                                    SelectedItem="{Binding SelectedSemanticColor}"
+                                    SelectionMode="Single">
+                                    <CollectionView.ItemsLayout>
+                                        <GridItemsLayout
+                                            HorizontalItemSpacing="6"
+                                            Orientation="Vertical"
+                                            Span="3"
+                                            VerticalItemSpacing="2" />
+                                    </CollectionView.ItemsLayout>
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate x:DataType="model:ItemColor">
+                                            <Border BackgroundColor="{Binding Value}" Style="{StaticResource colorItemBorder}">
+                                                <VerticalStackLayout Spacing="4">
+                                                    <Label
+                                                        Padding="2"
+                                                        BackgroundColor="Black"
+                                                        FontSize="16"
+                                                        HorizontalOptions="Start"
+                                                        Text="{Binding Name}"
+                                                        TextColor="White"
+                                                        TextTransform="Uppercase" />
+                                                    <Label
+                                                        Padding="2"
+                                                        BackgroundColor="Black"
+                                                        FontFamily="iosevkaRegular"
+                                                        FontSize="16"
+                                                        HorizontalOptions="Start"
+                                                        Text="{Binding Value, Converter={ctk:ColorToHexRgbaStringConverter}}"
+                                                        TextColor="White"
+                                                        TextTransform="Uppercase" />
+                                                </VerticalStackLayout>
+                                            </Border>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                            </Grid>
+                            <Grid RowDefinitions="auto,auto" RowSpacing="8">
+                                <Label
+                                    FontSize="16"
+                                    Text="Neutrales"
+                                    TextTransform="Uppercase" />
+                                <CollectionView
+                                    Grid.Row="1"
+                                    ItemsSource="{Binding NeutralsColors}"
+                                    SelectedItem="{Binding SelectedNeutralColor}"
+                                    SelectionMode="Single">
+                                    <CollectionView.ItemsLayout>
+                                        <GridItemsLayout
+                                            HorizontalItemSpacing="6"
+                                            Orientation="Vertical"
+                                            Span="3"
+                                            VerticalItemSpacing="2" />
+                                    </CollectionView.ItemsLayout>
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate x:DataType="model:ItemColor">
+                                            <Border BackgroundColor="{Binding Value}" Style="{StaticResource colorItemBorder}">
+                                                <VerticalStackLayout Spacing="4">
+                                                    <Label
+                                                        Padding="2"
+                                                        BackgroundColor="Black"
+                                                        FontSize="16"
+                                                        HorizontalOptions="Start"
+                                                        Text="{Binding Name}"
+                                                        TextColor="White"
+                                                        TextTransform="Uppercase" />
+                                                    <Label
+                                                        Padding="2"
+                                                        BackgroundColor="Black"
+                                                        FontFamily="iosevkaRegular"
+                                                        FontSize="16"
+                                                        HorizontalOptions="Start"
+                                                        Text="{Binding Value, Converter={ctk:ColorToHexRgbaStringConverter}}"
+                                                        TextColor="White"
+                                                        TextTransform="Uppercase" />
+                                                </VerticalStackLayout>
+                                            </Border>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Frame>
+                    <Frame
+                        Grid.Column="1"
+                        Padding="8"
+                        BackgroundColor="Black">
+                        <VerticalStackLayout Spacing="8">
+                            <Label
+                                FontSize="16"
+                                HorizontalOptions="CenterAndExpand"
+                                Text="Oscuro"
+                                TextColor="White"
+                                TextTransform="Uppercase" />
+                            <Grid RowDefinitions="auto,auto" RowSpacing="8">
+                                <Label
+                                    FontSize="16"
+                                    Text="Principales"
+                                    TextColor="White"
+                                    TextTransform="Uppercase" />
+                                <CollectionView
+                                    Grid.Row="1"
+                                    ItemsSource="{Binding PrincipalsDarkColors}"
+                                    SelectedItem="{Binding SelectedPrincipalDarkColor}"
+                                    SelectionMode="Single">
+                                    <CollectionView.ItemsLayout>
+                                        <GridItemsLayout
+                                            HorizontalItemSpacing="6"
+                                            Orientation="Vertical"
+                                            Span="3"
+                                            VerticalItemSpacing="2" />
+                                    </CollectionView.ItemsLayout>
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate x:DataType="model:ItemColor">
+                                            <Border BackgroundColor="{Binding Value}" Style="{StaticResource colorItemBorder}">
+                                                <VerticalStackLayout Spacing="4">
+                                                    <Label
+                                                        Padding="2"
+                                                        BackgroundColor="Black"
+                                                        FontSize="16"
+                                                        HorizontalOptions="Start"
+                                                        Text="{Binding Name}"
+                                                        TextColor="White"
+                                                        TextTransform="Uppercase" />
+                                                    <Label
+                                                        Padding="2"
+                                                        BackgroundColor="Black"
+                                                        FontFamily="iosevkaRegular"
+                                                        FontSize="16"
+                                                        HorizontalOptions="Start"
+                                                        Text="{Binding Value, Converter={ctk:ColorToHexRgbaStringConverter}}"
+                                                        TextColor="White"
+                                                        TextTransform="Uppercase" />
+                                                </VerticalStackLayout>
+                                            </Border>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                            </Grid>
+                            <Grid RowDefinitions="auto,auto" RowSpacing="8">
+                                <Label
+                                    FontSize="16"
+                                    Text="Semánticos"
+                                    TextColor="White"
+                                    TextTransform="Uppercase" />
+                                <CollectionView
+                                    Grid.Row="1"
+                                    ItemsSource="{Binding SemanticsDarkColors}"
+                                    SelectedItem="{Binding SelectedSemanticDarkColor}"
+                                    SelectionMode="Single">
+                                    <CollectionView.ItemsLayout>
+                                        <GridItemsLayout
+                                            HorizontalItemSpacing="6"
+                                            Orientation="Vertical"
+                                            Span="3"
+                                            VerticalItemSpacing="2" />
+                                    </CollectionView.ItemsLayout>
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate x:DataType="model:ItemColor">
+                                            <Border BackgroundColor="{Binding Value}" Style="{StaticResource colorItemBorder}">
+                                                <VerticalStackLayout Spacing="4">
+                                                    <Label
+                                                        Padding="2"
+                                                        BackgroundColor="Black"
+                                                        FontSize="16"
+                                                        HorizontalOptions="Start"
+                                                        Text="{Binding Name}"
+                                                        TextColor="White"
+                                                        TextTransform="Uppercase" />
+                                                    <Label
+                                                        Padding="2"
+                                                        BackgroundColor="Black"
+                                                        FontFamily="iosevkaRegular"
+                                                        FontSize="16"
+                                                        HorizontalOptions="Start"
+                                                        Text="{Binding Value, Converter={ctk:ColorToHexRgbaStringConverter}}"
+                                                        TextColor="White"
+                                                        TextTransform="Uppercase" />
+                                                </VerticalStackLayout>
+                                            </Border>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                            </Grid>
+                            <Grid RowDefinitions="auto,auto" RowSpacing="8">
+                                <Label
+                                    FontSize="16"
+                                    Text="Neutrales"
+                                    TextColor="White"
+                                    TextTransform="Uppercase" />
+                                <CollectionView
+                                    Grid.Row="1"
+                                    ItemsSource="{Binding NeutralsDarkColors}"
+                                    SelectedItem="{Binding SelectedNeutralDarkColor}"
+                                    SelectionMode="Single">
+                                    <CollectionView.ItemsLayout>
+                                        <GridItemsLayout
+                                            HorizontalItemSpacing="6"
+                                            Orientation="Vertical"
+                                            Span="3"
+                                            VerticalItemSpacing="2" />
+                                    </CollectionView.ItemsLayout>
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate x:DataType="model:ItemColor">
+                                            <Border BackgroundColor="{Binding Value}" Style="{StaticResource colorItemBorder}">
+                                                <VerticalStackLayout Spacing="4">
+                                                    <Label
+                                                        Padding="2"
+                                                        BackgroundColor="Black"
+                                                        FontSize="16"
+                                                        HorizontalOptions="Start"
+                                                        Text="{Binding Name}"
+                                                        TextColor="White"
+                                                        TextTransform="Uppercase" />
+                                                    <Label
+                                                        Padding="2"
+                                                        BackgroundColor="Black"
+                                                        FontFamily="iosevkaRegular"
+                                                        FontSize="16"
+                                                        HorizontalOptions="Start"
+                                                        Text="{Binding Value, Converter={ctk:ColorToHexRgbaStringConverter}}"
+                                                        TextColor="White"
+                                                        TextTransform="Uppercase" />
+                                                </VerticalStackLayout>
+                                            </Border>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Frame>
+                </Grid>
+            </ScrollView>
+            <Frame
+                Grid.Row="1"
+                Margin="8"
+                Padding="8">
+                <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
+                    <HorizontalStackLayout Grid.Column="1" Spacing="8">
+                        <Button Text="Restablecer" ToolTipProperties.Text="Restablece todos los cambios a valores predeterminados." />
+                        <Button Text="Deshacer" ToolTipProperties.Text="Deshace ultima modificacion." />
+                    </HorizontalStackLayout>
+                </Grid>
+            </Frame>
+        </Grid>
+        <!--#endregion-->
+    </Grid>
+
 </ContentPage>
