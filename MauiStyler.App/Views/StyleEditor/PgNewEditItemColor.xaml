@@ -3,19 +3,178 @@
     x:Class="MauiStyler.App.Views.PgNewEditItemColor"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:c="clr-namespace:Microsoft.Maui.Graphics;assembly=Microsoft.Maui"
     xmlns:ctk="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:model="clr-namespace:MauiStyler.App.Models"
     xmlns:vm="clr-namespace:MauiStyler.App.ViewModels"
     Title="NewEdit"
-    Shell.NavBarIsVisible="False"
-    Shell.PresentationMode="ModalAnimated"
-    x:DataType="vm:PgNewEditItemColorViewModel">
+    x:DataType="vm:PgNewEditItemColorViewModel"
+    Shell.NavBarIsVisible="False">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior IsVisible="False" />
+    </Shell.BackButtonBehavior>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="colorItemPaletteBorder" TargetType="Border">
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="Margin" Value="0" />
+                <Setter Property="HeightRequest" Value="32" />
+                <Setter Property="WidthRequest" Value="32" />
+                <Setter Property="StrokeShape" Value="RoundRectangle 6" />
+                <Setter Property="StrokeThickness" Value="1" />
+                <Setter Property="Stroke" Value="{StaticResource Gray500}" />
+                <Setter Property="VisualStateManager.VisualStateGroups">
+                    <VisualStateGroupList>
+                        <VisualStateGroup Name="CommonStates">
+                            <VisualState Name="Normal" />
+                            <VisualState Name="Selected">
+                                <VisualState.Setters>
+                                    <Setter Property="Stroke" Value="{StaticResource Primary}" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState Name="Disabled" />
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
-    <VerticalStackLayout>
-        <Label
-            HorizontalOptions="Center"
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" />
-    </VerticalStackLayout>
+    <Grid RowDefinitions="auto,*,auto">
+        <!--#region ENCABEZADO-->
+        <Grid
+            Padding="8"
+            ColumnDefinitions="*,auto"
+            ColumnSpacing="8">
+            <Label
+                FontAttributes="Bold"
+                FontSize="18"
+                Text="{Binding Title}"
+                TextTransform="Uppercase"
+                VerticalOptions="Center" />
+            <HorizontalStackLayout Grid.Column="1" Spacing="8">
+                <Button
+                    BackgroundColor="{StaticResource Accent}"
+                    Text="Guardar"
+                    ToolTipProperties.Text="Guarda propiedades del estilo y color en una plantilla." />
+                <Button
+                    Command="{Binding GoToBackCommand}"
+                    Text="Cancelar"
+                    ToolTipProperties.Text="Cancela las operaciones y regresa al inicio." />
+            </HorizontalStackLayout>
+        </Grid>
+        <!--#endregion-->
+        <Grid Grid.Row="1" Margin="8,0">
+            <Frame>
+                <Grid RowDefinitions="*,auto" RowSpacing="8">
+                    <HorizontalStackLayout Spacing="16">
+                        <Frame>
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="Vista previa" />
+                                <Grid RowDefinitions="auto,auto" RowSpacing="0">
+                                    <Border
+                                        Padding="8"
+                                        BackgroundColor="{Binding CurrentItemColor.Value}"
+                                        HeightRequest="75"
+                                        StrokeShape="RoundRectangle 6,6,0,0"
+                                        StrokeThickness="0"
+                                        WidthRequest="200">
+                                        <VerticalStackLayout Spacing="0" VerticalOptions="Center">
+                                            <Label
+                                                Padding="8,4"
+                                                BackgroundColor="Black"
+                                                FontAttributes="Bold"
+                                                HorizontalOptions="Start"
+                                                Text="Antes"
+                                                TextColor="White"
+                                                TextTransform="Uppercase" />
+                                            <Label
+                                                Padding="8,4"
+                                                BackgroundColor="Black"
+                                                FontAttributes="Bold"
+                                                HorizontalOptions="Start"
+                                                Text="{Binding CurrentItemColor.Value, Converter={ctk:ColorToHexRgbaStringConverter}}"
+                                                TextColor="White"
+                                                TextTransform="Uppercase" />
+                                        </VerticalStackLayout>
+                                    </Border>
+                                    <Border
+                                        Grid.Row="1"
+                                        Padding="8"
+                                        BackgroundColor="{Binding SelectedColorOfPalette}"
+                                        HeightRequest="75"
+                                        StrokeShape="RoundRectangle 0,0,6,6"
+                                        StrokeThickness="0"
+                                        WidthRequest="200">
+                                        <VerticalStackLayout Spacing="0" VerticalOptions="Center">
+                                            <Label
+                                                Padding="8,4"
+                                                BackgroundColor="Black"
+                                                FontAttributes="Bold"
+                                                HorizontalOptions="Start"
+                                                Text="Seleccionado"
+                                                TextColor="White"
+                                                TextTransform="Uppercase" />
+                                            <Label
+                                                Padding="8,4"
+                                                BackgroundColor="Black"
+                                                FontAttributes="Bold"
+                                                HorizontalOptions="Start"
+                                                Text="{Binding SelectedColorOfPalette, Converter={ctk:ColorToHexRgbaStringConverter}}"
+                                                TextColor="White"
+                                                TextTransform="Uppercase" />
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </Grid>
+                                <Label Text="Personalizacion" />
+                            </VerticalStackLayout>
+                        </Frame>
+                    </HorizontalStackLayout>
+                    <Frame Grid.Row="1">
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Paleta de colores de .NET MAUI" />
+                            <CollectionView
+                                ItemsSource="{Binding ColorPalette}"
+                                SelectedItem="{Binding SelectedColorOfPalette}"
+                                SelectionMode="Single">
+                                <CollectionView.ItemsLayout>
+                                    <LinearItemsLayout ItemSpacing="2" Orientation="Horizontal" />
+                                </CollectionView.ItemsLayout>
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="Color">
+                                        <Border Style="{StaticResource colorItemPaletteBorder}" BackgroundColor="{Binding .}" />
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </VerticalStackLayout>
+                    </Frame>
+                </Grid>
+            </Frame>
+        </Grid>
+        <Frame Grid.Row="2" Margin="8">
+            <HorizontalStackLayout Spacing="8">
+                <Label Text="Nombre:" VerticalOptions="CenterAndExpand" />
+                <Entry
+                    Placeholder="Escriba aquí"
+                    Text="{Binding NameColor}"
+                    WidthRequest="400">
+                    <Entry.Triggers>
+                        <DataTrigger
+                            Binding="{Binding NameCurrent}"
+                            TargetType="Entry"
+                            Value="CurrentPrincipalColor">
+                            <Setter Property="IsEnabled" Value="False" />
+                        </DataTrigger>
+                        <DataTrigger
+                            Binding="{Binding NameCurrent}"
+                            TargetType="Entry"
+                            Value="CurrentPrincipalDarkColor">
+                            <Setter Property="IsEnabled" Value="False" />
+                        </DataTrigger>
+                    </Entry.Triggers>
+                </Entry>
+            </HorizontalStackLayout>
+        </Frame>
+    </Grid>
 
 </ContentPage>

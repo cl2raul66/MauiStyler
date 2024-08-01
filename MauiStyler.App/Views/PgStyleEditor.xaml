@@ -15,7 +15,7 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <DataTemplate x:Key="ItemColorTemplate" x:DataType="model:ItemColor">
-                <Border BackgroundColor="{Binding Value}" Style="{StaticResource colorItemBorder}">
+                <Border Style="{StaticResource colorItemBorder}" BackgroundColor="{Binding Value}">
                     <VerticalStackLayout Spacing="4">
                         <Grid ColumnDefinitions="*,auto" ColumnSpacing="4">
                             <Label
@@ -28,7 +28,23 @@
                                 TextColor="White"
                                 TextTransform="Uppercase"
                                 VerticalOptions="Center" />
-                            <CheckBox x:Name="selectedCheckBox" Grid.Column="1" />
+                            <Border
+                                Grid.Column="1"
+                                BackgroundColor="Black"
+                                HeightRequest="20"
+                                Stroke="{StaticResource Gray500}"
+                                StrokeShape="RoundRectangle 2"
+                                StrokeThickness="1"
+                                WidthRequest="20">
+                                <Label
+                                    x:Name="selectedCheckBox"
+                                    FontFamily="icofont"
+                                    FontSize="18"
+                                    HorizontalOptions="Center"
+                                    Text="{StaticResource Check}"
+                                    TextColor="White"
+                                    VerticalOptions="Center" />
+                            </Border>
                         </Grid>
                         <Label
                             Padding="4,2"
@@ -72,6 +88,14 @@
             <Setter Property="HeightRequest" Value="16" />
             <Setter Property="WidthRequest" Value="16" />
             <Setter Property="Text" Value="{StaticResource Undo}" />
+        </Style>
+        <Style x:Key="deleteButton" TargetType="Button">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="FontFamily" Value="icofont" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="HeightRequest" Value="16" />
+            <Setter Property="WidthRequest" Value="16" />
+            <Setter Property="Text" Value="{StaticResource UiDelete}" />
         </Style>
     </ContentPage.Resources>
 
@@ -164,14 +188,13 @@
                                     VerticalOptions="Center" />
                                 <HorizontalStackLayout Grid.Column="1" Spacing="4">
                                     <Button
-                                        Command="{Binding ShowEditItemColorCommand}"
-                                        CommandParameter="{Binding SelectedPrincipalColor}"
-                                        IsEnabled="{Binding SelectedPrincipalColor, Converter={ctk:IsNotNullConverter}}"
                                         Style="{StaticResource editButton}"
+                                        Command="{Binding ShowEditItemColorCommand}"
+                                        IsEnabled="{Binding SelectedPrincipalColor, Converter={ctk:IsNotNullConverter}}"
                                         ToolTipProperties.Text="Modificar." />
                                     <Button
-                                        IsEnabled="{Binding SelectedPrincipalColor, Converter={ctk:IsNotNullConverter}}"
                                         Style="{StaticResource undoButton}"
+                                        IsEnabled="{Binding SelectedPrincipalColor, Converter={ctk:IsNotNullConverter}}"
                                         ToolTipProperties.Text="Restaura color anterior." />
                                 </HorizontalStackLayout>
                             </Grid>
@@ -191,19 +214,17 @@
                                     VerticalOptions="Center" />
                                 <HorizontalStackLayout Grid.Column="1" Spacing="4">
                                     <Button
-                                        Command="{Binding ShowNewItemColorCommand}"
-                                        CommandParameter="{Binding SelectedSemanticColor}"
                                         Style="{StaticResource addButton}"
+                                        Command="{Binding ShowNewItemColorCommand}"
                                         ToolTipProperties.Text="Nuevo" />
                                     <Button
-                                        Command="{Binding ShowEditItemColorCommand}"
-                                        CommandParameter="{Binding SelectedSemanticColor}"
-                                        IsEnabled="{Binding SelectedSemanticColor, Converter={ctk:IsNotNullConverter}}"
                                         Style="{StaticResource editButton}"
+                                        Command="{Binding ShowEditItemColorCommand}"
+                                        IsEnabled="{Binding SelectedSemanticColor, Converter={ctk:IsNotNullConverter}}"
                                         ToolTipProperties.Text="Modificar." />
                                     <Button
-                                        IsEnabled="{Binding SelectedSemanticColor, Converter={ctk:IsNotNullConverter}}"
                                         Style="{StaticResource undoButton}"
+                                        IsEnabled="{Binding SelectedSemanticColor, Converter={ctk:IsNotNullConverter}}"
                                         ToolTipProperties.Text="Restaurar color anterior" />
                                 </HorizontalStackLayout>
                             </Grid>
@@ -223,19 +244,17 @@
                                     VerticalOptions="Center" />
                                 <HorizontalStackLayout Grid.Column="1" Spacing="4">
                                     <Button
-                                        Command="{Binding ShowNewItemColorCommand}"
-                                        CommandParameter="{Binding SelectedNeutralColor}"
                                         Style="{StaticResource addButton}"
+                                        Command="{Binding ShowNewItemColorCommand}"
                                         ToolTipProperties.Text="Nuevo" />
                                     <Button
-                                        Command="{Binding ShowEditItemColorCommand}"
-                                        CommandParameter="{Binding SelectedNeutralColor}"
-                                        IsEnabled="{Binding SelectedNeutralColor, Converter={ctk:IsNotNullConverter}}"
                                         Style="{StaticResource editButton}"
+                                        Command="{Binding ShowEditItemColorCommand}"
+                                        IsEnabled="{Binding SelectedNeutralColor, Converter={ctk:IsNotNullConverter}}"
                                         ToolTipProperties.Text="Modificar." />
                                     <Button
-                                        IsEnabled="{Binding SelectedNeutralColor, Converter={ctk:IsNotNullConverter}}"
                                         Style="{StaticResource undoButton}"
+                                        IsEnabled="{Binding SelectedNeutralColor, Converter={ctk:IsNotNullConverter}}"
                                         ToolTipProperties.Text="Restaurar color anterior" />
                                 </HorizontalStackLayout>
                             </Grid>
@@ -266,14 +285,13 @@
                                     VerticalOptions="Center" />
                                 <HorizontalStackLayout Grid.Column="1" Spacing="4">
                                     <Button
-                                        Command="{Binding ShowEditItemColorCommand}"
-                                        CommandParameter="{Binding SelectedPrincipalDarkColor}"
-                                        IsEnabled="{Binding SelectedPrincipalDarkColor, Converter={ctk:IsNotNullConverter}}"
                                         Style="{StaticResource editButton}"
+                                        Command="{Binding ShowEditItemColorCommand}"
+                                        IsEnabled="{Binding SelectedPrincipalDarkColor, Converter={ctk:IsNotNullConverter}}"
                                         ToolTipProperties.Text="Modificar." />
                                     <Button
-                                        IsEnabled="{Binding SelectedPrincipalDarkColor, Converter={ctk:IsNotNullConverter}}"
                                         Style="{StaticResource undoButton}"
+                                        IsEnabled="{Binding SelectedPrincipalDarkColor, Converter={ctk:IsNotNullConverter}}"
                                         ToolTipProperties.Text="Restaurar color anterior" />
                                 </HorizontalStackLayout>
                             </Grid>
@@ -294,19 +312,17 @@
                                     VerticalOptions="Center" />
                                 <HorizontalStackLayout Grid.Column="1" Spacing="4">
                                     <Button
-                                        Command="{Binding ShowNewItemColorCommand}"
-                                        CommandParameter="{Binding SelectedSemanticDarkColor}"
                                         Style="{StaticResource addButton}"
+                                        Command="{Binding ShowNewItemColorCommand}"
                                         ToolTipProperties.Text="Nuevo" />
                                     <Button
-                                        Command="{Binding ShowEditItemColorCommand}"
-                                        CommandParameter="{Binding SelectedSemanticDarkColor}"
-                                        IsEnabled="{Binding SelectedSemanticDarkColor, Converter={ctk:IsNotNullConverter}}"
                                         Style="{StaticResource editButton}"
+                                        Command="{Binding ShowEditItemColorCommand}"
+                                        IsEnabled="{Binding SelectedSemanticDarkColor, Converter={ctk:IsNotNullConverter}}"
                                         ToolTipProperties.Text="Modificar." />
                                     <Button
-                                        IsEnabled="{Binding SelectedSemanticDarkColor, Converter={ctk:IsNotNullConverter}}"
                                         Style="{StaticResource undoButton}"
+                                        IsEnabled="{Binding SelectedSemanticDarkColor, Converter={ctk:IsNotNullConverter}}"
                                         ToolTipProperties.Text="Restaurar color anterior" />
                                 </HorizontalStackLayout>
                             </Grid>
@@ -327,19 +343,17 @@
                                     VerticalOptions="Center" />
                                 <HorizontalStackLayout Grid.Column="1" Spacing="4">
                                     <Button
-                                        Command="{Binding ShowNewItemColorCommand}"
-                                        CommandParameter="{Binding SelectedNeutralDarkColor}"
                                         Style="{StaticResource addButton}"
+                                        Command="{Binding ShowNewItemColorCommand}"
                                         ToolTipProperties.Text="Nuevo" />
                                     <Button
-                                        Command="{Binding ShowEditItemColorCommand}"
-                                        CommandParameter="{Binding SelectedNeutralDarkColor}"
-                                        IsEnabled="{Binding SelectedNeutralDarkColor, Converter={ctk:IsNotNullConverter}}"
                                         Style="{StaticResource editButton}"
+                                        Command="{Binding ShowEditItemColorCommand}"
+                                        IsEnabled="{Binding SelectedNeutralDarkColor, Converter={ctk:IsNotNullConverter}}"
                                         ToolTipProperties.Text="Modificar." />
                                     <Button
-                                        IsEnabled="{Binding SelectedNeutralDarkColor, Converter={ctk:IsNotNullConverter}}"
                                         Style="{StaticResource undoButton}"
+                                        IsEnabled="{Binding SelectedNeutralDarkColor, Converter={ctk:IsNotNullConverter}}"
                                         ToolTipProperties.Text="Restaurar color anterior" />
                                 </HorizontalStackLayout>
                             </Grid>

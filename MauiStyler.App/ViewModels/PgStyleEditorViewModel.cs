@@ -79,23 +79,27 @@ public partial class PgStyleEditorViewModel : ObservableObject
     ItemColor? selectedNeutralDarkColor;
 
     [RelayCommand]
-    async Task ShowNewItemColor(ItemColor currentItemColor)
+    async Task ShowNewItemColor()
     {
+        var (NameCurrent, CurrentItemColor) = GetSelectedItemColor();
+
         Dictionary<string, object> sendData = new()
         {
-            { "NameCurrent", nameof(currentItemColor) }
+            { "NameCurrent", NameCurrent }
         };
 
         await Shell.Current.GoToAsync(nameof(PgNewEditItemColor), true, sendData);
     }
 
     [RelayCommand]
-    async Task ShowEditItemColor(ItemColor currentItemColor)
+    async Task ShowEditItemColor()
     {
+        var (NameCurrent, CurrentItemColor) = GetSelectedItemColor();
+
         Dictionary<string, object> sendData = new()
         {
-            { "NameCurrent", nameof(currentItemColor) },
-            { "CurrentItemColor", currentItemColor }
+            { "NameCurrent", NameCurrent },
+            { "CurrentItemColor", CurrentItemColor! }
         };
 
         await Shell.Current.GoToAsync(nameof(PgNewEditItemColor), true, sendData);
@@ -135,7 +139,7 @@ public partial class PgStyleEditorViewModel : ObservableObject
                 //];
                 //bool result = colorStyleServ.GenerateColorTemplate([.. PrincipalsColors], [.. SemanticsColors], [.. NeutralsColors]);
 
-                var sectionsColors = colorStyleServ.LoadDefaultTemplate();
+                var sectionsColors = colorStyleServ.LoadSelectedTemplate();
 
                 NeutralsColors = new(sectionsColors["NEUTRAL"]);
                 SemanticsColors = new(sectionsColors["SEMANTIC"]);
@@ -228,6 +232,29 @@ public partial class PgStyleEditorViewModel : ObservableObject
             .Select(t => t.Name);
 
         GetAllViews = [.. types];
+    }
+
+    (string NameCurrent, ItemColor? CurrentItemColor) GetSelectedItemColor()
+    {
+        var selections = new Dictionary<string, ItemColor?>
+        {
+            { nameof(SelectedPrincipalColor), SelectedPrincipalColor },
+            { nameof(SelectedPrincipalDarkColor), SelectedPrincipalDarkColor },
+            { nameof(SelectedSemanticColor), SelectedSemanticColor },
+            { nameof(SelectedSemanticDarkColor), SelectedSemanticDarkColor },
+            { nameof(SelectedNeutralColor), SelectedNeutralColor },
+            { nameof(SelectedNeutralDarkColor), SelectedNeutralDarkColor }
+        };
+
+        foreach (var (key, value) in selections)
+        {
+            if (value is not null)
+            {
+                return (key.Replace("Selected", "Current"), value);
+            }
+        }
+
+        return ("", null);
     }
     #endregion
 }

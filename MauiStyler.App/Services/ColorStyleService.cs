@@ -7,7 +7,7 @@ public interface IColorStyleService
 {
     string[] Sections { get; }
     bool GenerateColorTemplate(ItemColor[] principalsColors, ItemColor[] semanticsColors, ItemColor[] neutralsColors);
-    Dictionary<string, ItemColor[]> LoadDefaultTemplate();
+    Dictionary<string, ItemColor[]> LoadSelectedTemplate();
 }
 
 public class ColorStyleService : IColorStyleService
@@ -18,7 +18,12 @@ public class ColorStyleService : IColorStyleService
 
     public string[] Sections => ["PRINCIPAL", "SEMANTIC", "NEUTRAL"];
 
-    public Dictionary<string, ItemColor[]> LoadDefaultTemplate()
+    //public Dictionary<string, ItemColor[]> LoadDefaultTemplate()
+    //{
+
+    //}
+
+    public Dictionary<string, ItemColor[]> LoadSelectedTemplate()
     {
         var colorDictionary = new Dictionary<string, ItemColor[]>();
 

@@ -16,19 +16,23 @@
                 <Setter Property="StrokeShape" Value="RoundRectangle 6" />
                 <Setter Property="StrokeThickness" Value="1" />
                 <Setter Property="Stroke" Value="{StaticResource Gray500}" />
+                <Setter TargetName="selectedCheckBox" Property="Label.IsVisible" Value="False" />
                 <Setter Property="VisualStateManager.VisualStateGroups">
                     <VisualStateGroupList>
                         <VisualStateGroup Name="CommonStates">
                             <VisualState Name="Normal" />
                             <VisualState Name="Selected">
                                 <VisualState.Setters>
-                                    <Setter TargetName="selectedCheckBox" Property="CheckBox.IsChecked" Value="True" />
+                                    <Setter TargetName="selectedCheckBox" Property="Label.IsVisible" Value="True" />
                                 </VisualState.Setters>
                             </VisualState>
                             <VisualState Name="Disabled" />
                         </VisualStateGroup>
                     </VisualStateGroupList>
                 </Setter>
+            </Style>
+            <Style x:Key="modalContentPage" TargetType="ContentPage">
+                <Setter Property="BackgroundColor" Value="#99512BD4" />
             </Style>
         </ResourceDictionary>
     </Application.Resources>

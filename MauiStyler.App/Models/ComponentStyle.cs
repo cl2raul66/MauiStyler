@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MauiStyler.App.Models
+namespace MauiStyler.App.Models;
+
+public class ComponentStyle
 {
-    public class ComponentStyle
-    {
-    }
 }

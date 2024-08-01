@@ -25,15 +25,11 @@
 //            new ItemColor() { Name = "Warning", Value = Color.Parse("#FFFF00") },
 //        ];
 //        NeutralColors = [
+//            new ItemColor() { Name = "Foreground", Value = Color.Parse("#FFF7F5FF") },
+//            new ItemColor() { Name = "Background", Value = Color.Parse("#FF23135E") },
 //            new ItemColor() { Name = "Gray250", Value = Color.Parse("#E1E1E1") },
 //            new ItemColor() { Name = "Gray500", Value = Color.Parse("#ACACAC") },
 //            new ItemColor() { Name = "Gray750", Value = Color.Parse("#6E6E6E") }
 //        ];
 //    }
 //}
-
-public class ItemColor
-{
-    public string? Name { get; set; }
-    public Color? Value { get; set; }
-}
