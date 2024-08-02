@@ -11,11 +11,11 @@ namespace MauiStyler.App.ViewModels;
 [QueryProperty(nameof(Title), "title")]
 public partial class PgStyleEditorViewModel : ObservableObject
 {
-    readonly IColorStyleService colorStyleServ;
+    readonly IDocumentService documentServ;
 
-    public PgStyleEditorViewModel(IColorStyleService colorStyleService)
+    public PgStyleEditorViewModel(IDocumentService documentService)
     {
-        colorStyleServ = colorStyleService;
+        documentServ = documentService;
 
         InitializerProperty();
     }
@@ -139,7 +139,7 @@ public partial class PgStyleEditorViewModel : ObservableObject
                 //];
                 //bool result = colorStyleServ.GenerateColorTemplate([.. PrincipalsColors], [.. SemanticsColors], [.. NeutralsColors]);
 
-                var sectionsColors = colorStyleServ.LoadSelectedTemplate();
+                var sectionsColors = documentServ.LoadSelectedTemplate();
 
                 NeutralsColors = new(sectionsColors["NEUTRAL"]);
                 SemanticsColors = new(sectionsColors["SEMANTIC"]);

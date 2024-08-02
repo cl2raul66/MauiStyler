@@ -1,20 +1,23 @@
 ﻿using MauiStyler.App.Models;
+using MauiStyler.App.Tools;
 using System.Xml.Linq;
 
 namespace MauiStyler.App.Services;
 
-public interface IColorStyleService
+public interface IDocumentService
 {
     string[] Sections { get; }
-    bool GenerateColorTemplate(ItemColor[] principalsColors, ItemColor[] semanticsColors, ItemColor[] neutralsColors);
+
+    Dictionary<string, string> GenerateColorTemplate(PrincipalStyle principalColor, SemanticStyle semanticColor, NeutralStyle neutralColor);
     Dictionary<string, ItemColor[]> LoadSelectedTemplate();
 }
 
-public class ColorStyleService : IColorStyleService
+public class DocumentService : IDocumentService
 {
     XElement? mauiColorDocument;
     XElement? androidColorDocument;
-    string cacheDir = FileSystem.Current.CacheDirectory;
+
+    string cacheDir = FileHelper.CachePath;
 
     public string[] Sections => ["PRINCIPAL", "SEMANTIC", "NEUTRAL"];
 
@@ -26,10 +29,11 @@ public class ColorStyleService : IColorStyleService
     public Dictionary<string, ItemColor[]> LoadSelectedTemplate()
     {
         var colorDictionary = new Dictionary<string, ItemColor[]>();
+        string generatePath = Path.Combine(cacheDir, "Generate");
 
         Task androidTask = Task.Run(() =>
         {
-            string androidColorPath = Path.Combine(cacheDir, "colors.xml");
+            string androidColorPath = Path.Combine(generatePath, "colors.xml");
             androidColorDocument = XElement.Load(androidColorPath);
 
             var androidColors = androidColorDocument.Elements("color")
@@ -45,7 +49,7 @@ public class ColorStyleService : IColorStyleService
 
         Task mauiTask = Task.Run(() =>
         {
-            string mauiColorPath = Path.Combine(cacheDir, "Colors.xaml");
+            string mauiColorPath = Path.Combine(generatePath, "Colors.xaml");
             mauiColorDocument = XElement.Load(mauiColorPath);
 
             var mauiColors = new Dictionary<string, ItemColor[]>();
@@ -87,30 +91,31 @@ public class ColorStyleService : IColorStyleService
         return colorDictionary;
     }
 
-    public bool GenerateColorTemplate(ItemColor[] principalsColors, ItemColor[] semanticsColors, ItemColor[] neutralsColors)
+    public Dictionary<string, string> GenerateColorTemplate(PrincipalStyle principalColor, SemanticStyle semanticColor, NeutralStyle neutralColor)
     {
-        if (principalsColors.Length > 0 && semanticsColors.Length > 0 && neutralsColors.Length > 0)
+        Dictionary<string, string> result = new() { { "Android", string.Empty }, { "MAUI", string.Empty } };
+        string generatePath = Path.Combine(cacheDir, "Generate");
+        Directory.CreateDirectory(generatePath);
+        if (Directory.Exists(generatePath))
         {
-            bool result = false;
             Task androidTask = Task.Run(() =>
             {
-                androidColorDocument = new XElement("resources");
-                foreach (var pc in principalsColors)
-                {
-                    string name = pc.Name switch
-                    {
-                        "Secondary" => "colorPrimaryDark",
-                        "Accent" => "colorAccent",
-                        _ => "colorPrimary"
-                    };
-                    androidColorDocument.Add(new XElement("color", new XAttribute("name", name), pc.Value!.ToHex()));
-                }
+                var principalsColors = principalColor.DefaultColorsStyle!;
+                var principalsDarkColors = principalColor.DefaultColorsStyle!;
 
-                string androidColor = Path.Combine(cacheDir, "colors.xml");
+                androidColorDocument = new XElement("resources");
+                androidColorDocument.Add(new XElement("color", new XAttribute("name", "colorPrimary"), principalsColors[0].Value!.ToArgbHex()));
+                androidColorDocument.Add(new XElement("color", new XAttribute("name", "colorPrimaryDark"), principalsDarkColors[0].Value!.ToArgbHex()));
+                androidColorDocument.Add(new XElement("color", new XAttribute("name", "colorAccent"), principalsColors[2].Value!.ToArgbHex())); 
+
+                string androidColor = Path.Combine(generatePath, "colors.xml");
 
                 androidColorDocument.Save(androidColor);
 
-                result = File.Exists(androidColor);
+                if (File.Exists(androidColor))
+                {
+                    result["Android"] = androidColor;
+                }
             });
 
             Task mauiTask = Task.Run(() =>
@@ -123,27 +128,38 @@ public class ColorStyleService : IColorStyleService
 
                 // Principals Colors
                 mauiColorDocument.Add(new XComment("PRINCIPAL"));
-                foreach (var pc in principalsColors!)
+                foreach (var pc in principalColor.DefaultColorsStyle!)
+                {
+                    mauiColorDocument.Add(new XElement(xmlns + "Color", new XAttribute(xmlnsx + "Key", pc.Name!), pc.Value!.ToHex()));
+                }
+                foreach (var pc in principalColor.DarkColorsStyle!)
                 {
                     mauiColorDocument.Add(new XElement(xmlns + "Color", new XAttribute(xmlnsx + "Key", pc.Name!), pc.Value!.ToHex()));
                 }
 
                 // Semantics Colors
                 mauiColorDocument.Add(new XComment("SEMANTIC"));
-                foreach (var sc in semanticsColors!)
+                foreach (var sc in semanticColor.DefaultColorsStyle!)
+                {
+                    mauiColorDocument.Add(new XElement(xmlns + "Color", new XAttribute(xmlnsx + "Key", sc.Name!), sc.Value!.ToHex()));
+                }
+                foreach (var sc in semanticColor.DarkColorsStyle!)
                 {
                     mauiColorDocument.Add(new XElement(xmlns + "Color", new XAttribute(xmlnsx + "Key", sc.Name!), sc.Value!.ToHex()));
                 }
 
                 // Neutrals Colors
                 mauiColorDocument.Add(new XComment("NEUTRAL"));
-                foreach (var nc in neutralsColors!)
+                foreach (var nc in neutralColor.DefaultColorsStyle!)
+                {
+                    mauiColorDocument.Add(new XElement(xmlns + "Color", new XAttribute(xmlnsx + "Key", nc.Name!), nc.Value!.ToHex()));
+                }
+                foreach (var nc in neutralColor.DarkColorsStyle!)
                 {
                     mauiColorDocument.Add(new XElement(xmlns + "Color", new XAttribute(xmlnsx + "Key", nc.Name!), nc.Value!.ToHex()));
                 }
 
-
-                string mauiFilePath = Path.Combine(cacheDir, "Colors.xaml");
+                string mauiFilePath = Path.Combine(generatePath, "Colors.xaml");
                 using (var writer = new StreamWriter(mauiFilePath))
                 {
                     writer.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
@@ -151,17 +167,16 @@ public class ColorStyleService : IColorStyleService
                     writer.Write(mauiColorDocument.ToString());
                 }
 
-                result = File.Exists(mauiFilePath);
+                if (File.Exists(mauiFilePath))
+                {
+                    result["MAUI"] = mauiFilePath;
+                }
             });
 
             Task.WaitAll(androidTask, mauiTask);
-
-            androidColorDocument = null;
-            mauiColorDocument = null;
-
-            return result;
         }
-
-        return false;
+        androidColorDocument = null;
+        mauiColorDocument = null;
+        return result;
     }
 }

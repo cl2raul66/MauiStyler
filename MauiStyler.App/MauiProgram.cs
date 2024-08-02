@@ -21,7 +21,7 @@ public static class MauiProgram
                 fonts.AddFont("NFCode-Regular.ttf", "nfcodeRegular");
             });
 
-        builder.Services.AddSingleton<IColorStyleService, ColorStyleService>();
+        builder.Services.AddSingleton<IDocumentService, DocumentService>();
         builder.Services.AddSingleton<IStyleTemplateService, StyleTemplateService>();
 
         builder.Services.AddTransient<PgMain, PgMainViewModel>();
