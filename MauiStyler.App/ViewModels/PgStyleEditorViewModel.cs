@@ -27,17 +27,22 @@ public partial class PgStyleEditorViewModel : ObservableObject
     string? currentTemplateId;
 
     [ObservableProperty]
+    //[NotifyPropertyChangedFor(nameof(Title))]
     StyleTemplate? currentTemplate;
 
     [ObservableProperty]
+    //[NotifyPropertyChangedFor(nameof(Title))]
     string? isEdit;
 
     [ObservableProperty]
     ObservableCollection<string>? getAllViews;
 
-    public string Title => CurrentTemplate is null
-        ? "Nuevo tema"
-        : (bool.Parse(IsEdit!) ? $"Editar tema {CurrentTemplate.Name}" : $"Nuevo tema basado en {CurrentTemplate.Name}");
+    [ObservableProperty]
+    string? title = "Nuevo tema";
+
+    //public string Title => string.IsNullOrEmpty(CurrentTemplateId) 
+    //    ? "Nuevo tema"
+    //    : (bool.Parse(IsEdit!) ? $"Editar tema {CurrentTemplate!.Name}" : $"Nuevo tema basado en {CurrentTemplate!.Name}");
 
     [ObservableProperty]
     bool isVisibleStyle = true;
@@ -123,11 +128,27 @@ public partial class PgStyleEditorViewModel : ObservableObject
     {
         base.OnPropertyChanged(e);
 
+        if (e.PropertyName == nameof(IsEdit))
+        {
+            if (!string.IsNullOrEmpty(CurrentTemplateId) && !string.IsNullOrEmpty(IsEdit))
+            {
+                Title = bool.Parse(IsEdit!) ?
+                        $"Editar tema {CurrentTemplate!.Name}"
+                        : $"Nuevo tema basado en {CurrentTemplate!.Name}";
+            }
+        }
+
         if (e.PropertyName == nameof(CurrentTemplateId))
         {
             if (!string.IsNullOrEmpty(CurrentTemplateId))
             {
                 CurrentTemplate = styleTemplateServ.GetById(new LiteDB.ObjectId(CurrentTemplateId));
+                if (!string.IsNullOrEmpty(IsEdit))
+                {
+                    Title = bool.Parse(IsEdit!) ?
+                        $"Editar tema {CurrentTemplate!.Name}"
+                        : $"Nuevo tema basado en {CurrentTemplate!.Name}";
+                }                
             }
         }
 
