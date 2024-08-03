@@ -100,20 +100,20 @@
                 <Button
                     Style="{StaticResource onlyIconButon}"
                     Command="{Binding GoToNewTemplateCommand}"
-                    Text="{StaticResource FileAlt}"
+                    Text="{StaticResource UiAdd}"
                     ToolTipProperties.Text="Crea nuevo estilo." />
                 <Button
                     Style="{StaticResource onlyIconButon}"
                     Command="{Binding GoToNewTemplateBasedSelectedCommand}"
                     IsEnabled="{Binding SelectedTemplate, Converter={ctk:IsNotNullConverter}}"
-                    Text="{StaticResource FileDocument}"
+                    Text="{StaticResource FileAlt}"
                     ToolTipProperties.Text="Crea estilo a partir de la plantilla seleccionada." />
                 <Button
                     Style="{StaticResource onlyIconButon}"
                     Command="{Binding GoToEditTemplateCommand}"
                     IsEnabled="{Binding IsEdit}"
                     Text="{StaticResource UiEdit}"
-                    ToolTipProperties.Text="Modifica el estilo de la plantilla seleccionada."/>
+                    ToolTipProperties.Text="Modifica el estilo de la plantilla seleccionada." />
                 <Button
                     Style="{StaticResource onlyIconButon}"
                     IsEnabled="False"

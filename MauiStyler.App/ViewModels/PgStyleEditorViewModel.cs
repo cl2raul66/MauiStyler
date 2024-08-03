@@ -8,7 +8,7 @@ using System.ComponentModel;
 
 namespace MauiStyler.App.ViewModels;
 
-[QueryProperty(nameof(CurrentTemplate), nameof(CurrentTemplate))]
+[QueryProperty(nameof(CurrentTemplateId), nameof(CurrentTemplateId))]
 [QueryProperty(nameof(IsEdit), nameof(IsEdit))]
 public partial class PgStyleEditorViewModel : ObservableObject
 {
@@ -22,6 +22,9 @@ public partial class PgStyleEditorViewModel : ObservableObject
 
         InitializerProperty();
     }
+
+    [ObservableProperty]
+    string? currentTemplateId;
 
     [ObservableProperty]
     StyleTemplate? currentTemplate;
@@ -119,6 +122,14 @@ public partial class PgStyleEditorViewModel : ObservableObject
     protected override void OnPropertyChanged(PropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
+
+        if (e.PropertyName == nameof(CurrentTemplateId))
+        {
+            if (!string.IsNullOrEmpty(CurrentTemplateId))
+            {
+                CurrentTemplate = styleTemplateServ.GetById(new LiteDB.ObjectId(CurrentTemplateId));
+            }
+        }
 
         if (e.PropertyName == nameof(IsVisibleStyle))
         {

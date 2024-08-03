@@ -43,7 +43,7 @@ public partial class PgMainViewModel : ObservableObject
         Dictionary<string, object> sendData = new()
         {
             { "IsEdit", IsEdit.ToString() },
-            {"CurrentTemplate", SelectedTemplate!.Id!}
+            {"CurrentTemplateId", SelectedTemplate!.Id!}
         };
         await Shell.Current.GoToAsync(nameof(PgStyleEditor), true, sendData);
     }
@@ -54,7 +54,7 @@ public partial class PgMainViewModel : ObservableObject
         Dictionary<string, object> sendData = new()
         {
             { "IsEdit", IsEdit.ToString() },
-            {"CurrentTemplate", SelectedTemplate!.Id!}
+            {"CurrentTemplateId", SelectedTemplate!.Id!}
         };
         await Shell.Current.GoToAsync(nameof(PgStyleEditor), true, sendData);
     }
@@ -85,7 +85,6 @@ public partial class PgMainViewModel : ObservableObject
                 IsEdit = SelectedTemplate.IsCustomTemplate;
             }
         }
-
     }
 
     #region EXTRA
