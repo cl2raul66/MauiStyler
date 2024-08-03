@@ -111,7 +111,7 @@
                 <Button
                     Style="{StaticResource onlyIconButon}"
                     Command="{Binding GoToEditTemplateCommand}"
-                    IsEnabled="{Binding SelectedTemplate}"
+                    IsEnabled="{Binding IsEdit}"
                     Text="{StaticResource UiEdit}"
                     ToolTipProperties.Text="Modifica el estilo de la plantilla seleccionada."/>
                 <Button

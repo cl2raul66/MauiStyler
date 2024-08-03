@@ -6,6 +6,7 @@ using MauiStyler.App.Services;
 using MauiStyler.App.Tools;
 using MauiStyler.App.Views;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace MauiStyler.App.ViewModels;
 
@@ -41,7 +42,7 @@ public partial class PgMainViewModel : ObservableObject
     {
         Dictionary<string, object> sendData = new()
         {
-            { "IsEdit", true.ToString() },
+            { "IsEdit", IsEdit.ToString() },
             {"CurrentTemplate", SelectedTemplate!.Id!}
         };
         await Shell.Current.GoToAsync(nameof(PgStyleEditor), true, sendData);
@@ -52,7 +53,7 @@ public partial class PgMainViewModel : ObservableObject
     {
         Dictionary<string, object> sendData = new()
         {
-            { "IsEdit", false.ToString() },
+            { "IsEdit", IsEdit.ToString() },
             {"CurrentTemplate", SelectedTemplate!.Id!}
         };
         await Shell.Current.GoToAsync(nameof(PgStyleEditor), true, sendData);
@@ -71,6 +72,20 @@ public partial class PgMainViewModel : ObservableObject
         await FileHelper.DeleteFilesAndDirectoriesAsync([.. docs.Values]);
         await Shell.Current.DisplayAlert("Mensaje", "Se exporto el tema satisfactoriamente.", "Cerrar");
         SelectedTemplate = null;
+    }
+
+    protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+    {
+        base.OnPropertyChanged(e);
+
+        if (e.PropertyName == nameof(SelectedTemplate))
+        {
+            if (SelectedTemplate is not null)
+            {
+                IsEdit = SelectedTemplate.IsCustomTemplate;
+            }
+        }
+
     }
 
     #region EXTRA
