@@ -148,14 +148,14 @@
                 </Label>
                 <HorizontalStackLayout Grid.Column="1" Spacing="8">
                     <Button
+                        Style="{StaticResource onlyIconButon}"
                         Command="{Binding SetVisibleStyleCommand}"
-                        FontFamily="icofont"
                         IsEnabled="{Binding IsVisibleStyle, Converter={ctk:InvertedBoolConverter}}"
                         Text="{StaticResource UiTheme}"
                         ToolTipProperties.Text="Muestra los ajustes de estilo." />
                     <Button
+                        Style="{StaticResource onlyIconButon}"
                         Command="{Binding SetVisibleStyleCommand}"
-                        FontFamily="icofont"
                         IsEnabled="{Binding IsVisibleStyle}"
                         Text="{StaticResource ColorBucket}"
                         ToolTipProperties.Text="Muestra los ajustes de color." />
@@ -373,11 +373,11 @@
                 <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
                     <HorizontalStackLayout Grid.Column="1" Spacing="8">
                         <Button
-                            FontFamily="icofont"
+                            Style="{StaticResource onlyIconButon}"
                             Text="{StaticResource Stamp}"
                             ToolTipProperties.Text="Clona todos los colores de un modo a otro." />
                         <Button
-                            FontFamily="icofont"
+                            Style="{StaticResource onlyIconButon}"
                             Text="{StaticResource Undo}"
                             ToolTipProperties.Text="Restaurar los colores por defecto." />
                     </HorizontalStackLayout>

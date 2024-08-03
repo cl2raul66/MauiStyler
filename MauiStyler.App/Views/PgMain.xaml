@@ -99,19 +99,21 @@
             <HorizontalStackLayout Grid.Column="1" Spacing="8">
                 <Button
                     Style="{StaticResource onlyIconButon}"
-                    Command="{Binding GoToPgStyleEditorCommand}"
+                    Command="{Binding GoToNewTemplateCommand}"
                     Text="{StaticResource FileAlt}"
                     ToolTipProperties.Text="Crea nuevo estilo." />
                 <Button
                     Style="{StaticResource onlyIconButon}"
-                    IsEnabled="False"
+                    Command="{Binding GoToNewTemplateBasedSelectedCommand}"
+                    IsEnabled="{Binding SelectedTemplate, Converter={ctk:IsNotNullConverter}}"
                     Text="{StaticResource FileDocument}"
                     ToolTipProperties.Text="Crea estilo a partir de la plantilla seleccionada." />
                 <Button
                     Style="{StaticResource onlyIconButon}"
-                    IsEnabled="False"
+                    Command="{Binding GoToEditTemplateCommand}"
+                    IsEnabled="{Binding SelectedTemplate}"
                     Text="{StaticResource UiEdit}"
-                    ToolTipProperties.Text="Modifica el estilo de la plantilla seleccionada." />
+                    ToolTipProperties.Text="Modifica el estilo de la plantilla seleccionada."/>
                 <Button
                     Style="{StaticResource onlyIconButon}"
                     IsEnabled="False"

@@ -8,23 +8,33 @@ using System.ComponentModel;
 
 namespace MauiStyler.App.ViewModels;
 
-[QueryProperty(nameof(Title), "title")]
+[QueryProperty(nameof(CurrentTemplate), nameof(CurrentTemplate))]
+[QueryProperty(nameof(IsEdit), nameof(IsEdit))]
 public partial class PgStyleEditorViewModel : ObservableObject
 {
+    readonly IStyleTemplateService styleTemplateServ;
     readonly IDocumentService documentServ;
 
-    public PgStyleEditorViewModel(IDocumentService documentService)
+    public PgStyleEditorViewModel(IStyleTemplateService styleTemplateService, IDocumentService documentService)
     {
+        styleTemplateServ = styleTemplateService;
         documentServ = documentService;
 
         InitializerProperty();
     }
 
     [ObservableProperty]
-    ObservableCollection<string>? getAllViews;
+    StyleTemplate? currentTemplate;
 
     [ObservableProperty]
-    string? title;
+    string? isEdit;
+
+    [ObservableProperty]
+    ObservableCollection<string>? getAllViews;
+
+    public string Title => CurrentTemplate is null
+        ? "Nuevo tema"
+        : (bool.Parse(IsEdit!) ? $"Editar tema {CurrentTemplate.Name}" : $"Nuevo tema basado en {CurrentTemplate.Name}");
 
     [ObservableProperty]
     bool isVisibleStyle = true;
@@ -138,16 +148,40 @@ public partial class PgStyleEditorViewModel : ObservableObject
                 //    new ItemColor() { Name = "Gray750", Value = Color.Parse("#6E6E6E") }
                 //];
                 //bool result = colorStyleServ.GenerateColorTemplate([.. PrincipalsColors], [.. SemanticsColors], [.. NeutralsColors]);
+                if (CurrentTemplate is null)
+                {
+                    var defaultTemplate = styleTemplateServ.GetAll().First();
 
-                var sectionsColors = documentServ.LoadSelectedTemplate();
+                    PrincipalsColors = [..defaultTemplate.PrincipalStyle!.DefaultColorsStyle];
+                    PrincipalsDarkColors = [..defaultTemplate.PrincipalStyle!.DarkColorsStyle];
 
-                NeutralsColors = new(sectionsColors["NEUTRAL"]);
-                SemanticsColors = new(sectionsColors["SEMANTIC"]);
-                PrincipalsColors = new(sectionsColors["PRINCIPAL"]);
+                    SemanticsColors = [..defaultTemplate.SemanticStyle!.DefaultColorsStyle];
+                    SemanticsDarkColors = [..defaultTemplate.SemanticStyle!.DarkColorsStyle];
 
-                NeutralsDarkColors = new(sectionsColors["NEUTRAL"]);
-                SemanticsDarkColors = new(sectionsColors["SEMANTIC"]);
-                PrincipalsDarkColors = new(sectionsColors["PRINCIPAL"]);
+                    NeutralsColors = [..defaultTemplate.NeutralStyle!.DefaultColorsStyle];
+                    NeutralsDarkColors = [..defaultTemplate.NeutralStyle!.DarkColorsStyle];
+                }
+                else
+                {
+                    PrincipalsColors = [.. CurrentTemplate.PrincipalStyle!.DefaultColorsStyle];
+                    PrincipalsDarkColors = [.. CurrentTemplate.PrincipalStyle!.DarkColorsStyle];
+
+                    SemanticsColors = [.. CurrentTemplate.SemanticStyle!.DefaultColorsStyle];
+                    SemanticsDarkColors = [.. CurrentTemplate.SemanticStyle!.DarkColorsStyle];
+
+                    NeutralsColors = [.. CurrentTemplate.NeutralStyle!.DefaultColorsStyle];
+                    NeutralsDarkColors = [.. CurrentTemplate.NeutralStyle!.DarkColorsStyle];
+                }
+
+                //var sectionsColors = documentServ.LoadSelectedTemplate();
+
+                //NeutralsColors = new(sectionsColors["NEUTRAL"]);
+                //SemanticsColors = new(sectionsColors["SEMANTIC"]);
+                //PrincipalsColors = new(sectionsColors["PRINCIPAL"]);
+
+                //NeutralsDarkColors = new(sectionsColors["NEUTRAL"]);
+                //SemanticsDarkColors = new(sectionsColors["SEMANTIC"]);
+                //PrincipalsDarkColors = new(sectionsColors["PRINCIPAL"]);
             }
         }
 

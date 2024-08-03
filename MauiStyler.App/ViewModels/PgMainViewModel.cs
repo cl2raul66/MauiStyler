@@ -6,7 +6,6 @@ using MauiStyler.App.Services;
 using MauiStyler.App.Tools;
 using MauiStyler.App.Views;
 using System.Collections.ObjectModel;
-using System.Xml.Linq;
 
 namespace MauiStyler.App.ViewModels;
 
@@ -28,12 +27,33 @@ public partial class PgMainViewModel : ObservableObject
     [ObservableProperty]
     TemplateItem? selectedTemplate;
 
+    [ObservableProperty]
+    bool isEdit;
+
     [RelayCommand]
-    async Task GoToPgStyleEditor()
+    async Task GoToNewTemplate()
+    {
+        await Shell.Current.GoToAsync(nameof(PgStyleEditor), true);
+    }
+
+    [RelayCommand]
+    async Task GoToEditTemplate()
     {
         Dictionary<string, object> sendData = new()
         {
-            {"title", "Nuevo"}
+            { "IsEdit", true.ToString() },
+            {"CurrentTemplate", SelectedTemplate!.Id!}
+        };
+        await Shell.Current.GoToAsync(nameof(PgStyleEditor), true, sendData);
+    }
+
+    [RelayCommand]
+    async Task GoToNewTemplateBasedSelected()
+    {
+        Dictionary<string, object> sendData = new()
+        {
+            { "IsEdit", false.ToString() },
+            {"CurrentTemplate", SelectedTemplate!.Id!}
         };
         await Shell.Current.GoToAsync(nameof(PgStyleEditor), true, sendData);
     }
