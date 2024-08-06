@@ -27,11 +27,9 @@ public partial class PgStyleEditorViewModel : ObservableObject
     string? currentTemplateId;
 
     [ObservableProperty]
-    //[NotifyPropertyChangedFor(nameof(Title))]
     StyleTemplate? currentTemplate;
 
     [ObservableProperty]
-    //[NotifyPropertyChangedFor(nameof(Title))]
     string? isEdit;
 
     [ObservableProperty]
@@ -39,10 +37,6 @@ public partial class PgStyleEditorViewModel : ObservableObject
 
     [ObservableProperty]
     string? title = "Nuevo tema";
-
-    //public string Title => string.IsNullOrEmpty(CurrentTemplateId) 
-    //    ? "Nuevo tema"
-    //    : (bool.Parse(IsEdit!) ? $"Editar tema {CurrentTemplate!.Name}" : $"Nuevo tema basado en {CurrentTemplate!.Name}");
 
     [ObservableProperty]
     bool isVisibleStyle = true;
@@ -99,11 +93,11 @@ public partial class PgStyleEditorViewModel : ObservableObject
     [RelayCommand]
     async Task ShowNewItemColor()
     {
-        var (NameCurrent, CurrentItemColor) = GetSelectedItemColor();
+        var (CurrentSeptionName, CurrentItemColor) = GetSelectedItemColor();
 
         Dictionary<string, object> sendData = new()
         {
-            { "NameCurrent", NameCurrent }
+            { "CurrentSeptionName", CurrentSeptionName }
         };
 
         await Shell.Current.GoToAsync(nameof(PgNewEditItemColor), true, sendData);
@@ -112,12 +106,17 @@ public partial class PgStyleEditorViewModel : ObservableObject
     [RelayCommand]
     async Task ShowEditItemColor()
     {
-        var (NameCurrent, CurrentItemColor) = GetSelectedItemColor();
+        var (CurrentSeptionName, CurrentItemColor) = GetSelectedItemColor();
+
+        if (CurrentItemColor is null)
+        {
+            return;
+        }
 
         Dictionary<string, object> sendData = new()
         {
-            { "NameCurrent", NameCurrent },
-            { "CurrentItemColor", CurrentItemColor! }
+            { "CurrentSeptionName", CurrentSeptionName },
+            { "CurrentItemColor", CurrentItemColor }
         };
 
         await Shell.Current.GoToAsync(nameof(PgNewEditItemColor), true, sendData);
@@ -300,7 +299,7 @@ public partial class PgStyleEditorViewModel : ObservableObject
         GetAllViews = [.. types];
     }
 
-    (string NameCurrent, ItemColor? CurrentItemColor) GetSelectedItemColor()
+    (string CurrentSeptionName, ItemColor? CurrentItemColor) GetSelectedItemColor()
     {
         var selections = new Dictionary<string, ItemColor?>
         {

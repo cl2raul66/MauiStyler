@@ -70,15 +70,17 @@
                     <HorizontalStackLayout Spacing="16">
                         <Frame>
                             <VerticalStackLayout Spacing="8">
-                                <Label Text="Vista previa" />
-                                <Grid RowDefinitions="auto,auto" RowSpacing="0">
+                                <Label Text="Vista previa :" />
+                                <Grid
+                                    Padding="0"
+                                    RowDefinitions="auto,auto,auto"
+                                    RowSpacing="0">
                                     <Border
                                         Padding="8"
-                                        BackgroundColor="{Binding CurrentItemColor.Value}"
+                                        BackgroundColor="{Binding LastColorSelected}"
                                         HeightRequest="75"
                                         StrokeShape="RoundRectangle 6,6,0,0"
-                                        StrokeThickness="0"
-                                        WidthRequest="200">
+                                        StrokeThickness="0">
                                         <VerticalStackLayout Spacing="0" VerticalOptions="Center">
                                             <Label
                                                 Padding="8,4"
@@ -93,7 +95,7 @@
                                                 BackgroundColor="Black"
                                                 FontAttributes="Bold"
                                                 HorizontalOptions="Start"
-                                                Text="{Binding CurrentItemColor.Value, Converter={ctk:ColorToHexRgbaStringConverter}}"
+                                                Text="{Binding LastColorSelected, Converter={ctk:ColorToHexRgbaStringConverter}}"
                                                 TextColor="White"
                                                 TextTransform="Uppercase" />
                                         </VerticalStackLayout>
@@ -101,11 +103,10 @@
                                     <Border
                                         Grid.Row="1"
                                         Padding="8"
-                                        BackgroundColor="{Binding SelectedColorOfPalette}"
+                                        BackgroundColor="{Binding CurrentColor}"
                                         HeightRequest="75"
                                         StrokeShape="RoundRectangle 0,0,6,6"
-                                        StrokeThickness="0"
-                                        WidthRequest="200">
+                                        StrokeThickness="0">
                                         <VerticalStackLayout Spacing="0" VerticalOptions="Center">
                                             <Label
                                                 Padding="8,4"
@@ -115,18 +116,64 @@
                                                 Text="Seleccionado"
                                                 TextColor="White"
                                                 TextTransform="Uppercase" />
+
                                             <Label
                                                 Padding="8,4"
                                                 BackgroundColor="Black"
                                                 FontAttributes="Bold"
                                                 HorizontalOptions="Start"
-                                                Text="{Binding SelectedColorOfPalette, Converter={ctk:ColorToHexRgbaStringConverter}}"
+                                                Text="{Binding CurrentColor, TargetNullValue='White', FallbackValue='White', Converter={ctk:ColorToHexRgbaStringConverter}}"
                                                 TextColor="White"
                                                 TextTransform="Uppercase" />
                                         </VerticalStackLayout>
                                     </Border>
+                                    <HorizontalStackLayout Grid.Row="2" Spacing="0">
+                                        <CheckBox Margin="0" IsChecked="{Binding IsDefaultColor}" />
+                                        <Label Text="Mantener predeterminado" VerticalOptions="Center" />
+                                    </HorizontalStackLayout>
                                 </Grid>
-                                <Label Text="Personalizacion" />
+                                <Label Text="Personalización :" />
+                                <Grid ColumnDefinitions="*,50" ColumnSpacing="4">
+                                    <Label Text="Rojo: (0-255)" VerticalOptions="Center" />
+                                    <Entry
+                                        Grid.Column="1"
+                                        HorizontalTextAlignment="End"
+                                        Text="{Binding Red}" />
+                                </Grid>
+                                <Grid ColumnDefinitions="*,50" ColumnSpacing="4">
+                                    <Label Text="Verde: (0-255)" VerticalOptions="Center" />
+                                    <Entry
+                                        Grid.Column="1"
+                                        HorizontalTextAlignment="End"
+                                        Text="{Binding Green}" />
+                                </Grid>
+                                <Grid ColumnDefinitions="*,50" ColumnSpacing="4">
+                                    <Label Text="Azul: (0-255)" VerticalOptions="Center" />
+                                    <Entry
+                                        Grid.Column="1"
+                                        HorizontalTextAlignment="End"
+                                        Text="{Binding Blue}" />
+                                </Grid>
+                                <Grid ColumnDefinitions="*,50" ColumnSpacing="4">
+                                    <Label Text="Alfa: (0-255)" VerticalOptions="Center" />
+                                    <Entry
+                                        Grid.Column="1"
+                                        HorizontalTextAlignment="End"
+                                        Text="{Binding Alpha}" />
+                                </Grid>
+                                <Grid ColumnDefinitions="auto,*,auto" ColumnSpacing="4">
+                                    <Label Text="Hex: #" VerticalOptions="Center" />
+                                    <Entry
+                                        Grid.Column="1"
+                                        HorizontalTextAlignment="End"
+                                        Text="{Binding Hexadecimal}" />
+                                    <Button
+                                        Style="{StaticResource onlyIconButon}"
+                                        Grid.Column="2"
+                                        Command="{Binding SetHexColorCommand}"
+                                        FontFamily="icofont"
+                                        Text="{StaticResource UiCheck}" />
+                                </Grid>
                             </VerticalStackLayout>
                         </Frame>
                     </HorizontalStackLayout>
@@ -136,6 +183,7 @@
                             <CollectionView
                                 ItemsSource="{Binding ColorPalette}"
                                 SelectedItem="{Binding SelectedColorOfPalette}"
+                                SelectionChanged="OnSelectionChanged"
                                 SelectionMode="Single">
                                 <CollectionView.ItemsLayout>
                                     <LinearItemsLayout ItemSpacing="2" Orientation="Horizontal" />
@@ -160,13 +208,13 @@
                     WidthRequest="400">
                     <Entry.Triggers>
                         <DataTrigger
-                            Binding="{Binding NameCurrent}"
+                            Binding="{Binding CurrentSeptionName}"
                             TargetType="Entry"
                             Value="CurrentPrincipalColor">
                             <Setter Property="IsEnabled" Value="False" />
                         </DataTrigger>
                         <DataTrigger
-                            Binding="{Binding NameCurrent}"
+                            Binding="{Binding CurrentSeptionName}"
                             TargetType="Entry"
                             Value="CurrentPrincipalDarkColor">
                             <Setter Property="IsEnabled" Value="False" />
