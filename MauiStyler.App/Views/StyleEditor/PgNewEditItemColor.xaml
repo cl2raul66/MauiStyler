@@ -8,8 +8,10 @@
     xmlns:model="clr-namespace:MauiStyler.App.Models"
     xmlns:vm="clr-namespace:MauiStyler.App.ViewModels"
     Title="NewEdit"
+    Style="{StaticResource modalContentPage}"
     x:DataType="vm:PgNewEditItemColorViewModel"
-    Shell.NavBarIsVisible="False">
+    Shell.NavBarIsVisible="False"
+    Shell.PresentationMode="ModalAnimated">
     <Shell.BackButtonBehavior>
         <BackButtonBehavior IsVisible="False" />
     </Shell.BackButtonBehavior>
@@ -18,8 +20,7 @@
             <Style x:Key="colorItemPaletteBorder" TargetType="Border">
                 <Setter Property="Padding" Value="0" />
                 <Setter Property="Margin" Value="0" />
-                <Setter Property="HeightRequest" Value="32" />
-                <Setter Property="WidthRequest" Value="32" />
+                <Setter Property="HeightRequest" Value="40" />
                 <Setter Property="StrokeShape" Value="RoundRectangle 6" />
                 <Setter Property="StrokeThickness" Value="1" />
                 <Setter Property="Stroke" Value="{StaticResource Gray500}" />
@@ -40,153 +41,174 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="auto,*,auto">
-        <!--#region ENCABEZADO-->
-        <Grid
-            Padding="8"
-            ColumnDefinitions="*,auto"
-            ColumnSpacing="8">
-            <Label
-                FontAttributes="Bold"
-                FontSize="18"
-                Text="{Binding Title}"
-                TextTransform="Uppercase"
-                VerticalOptions="Center" />
-            <HorizontalStackLayout Grid.Column="1" Spacing="8">
-                <Button
-                    BackgroundColor="{StaticResource Accent}"
-                    Text="Guardar"
-                    ToolTipProperties.Text="Guarda propiedades del estilo y color en una plantilla." />
-                <Button
-                    Command="{Binding GoToBackCommand}"
-                    Text="Cancelar"
-                    ToolTipProperties.Text="Cancela las operaciones y regresa al inicio." />
-            </HorizontalStackLayout>
-        </Grid>
-        <!--#endregion-->
-        <Grid Grid.Row="1" Margin="8,0">
-            <Frame>
-                <Grid RowDefinitions="*,auto" RowSpacing="8">
-                    <HorizontalStackLayout Spacing="16">
-                        <Frame>
-                            <VerticalStackLayout Spacing="8">
-                                <Label Text="Vista previa :" />
-                                <Grid
-                                    Padding="0"
-                                    RowDefinitions="auto,auto,auto"
-                                    RowSpacing="0">
-                                    <Border
-                                        Padding="8"
-                                        BackgroundColor="{Binding LastColorSelected}"
-                                        HeightRequest="75"
-                                        StrokeShape="RoundRectangle 6,6,0,0"
-                                        StrokeThickness="0">
-                                        <VerticalStackLayout Spacing="0" VerticalOptions="Center">
-                                            <Label
-                                                Padding="8,4"
-                                                BackgroundColor="Black"
-                                                FontAttributes="Bold"
-                                                HorizontalOptions="Start"
-                                                Text="Antes"
-                                                TextColor="White"
-                                                TextTransform="Uppercase" />
-                                            <Label
-                                                Padding="8,4"
-                                                BackgroundColor="Black"
-                                                FontAttributes="Bold"
-                                                HorizontalOptions="Start"
-                                                Text="{Binding LastColorSelected, Converter={ctk:ColorToHexRgbaStringConverter}}"
-                                                TextColor="White"
-                                                TextTransform="Uppercase" />
-                                        </VerticalStackLayout>
-                                    </Border>
-                                    <Border
-                                        Grid.Row="1"
-                                        Padding="8"
-                                        BackgroundColor="{Binding CurrentColor}"
-                                        HeightRequest="75"
-                                        StrokeShape="RoundRectangle 0,0,6,6"
-                                        StrokeThickness="0">
-                                        <VerticalStackLayout Spacing="0" VerticalOptions="Center">
-                                            <Label
-                                                Padding="8,4"
-                                                BackgroundColor="Black"
-                                                FontAttributes="Bold"
-                                                HorizontalOptions="Start"
-                                                Text="Seleccionado"
-                                                TextColor="White"
-                                                TextTransform="Uppercase" />
-
-                                            <Label
-                                                Padding="8,4"
-                                                BackgroundColor="Black"
-                                                FontAttributes="Bold"
-                                                HorizontalOptions="Start"
-                                                Text="{Binding CurrentColor, TargetNullValue='White', FallbackValue='White', Converter={ctk:ColorToHexRgbaStringConverter}}"
-                                                TextColor="White"
-                                                TextTransform="Uppercase" />
-                                        </VerticalStackLayout>
-                                    </Border>
-                                    <HorizontalStackLayout Grid.Row="2" Spacing="0">
-                                        <CheckBox Margin="0" IsChecked="{Binding IsDefaultColor}" />
-                                        <Label Text="Mantener predeterminado" VerticalOptions="Center" />
-                                    </HorizontalStackLayout>
-                                </Grid>
-                                <Label Text="Personalización :" />
-                                <Grid ColumnDefinitions="*,50" ColumnSpacing="4">
-                                    <Label Text="Rojo: (0-255)" VerticalOptions="Center" />
-                                    <Entry
-                                        Grid.Column="1"
-                                        HorizontalTextAlignment="End"
-                                        Text="{Binding Red}" />
-                                </Grid>
-                                <Grid ColumnDefinitions="*,50" ColumnSpacing="4">
-                                    <Label Text="Verde: (0-255)" VerticalOptions="Center" />
-                                    <Entry
-                                        Grid.Column="1"
-                                        HorizontalTextAlignment="End"
-                                        Text="{Binding Green}" />
-                                </Grid>
-                                <Grid ColumnDefinitions="*,50" ColumnSpacing="4">
-                                    <Label Text="Azul: (0-255)" VerticalOptions="Center" />
-                                    <Entry
-                                        Grid.Column="1"
-                                        HorizontalTextAlignment="End"
-                                        Text="{Binding Blue}" />
-                                </Grid>
-                                <Grid ColumnDefinitions="*,50" ColumnSpacing="4">
-                                    <Label Text="Alfa: (0-255)" VerticalOptions="Center" />
-                                    <Entry
-                                        Grid.Column="1"
-                                        HorizontalTextAlignment="End"
-                                        Text="{Binding Alpha}" />
-                                </Grid>
-                                <Grid ColumnDefinitions="auto,*,auto" ColumnSpacing="4">
-                                    <Label Text="Hex: #" VerticalOptions="Center" />
-                                    <Entry
-                                        Grid.Column="1"
-                                        HorizontalTextAlignment="End"
-                                        Text="{Binding Hexadecimal}" />
-                                    <Button
-                                        Style="{StaticResource onlyIconButon}"
-                                        Grid.Column="2"
-                                        Command="{Binding SetHexColorCommand}"
-                                        FontFamily="icofont"
-                                        Text="{StaticResource UiCheck}" />
-                                </Grid>
+    <Frame HorizontalOptions="Center" VerticalOptions="Center">
+        <Grid RowDefinitions="auto,*,auto">
+            <!--#region ENCABEZADO-->
+            <Grid
+                Padding="8"
+                ColumnDefinitions="*,auto"
+                ColumnSpacing="8">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="18"
+                    HorizontalOptions="Center"
+                    Text="{Binding Title}"
+                    TextTransform="Uppercase"
+                    VerticalOptions="Center" />
+            </Grid>
+            <!--#endregion-->
+            <Grid
+                Grid.Row="1"
+                Margin="8,0"
+                ColumnDefinitions="230,auto"
+                ColumnSpacing="16">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Vista previa :" />
+                    <Grid
+                        Padding="0"
+                        RowDefinitions="auto,auto,auto"
+                        RowSpacing="0">
+                        <Border
+                            Padding="8"
+                            BackgroundColor="{Binding LastColorSelected}"
+                            HeightRequest="75"
+                            StrokeShape="RoundRectangle 6,6,0,0"
+                            StrokeThickness="0">
+                            <VerticalStackLayout Spacing="0" VerticalOptions="Center">
+                                <Label
+                                    Padding="8,4"
+                                    BackgroundColor="Black"
+                                    FontAttributes="Bold"
+                                    HorizontalOptions="Start"
+                                    Text="Antes"
+                                    TextColor="White"
+                                    TextTransform="Uppercase" />
+                                <Label
+                                    Padding="8,4"
+                                    BackgroundColor="Black"
+                                    FontAttributes="Bold"
+                                    HorizontalOptions="Start"
+                                    Text="{Binding LastColorSelected, Converter={ctk:ColorToHexRgbaStringConverter}}"
+                                    TextColor="White"
+                                    TextTransform="Uppercase" />
                             </VerticalStackLayout>
-                        </Frame>
-                    </HorizontalStackLayout>
-                    <Frame Grid.Row="1">
-                        <VerticalStackLayout Spacing="8">
-                            <Label Text="Paleta de colores de .NET MAUI" />
+                        </Border>
+                        <Border
+                            Grid.Row="1"
+                            Padding="8"
+                            BackgroundColor="{Binding CurrentColor}"
+                            HeightRequest="75"
+                            StrokeShape="RoundRectangle 0,0,6,6"
+                            StrokeThickness="0">
+                            <VerticalStackLayout Spacing="0" VerticalOptions="Center">
+                                <Label
+                                    Padding="8,4"
+                                    BackgroundColor="Black"
+                                    FontAttributes="Bold"
+                                    HorizontalOptions="Start"
+                                    Text="Seleccionado"
+                                    TextColor="White"
+                                    TextTransform="Uppercase" />
+
+                                <Label
+                                    Padding="8,4"
+                                    BackgroundColor="Black"
+                                    FontAttributes="Bold"
+                                    HorizontalOptions="Start"
+                                    Text="{Binding CurrentColor, TargetNullValue='White', FallbackValue='White', Converter={ctk:ColorToHexRgbaStringConverter}}"
+                                    TextColor="White"
+                                    TextTransform="Uppercase" />
+                            </VerticalStackLayout>
+                        </Border>
+                        <HorizontalStackLayout Grid.Row="2" Spacing="0">
+                            <CheckBox Margin="0" IsChecked="{Binding IsDefaultColor}" />
+                            <Label Text="Mantener predeterminado" VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                    </Grid>
+                    <Label Text="Personalización :" />
+                    <Grid ColumnDefinitions="*,50" ColumnSpacing="4">
+                        <Label Text="Rojo: (0-255)" VerticalOptions="Center" />
+                        <Entry
+                            Grid.Column="1"
+                            HorizontalTextAlignment="End"
+                            Text="{Binding Red}" />
+                    </Grid>
+                    <Grid ColumnDefinitions="*,50" ColumnSpacing="4">
+                        <Label Text="Verde: (0-255)" VerticalOptions="Center" />
+                        <Entry
+                            Grid.Column="1"
+                            HorizontalTextAlignment="End"
+                            Text="{Binding Green}" />
+                    </Grid>
+                    <Grid ColumnDefinitions="*,50" ColumnSpacing="4">
+                        <Label Text="Azul: (0-255)" VerticalOptions="Center" />
+                        <Entry
+                            Grid.Column="1"
+                            HorizontalTextAlignment="End"
+                            Text="{Binding Blue}" />
+                    </Grid>
+                    <Grid ColumnDefinitions="*,50" ColumnSpacing="4">
+                        <Label Text="Alfa: (0-255)" VerticalOptions="Center" />
+                        <Entry
+                            Grid.Column="1"
+                            HorizontalTextAlignment="End"
+                            Text="{Binding Alpha}" />
+                    </Grid>
+                    <Grid ColumnDefinitions="auto,*,auto" ColumnSpacing="4">
+                        <Label Text="Hex: #" VerticalOptions="Center" />
+                        <Entry
+                            Grid.Column="1"
+                            HorizontalTextAlignment="End"
+                            Text="{Binding Hexadecimal}" />
+                        <Button
+                            Style="{StaticResource onlyIconButon}"
+                            Grid.Column="2"
+                            Command="{Binding SetHexColorCommand}"
+                            FontFamily="icofont"
+                            Text="{StaticResource UiCheck}" />
+                    </Grid>
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1" Spacing="8">
+                    <Grid ColumnDefinitions="auto,*" ColumnSpacing="8">
+                        <Label Text="Nombre:" VerticalOptions="CenterAndExpand" />
+                        <Entry
+                            Grid.Column="1"
+                            Placeholder="Escriba aquí"
+                            Text="{Binding NameColor}">
+                            <Entry.Triggers>
+                                <DataTrigger
+                                    Binding="{Binding CurrentSeptionName}"
+                                    TargetType="Entry"
+                                    Value="CurrentPrincipalColor">
+                                    <Setter Property="IsEnabled" Value="False" />
+                                </DataTrigger>
+                                <DataTrigger
+                                    Binding="{Binding CurrentSeptionName}"
+                                    TargetType="Entry"
+                                    Value="CurrentPrincipalDarkColor">
+                                    <Setter Property="IsEnabled" Value="False" />
+                                </DataTrigger>
+                            </Entry.Triggers>
+                        </Entry>
+                    </Grid>
+                    <Grid RowDefinitions="auto,auto" RowSpacing="8">
+                        <Label Text="Paleta de colores de .NET MAUI:" />
+                        <ScrollView
+                            Grid.Row="1"
+                            HeightRequest="384"
+                            VerticalScrollBarVisibility="Always">
                             <CollectionView
+                                Margin="0,0,12,0"
                                 ItemsSource="{Binding ColorPalette}"
                                 SelectedItem="{Binding SelectedColorOfPalette}"
                                 SelectionChanged="OnSelectionChanged"
                                 SelectionMode="Single">
                                 <CollectionView.ItemsLayout>
-                                    <LinearItemsLayout ItemSpacing="2" Orientation="Horizontal" />
+                                    <GridItemsLayout
+                                        HorizontalItemSpacing="2"
+                                        Orientation="Vertical"
+                                        Span="8"
+                                        VerticalItemSpacing="2" />
                                 </CollectionView.ItemsLayout>
                                 <CollectionView.ItemTemplate>
                                     <DataTemplate x:DataType="Color">
@@ -194,35 +216,31 @@
                                     </DataTemplate>
                                 </CollectionView.ItemTemplate>
                             </CollectionView>
-                        </VerticalStackLayout>
-                    </Frame>
-                </Grid>
-            </Frame>
+                        </ScrollView>
+                    </Grid>
+                </VerticalStackLayout>
+            </Grid>
+            <!--#region pie-->
+            <Grid
+                Grid.Row="2"
+                Margin="8"
+                Padding="8"
+                ColumnDefinitions="*,auto"
+                ColumnSpacing="8">
+                <HorizontalStackLayout Grid.Column="1" Spacing="8">
+                    <Button
+                        BackgroundColor="{StaticResource Accent}"
+                        Command="{Binding SaveCommand}"
+                        Text="Guardar"
+                        ToolTipProperties.Text="Guarda propiedades del estilo y color en una plantilla." />
+                    <Button
+                        Command="{Binding GoToBackCommand}"
+                        Text="Cancelar"
+                        ToolTipProperties.Text="Cancela las operaciones y regresa al inicio." />
+                </HorizontalStackLayout>
+            </Grid>
+            <!--#endregion-->
         </Grid>
-        <Frame Grid.Row="2" Margin="8">
-            <HorizontalStackLayout Spacing="8">
-                <Label Text="Nombre:" VerticalOptions="CenterAndExpand" />
-                <Entry
-                    Placeholder="Escriba aquí"
-                    Text="{Binding NameColor}"
-                    WidthRequest="400">
-                    <Entry.Triggers>
-                        <DataTrigger
-                            Binding="{Binding CurrentSeptionName}"
-                            TargetType="Entry"
-                            Value="CurrentPrincipalColor">
-                            <Setter Property="IsEnabled" Value="False" />
-                        </DataTrigger>
-                        <DataTrigger
-                            Binding="{Binding CurrentSeptionName}"
-                            TargetType="Entry"
-                            Value="CurrentPrincipalDarkColor">
-                            <Setter Property="IsEnabled" Value="False" />
-                        </DataTrigger>
-                    </Entry.Triggers>
-                </Entry>
-            </HorizontalStackLayout>
-        </Frame>
-    </Grid>
+    </Frame>
 
 </ContentPage>

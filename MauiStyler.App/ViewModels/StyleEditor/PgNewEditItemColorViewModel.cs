@@ -88,6 +88,12 @@ public partial class PgNewEditItemColorViewModel : ObservableValidator
     }
 
     [RelayCommand]
+    async Task Save()
+    {
+        await Shell.Current.GoToAsync("..", true);
+    }
+
+    [RelayCommand]
     async Task GoToBack()
     {
         await Shell.Current.GoToAsync("..", true);
