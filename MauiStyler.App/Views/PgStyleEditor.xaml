@@ -187,15 +187,10 @@
                                     TextTransform="Uppercase"
                                     VerticalOptions="Center" />
                                 <HorizontalStackLayout Grid.Column="1" Spacing="4">
-                                    <Button
-                                        Style="{StaticResource editButton}"
-                                        Command="{Binding ShowEditItemColorCommand}"
-                                        IsEnabled="{Binding SelectedPrincipalColor, Converter={ctk:IsNotNullConverter}}"
-                                        ToolTipProperties.Text="Modificar." />
-                                    <Button
+                                    <!--<Button
                                         Style="{StaticResource undoButton}"
-                                        IsEnabled="{Binding SelectedPrincipalColor, Converter={ctk:IsNotNullConverter}}"
-                                        ToolTipProperties.Text="Restaura color anterior." />
+                                        IsEnabled="{Binding SelectedItemColor, Converter={ctk:IsNotNullConverter}}"
+                                        ToolTipProperties.Text="Restaura color anterior." />-->
                                 </HorizontalStackLayout>
                             </Grid>
                             <CollectionView
@@ -203,7 +198,7 @@
                                 ItemTemplate="{StaticResource ItemColorTemplate}"
                                 ItemsLayout="{StaticResource ItemColorLayout}"
                                 ItemsSource="{Binding PrincipalsColors}"
-                                SelectedItem="{Binding SelectedPrincipalColor}"
+                                SelectedItem="{Binding SelectedItemColor}"
                                 SelectionChanged="CollectionView_SelectionChanged"
                                 SelectionMode="Single" />
                             <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
@@ -217,15 +212,6 @@
                                         Style="{StaticResource addButton}"
                                         Command="{Binding ShowNewItemColorCommand}"
                                         ToolTipProperties.Text="Nuevo" />
-                                    <Button
-                                        Style="{StaticResource editButton}"
-                                        Command="{Binding ShowEditItemColorCommand}"
-                                        IsEnabled="{Binding SelectedSemanticColor, Converter={ctk:IsNotNullConverter}}"
-                                        ToolTipProperties.Text="Modificar." />
-                                    <Button
-                                        Style="{StaticResource undoButton}"
-                                        IsEnabled="{Binding SelectedSemanticColor, Converter={ctk:IsNotNullConverter}}"
-                                        ToolTipProperties.Text="Restaurar color anterior" />
                                 </HorizontalStackLayout>
                             </Grid>
                             <CollectionView
@@ -233,7 +219,7 @@
                                 ItemTemplate="{StaticResource ItemColorTemplate}"
                                 ItemsLayout="{StaticResource ItemColorLayout}"
                                 ItemsSource="{Binding SemanticsColors}"
-                                SelectedItem="{Binding SelectedSemanticColor}"
+                                SelectedItem="{Binding SelectedItemColor}"
                                 SelectionChanged="CollectionView_SelectionChanged"
                                 SelectionMode="Single" />
                             <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
@@ -247,15 +233,6 @@
                                         Style="{StaticResource addButton}"
                                         Command="{Binding ShowNewItemColorCommand}"
                                         ToolTipProperties.Text="Nuevo" />
-                                    <Button
-                                        Style="{StaticResource editButton}"
-                                        Command="{Binding ShowEditItemColorCommand}"
-                                        IsEnabled="{Binding SelectedNeutralColor, Converter={ctk:IsNotNullConverter}}"
-                                        ToolTipProperties.Text="Modificar." />
-                                    <Button
-                                        Style="{StaticResource undoButton}"
-                                        IsEnabled="{Binding SelectedNeutralColor, Converter={ctk:IsNotNullConverter}}"
-                                        ToolTipProperties.Text="Restaurar color anterior" />
                                 </HorizontalStackLayout>
                             </Grid>
                             <CollectionView
@@ -263,7 +240,7 @@
                                 ItemTemplate="{StaticResource ItemColorTemplate}"
                                 ItemsLayout="{StaticResource ItemColorLayout}"
                                 ItemsSource="{Binding NeutralsColors}"
-                                SelectedItem="{Binding SelectedNeutralColor}"
+                                SelectedItem="{Binding SelectedItemColor}"
                                 SelectionChanged="CollectionView_SelectionChanged"
                                 SelectionMode="Single" />
                         </VerticalStackLayout>
@@ -284,15 +261,10 @@
                                     TextTransform="Uppercase"
                                     VerticalOptions="Center" />
                                 <HorizontalStackLayout Grid.Column="1" Spacing="4">
-                                    <Button
-                                        Style="{StaticResource editButton}"
-                                        Command="{Binding ShowEditItemColorCommand}"
-                                        IsEnabled="{Binding SelectedPrincipalDarkColor, Converter={ctk:IsNotNullConverter}}"
-                                        ToolTipProperties.Text="Modificar." />
-                                    <Button
+                                    <!--<Button
                                         Style="{StaticResource undoButton}"
-                                        IsEnabled="{Binding SelectedPrincipalDarkColor, Converter={ctk:IsNotNullConverter}}"
-                                        ToolTipProperties.Text="Restaurar color anterior" />
+                                        IsEnabled="{Binding SelectedItemColor, Converter={ctk:IsNotNullConverter}}"
+                                        ToolTipProperties.Text="Restaurar color anterior" />-->
                                 </HorizontalStackLayout>
                             </Grid>
                             <CollectionView
@@ -300,7 +272,7 @@
                                 ItemTemplate="{StaticResource ItemColorTemplate}"
                                 ItemsLayout="{StaticResource ItemColorLayout}"
                                 ItemsSource="{Binding PrincipalsDarkColors}"
-                                SelectedItem="{Binding SelectedPrincipalDarkColor}"
+                                SelectedItem="{Binding SelectedItemColor}"
                                 SelectionChanged="CollectionView_SelectionChanged"
                                 SelectionMode="Single" />
                             <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
@@ -315,15 +287,6 @@
                                         Style="{StaticResource addButton}"
                                         Command="{Binding ShowNewItemColorCommand}"
                                         ToolTipProperties.Text="Nuevo" />
-                                    <Button
-                                        Style="{StaticResource editButton}"
-                                        Command="{Binding ShowEditItemColorCommand}"
-                                        IsEnabled="{Binding SelectedSemanticDarkColor, Converter={ctk:IsNotNullConverter}}"
-                                        ToolTipProperties.Text="Modificar." />
-                                    <Button
-                                        Style="{StaticResource undoButton}"
-                                        IsEnabled="{Binding SelectedSemanticDarkColor, Converter={ctk:IsNotNullConverter}}"
-                                        ToolTipProperties.Text="Restaurar color anterior" />
                                 </HorizontalStackLayout>
                             </Grid>
                             <CollectionView
@@ -331,7 +294,7 @@
                                 ItemTemplate="{StaticResource ItemColorTemplate}"
                                 ItemsLayout="{StaticResource ItemColorLayout}"
                                 ItemsSource="{Binding SemanticsDarkColors}"
-                                SelectedItem="{Binding SelectedSemanticDarkColor}"
+                                SelectedItem="{Binding SelectedItemColor}"
                                 SelectionChanged="CollectionView_SelectionChanged"
                                 SelectionMode="Single" />
                             <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
@@ -346,15 +309,6 @@
                                         Style="{StaticResource addButton}"
                                         Command="{Binding ShowNewItemColorCommand}"
                                         ToolTipProperties.Text="Nuevo" />
-                                    <Button
-                                        Style="{StaticResource editButton}"
-                                        Command="{Binding ShowEditItemColorCommand}"
-                                        IsEnabled="{Binding SelectedNeutralDarkColor, Converter={ctk:IsNotNullConverter}}"
-                                        ToolTipProperties.Text="Modificar." />
-                                    <Button
-                                        Style="{StaticResource undoButton}"
-                                        IsEnabled="{Binding SelectedNeutralDarkColor, Converter={ctk:IsNotNullConverter}}"
-                                        ToolTipProperties.Text="Restaurar color anterior" />
                                 </HorizontalStackLayout>
                             </Grid>
                             <CollectionView
@@ -362,7 +316,7 @@
                                 ItemTemplate="{StaticResource ItemColorTemplate}"
                                 ItemsLayout="{StaticResource ItemColorLayout}"
                                 ItemsSource="{Binding NeutralsDarkColors}"
-                                SelectedItem="{Binding SelectedNeutralDarkColor}"
+                                SelectedItem="{Binding SelectedItemColor}"
                                 SelectionChanged="CollectionView_SelectionChanged"
                                 SelectionMode="Single" />
                         </VerticalStackLayout>
@@ -378,8 +332,18 @@
                             ToolTipProperties.Text="Clona todos los colores de un modo a otro." />
                         <Button
                             Style="{StaticResource onlyIconButon}"
-                            Text="{StaticResource Undo}"
+                            Text="{StaticResource UiRotation}"
                             ToolTipProperties.Text="Restaurar los colores por defecto." />
+                        <BoxView Style="{StaticResource HorizontalElementSeparator}" />
+                        <Button
+                            Style="{StaticResource editButton}"
+                            Command="{Binding ShowEditItemColorCommand}"
+                            IsEnabled="{Binding SelectedItemColor, Converter={ctk:IsNotNullConverter}}"
+                            ToolTipProperties.Text="Modificar selección." />
+                        <Button
+                            Style="{StaticResource undoButton}"
+                            IsEnabled="{Binding SelectedItemColor, Converter={ctk:IsNotNullConverter}}"
+                            ToolTipProperties.Text="Restaurar color anterior" />
                     </HorizontalStackLayout>
                 </Grid>
             </Frame>

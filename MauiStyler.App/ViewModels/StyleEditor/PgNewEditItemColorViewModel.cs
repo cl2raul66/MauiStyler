@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using MauiStyler.App.Models;
 using System.ComponentModel;
 using System.Reflection;
@@ -90,6 +91,16 @@ public partial class PgNewEditItemColorViewModel : ObservableValidator
     [RelayCommand]
     async Task Save()
     {
+        ItemColor itemColor = new()
+        {
+            Name = NameColor,
+            Value = CurrentColor
+        };
+
+        string tokenSend = CurrentColor is null ? "NewItemColor" : "EditItemColor";
+
+        _ = WeakReferenceMessenger.Default.Send(itemColor, tokenSend);
+
         await Shell.Current.GoToAsync("..", true);
     }
 
@@ -139,7 +150,7 @@ public partial class PgNewEditItemColorViewModel : ObservableValidator
 
         if (e.PropertyName == nameof(CurrentColor))
         {
-            
+
         }
 
         if (e.PropertyName == nameof(Red))

@@ -119,10 +119,7 @@
                     IsEnabled="False"
                     Text="{StaticResource UiDelete}"
                     ToolTipProperties.Text="Elimina la plantilla seleccionada." />
-                <BoxView
-                    BackgroundColor="{StaticResource Background}"
-                    CornerRadius="2"
-                    WidthRequest="2" />
+                <BoxView Style="{StaticResource HorizontalElementSeparator}" />
                 <Button
                     Style="{StaticResource onlyIconButon}"
                     Command="{Binding ExportCommand}"

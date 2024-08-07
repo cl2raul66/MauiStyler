@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using MauiStyler.App.Models;
 using MauiStyler.App.Services;
 using MauiStyler.App.Views;
@@ -10,7 +11,7 @@ namespace MauiStyler.App.ViewModels;
 
 [QueryProperty(nameof(CurrentTemplateId), nameof(CurrentTemplateId))]
 [QueryProperty(nameof(IsEdit), nameof(IsEdit))]
-public partial class PgStyleEditorViewModel : ObservableObject
+public partial class PgStyleEditorViewModel : ObservableRecipient
 {
     readonly IStyleTemplateService styleTemplateServ;
     readonly IDocumentService documentServ;
@@ -57,42 +58,47 @@ public partial class PgStyleEditorViewModel : ObservableObject
     [ObservableProperty]
     ObservableCollection<ItemColor>? principalsColors;
 
-    [ObservableProperty]
-    ItemColor? selectedPrincipalColor;
+    //[ObservableProperty]
+    //ItemColor? selectedPrincipalColor;
 
     [ObservableProperty]
     ObservableCollection<ItemColor>? semanticsColors;
 
-    [ObservableProperty]
-    ItemColor? selectedSemanticColor;
+    //[ObservableProperty]
+    //ItemColor? selectedSemanticColor;
 
     [ObservableProperty]
     ObservableCollection<ItemColor>? neutralsColors;
 
-    [ObservableProperty]
-    ItemColor? selectedNeutralColor;
+    //[ObservableProperty]
+    //ItemColor? selectedNeutralColor;
 
     [ObservableProperty]
     ObservableCollection<ItemColor>? principalsDarkColors;
 
-    [ObservableProperty]
-    ItemColor? selectedPrincipalDarkColor;
+    //[ObservableProperty]
+    //ItemColor? selectedPrincipalDarkColor;
 
     [ObservableProperty]
     ObservableCollection<ItemColor>? semanticsDarkColors;
 
-    [ObservableProperty]
-    ItemColor? selectedSemanticDarkColor;
+    //[ObservableProperty]
+    //ItemColor? selectedSemanticDarkColor;
 
     [ObservableProperty]
     ObservableCollection<ItemColor>? neutralsDarkColors;
 
+    //[ObservableProperty]
+    //ItemColor? selectedNeutralDarkColor;
+
     [ObservableProperty]
-    ItemColor? selectedNeutralDarkColor;
+    ItemColor? selectedItemColor;
 
     [RelayCommand]
     async Task ShowNewItemColor()
     {
+        IsActive = true;
+
         var (CurrentSeptionName, CurrentItemColor) = GetSelectedItemColor();
 
         Dictionary<string, object> sendData = new()
@@ -106,6 +112,8 @@ public partial class PgStyleEditorViewModel : ObservableObject
     [RelayCommand]
     async Task ShowEditItemColor()
     {
+        IsActive = true;
+        
         var (CurrentSeptionName, CurrentItemColor) = GetSelectedItemColor();
 
         if (CurrentItemColor is null)
@@ -216,78 +224,129 @@ public partial class PgStyleEditorViewModel : ObservableObject
             }
         }
 
-        if (e.PropertyName == nameof(SelectedPrincipalColor))
-        {
-            if (SelectedPrincipalColor is not null)
-            {
-                SelectedNeutralDarkColor = null;
-                SelectedNeutralColor = null;
-                SelectedSemanticDarkColor = null;
-                SelectedSemanticColor = null;
-                SelectedPrincipalDarkColor = null;
-            }
-        }
+        //if (e.PropertyName == nameof(SelectedPrincipalColor))
+        //{
+        //    if (SelectedPrincipalColor is not null)
+        //    {
+        //        SelectedNeutralDarkColor = null;
+        //        SelectedNeutralColor = null;
+        //        SelectedSemanticDarkColor = null;
+        //        SelectedSemanticColor = null;
+        //        SelectedPrincipalDarkColor = null;
+        //    }
+        //}
 
-        if (e.PropertyName == nameof(SelectedPrincipalDarkColor))
-        {
-            if (SelectedPrincipalDarkColor is not null)
-            {
-                SelectedNeutralDarkColor = null;
-                SelectedNeutralColor = null;
-                SelectedSemanticDarkColor = null;
-                SelectedSemanticColor = null;
-                SelectedPrincipalColor = null;
-            }
-        }
+        //if (e.PropertyName == nameof(SelectedPrincipalDarkColor))
+        //{
+        //    if (SelectedPrincipalDarkColor is not null)
+        //    {
+        //        SelectedNeutralDarkColor = null;
+        //        SelectedNeutralColor = null;
+        //        SelectedSemanticDarkColor = null;
+        //        SelectedSemanticColor = null;
+        //        SelectedPrincipalColor = null;
+        //    }
+        //}
 
-        if (e.PropertyName == nameof(SelectedSemanticColor))
-        {
-            if (SelectedSemanticColor is not null)
-            {
-                SelectedNeutralDarkColor = null;
-                SelectedNeutralColor = null;
-                SelectedSemanticDarkColor = null;
-                SelectedPrincipalDarkColor = null;
-                SelectedPrincipalColor = null;
-            }
-        }
+        //if (e.PropertyName == nameof(SelectedSemanticColor))
+        //{
+        //    if (SelectedSemanticColor is not null)
+        //    {
+        //        SelectedNeutralDarkColor = null;
+        //        SelectedNeutralColor = null;
+        //        SelectedSemanticDarkColor = null;
+        //        SelectedPrincipalDarkColor = null;
+        //        SelectedPrincipalColor = null;
+        //    }
+        //}
 
-        if (e.PropertyName == nameof(SelectedSemanticDarkColor))
-        {
-            if (SelectedSemanticDarkColor is not null)
-            {
-                SelectedNeutralDarkColor = null;
-                SelectedNeutralColor = null;
-                SelectedSemanticColor = null;
-                SelectedPrincipalDarkColor = null;
-                SelectedPrincipalColor = null;
-            }
-        }
+        //if (e.PropertyName == nameof(SelectedSemanticDarkColor))
+        //{
+        //    if (SelectedSemanticDarkColor is not null)
+        //    {
+        //        SelectedNeutralDarkColor = null;
+        //        SelectedNeutralColor = null;
+        //        SelectedSemanticColor = null;
+        //        SelectedPrincipalDarkColor = null;
+        //        SelectedPrincipalColor = null;
+        //    }
+        //}
 
-        if (e.PropertyName == nameof(SelectedNeutralColor))
-        {
-            if (SelectedNeutralColor is not null)
-            {
-                SelectedNeutralDarkColor = null;
-                SelectedSemanticDarkColor = null;
-                SelectedSemanticColor = null;
-                SelectedPrincipalDarkColor = null;
-                SelectedPrincipalColor = null;
-            }
-        }
+        //if (e.PropertyName == nameof(SelectedNeutralColor))
+        //{
+        //    if (SelectedNeutralColor is not null)
+        //    {
+        //        SelectedNeutralDarkColor = null;
+        //        SelectedSemanticDarkColor = null;
+        //        SelectedSemanticColor = null;
+        //        SelectedPrincipalDarkColor = null;
+        //        SelectedPrincipalColor = null;
+        //    }
+        //}
 
-        if (e.PropertyName == nameof(SelectedNeutralDarkColor))
-        {
-            if (SelectedNeutralDarkColor is not null)
-            {
-                SelectedNeutralColor = null;
-                SelectedSemanticDarkColor = null;
-                SelectedSemanticColor = null;
-                SelectedPrincipalDarkColor = null;
-                SelectedPrincipalColor = null;
-            }
-        }
+        //if (e.PropertyName == nameof(SelectedNeutralDarkColor))
+        //{
+        //    if (SelectedNeutralDarkColor is not null)
+        //    {
+        //        SelectedNeutralColor = null;
+        //        SelectedSemanticDarkColor = null;
+        //        SelectedSemanticColor = null;
+        //        SelectedPrincipalDarkColor = null;
+        //        SelectedPrincipalColor = null;
+        //    }
+        //}
     }
+
+    protected override void OnActivated()
+    {
+        base.OnActivated();
+
+        WeakReferenceMessenger.Default.Register<PgStyleEditorViewModel, ItemColor, string>(this, "NewItemColor", (r, m) => { 
+        
+        });
+
+        WeakReferenceMessenger.Default.Register<PgStyleEditorViewModel, ItemColor, string>(this, "EditItemColor", (r, m) =>
+        {
+            var (currentSectionName, currentItemColor) = GetSelectedItemColor();
+
+            if (currentItemColor is null || string.IsNullOrEmpty(currentSectionName))
+            {
+                return;
+            }
+
+            // Determinar qué colección debe ser actualizada
+            ObservableCollection<ItemColor>? targetCollection = currentSectionName switch
+            {
+                "CurrentPrincipalColor" => PrincipalsColors,
+                "CurrentPrincipalDarkColor" => PrincipalsDarkColors,
+                "CurrentSemanticColor" => SemanticsColors,
+                "CurrentSemanticDarkColor" => SemanticsDarkColors,
+                "CurrentNeutralColor" => NeutralsColors,
+                "CurrentNeutralDarkColor" => NeutralsDarkColors,
+                _ => null
+            };
+
+            if (targetCollection is null)
+            {
+                return;
+            }
+
+            // Encontrar el índice del item a editar
+            int index = targetCollection.IndexOf(currentItemColor);
+            if (index != -1)
+            {
+                // Reemplazar el item antiguo con el nuevo (m es el nuevo ItemColor)
+                targetCollection[index] = m;
+
+                // Actualizar la selección al nuevo item
+                SelectedItemColor = m;
+
+                // Notificar cambios en la colección
+                OnPropertyChanged(nameof(targetCollection));
+            }
+        });
+    }
+
     #region EXTRA
     void InitializerProperty()
     {
@@ -299,27 +358,67 @@ public partial class PgStyleEditorViewModel : ObservableObject
         GetAllViews = [.. types];
     }
 
-    (string CurrentSeptionName, ItemColor? CurrentItemColor) GetSelectedItemColor()
+    (string CurrentSectionName, ItemColor? CurrentItemColor) GetSelectedItemColor()
     {
-        var selections = new Dictionary<string, ItemColor?>
+        if (SelectedItemColor is null)
         {
-            { nameof(SelectedPrincipalColor), SelectedPrincipalColor },
-            { nameof(SelectedPrincipalDarkColor), SelectedPrincipalDarkColor },
-            { nameof(SelectedSemanticColor), SelectedSemanticColor },
-            { nameof(SelectedSemanticDarkColor), SelectedSemanticDarkColor },
-            { nameof(SelectedNeutralColor), SelectedNeutralColor },
-            { nameof(SelectedNeutralDarkColor), SelectedNeutralDarkColor }
-        };
+            return ("", null);
+        }
 
-        foreach (var (key, value) in selections)
+        if (PrincipalsColors?.Contains(SelectedItemColor) == true)
         {
-            if (value is not null)
-            {
-                return (key.Replace("Selected", "Current"), value);
-            }
+            return ("CurrentPrincipalColor", SelectedItemColor);
+        }
+
+        if (PrincipalsDarkColors?.Contains(SelectedItemColor) == true)
+        {
+            return ("CurrentPrincipalDarkColor", SelectedItemColor);
+        }
+
+        if (SemanticsColors?.Contains(SelectedItemColor) == true)
+        {
+            return ("CurrentSemanticColor", SelectedItemColor);
+        }
+
+        if (SemanticsDarkColors?.Contains(SelectedItemColor) == true)
+        {
+            return ("CurrentSemanticDarkColor", SelectedItemColor);
+        }
+
+        if (NeutralsColors?.Contains(SelectedItemColor) == true)
+        {
+            return ("CurrentNeutralColor", SelectedItemColor);
+        }
+
+        if (NeutralsDarkColors?.Contains(SelectedItemColor) == true)
+        {
+            return ("CurrentNeutralDarkColor", SelectedItemColor);
         }
 
         return ("", null);
     }
+
+    //(string CurrentSeptionName, ItemColor? CurrentItemColor) GetSelectedItemColor()
+    //{
+    //    var selections = new Dictionary<string, ItemColor?>
+    //    {
+    //        { nameof(SelectedPrincipalColor), SelectedPrincipalColor },
+    //        { nameof(SelectedPrincipalDarkColor), SelectedPrincipalDarkColor },
+    //        { nameof(SelectedSemanticColor), SelectedSemanticColor },
+    //        { nameof(SelectedSemanticDarkColor), SelectedSemanticDarkColor },
+    //        { nameof(SelectedNeutralColor), SelectedNeutralColor },
+    //        { nameof(SelectedNeutralDarkColor), SelectedNeutralDarkColor }
+    //    };
+
+    //    foreach (var (key, value) in selections)
+    //    {
+    //        if (value is not null)
+    //        {
+    //            return (key.Replace("Selected", "Current"), value);
+    //        }
+    //    }
+
+    //    return ("", null);
+    //}
     #endregion
 }
