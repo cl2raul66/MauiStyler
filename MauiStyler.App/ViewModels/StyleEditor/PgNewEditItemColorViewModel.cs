@@ -13,7 +13,7 @@ public partial class PgNewEditItemColorViewModel : ObservableValidator
 {
     public PgNewEditItemColorViewModel()
     {
-        GetColorPaletteMAUI();
+
     }
 
     [ObservableProperty]
@@ -23,10 +23,10 @@ public partial class PgNewEditItemColorViewModel : ObservableValidator
     ItemColor? currentItemColor;
 
     [ObservableProperty]
-    List<Color>? colorPalette;
+    List<ColorPalette>? palettes;
 
     [ObservableProperty]
-    Color? selectedColorOfPalette;
+    ColorPalette? selectedPaletteItem;
 
     [ObservableProperty]
     Color? lastColorSelected = Colors.Black;
@@ -84,7 +84,7 @@ public partial class PgNewEditItemColorViewModel : ObservableValidator
                 Hexadecimal = vColor.ToRgbaHex(true)[1..];
             }
 
-            SelectedColorOfPalette = null;
+            SelectedPaletteItem = null;
         }
     }
 
@@ -140,18 +140,18 @@ public partial class PgNewEditItemColorViewModel : ObservableValidator
 
         if (e.PropertyName == nameof(IsDefaultColor))
         {
-            LastColorSelected = IsDefaultColor ? DefaultColor : SelectedColorOfPalette;
+            LastColorSelected = IsDefaultColor ? DefaultColor : SelectedPaletteItem.;
         }
 
-        if (e.PropertyName == nameof(SelectedColorOfPalette))
+        if (e.PropertyName == nameof(SelectedPaletteItem))
         {
-            if (SelectedColorOfPalette is not null)
+            if (SelectedPaletteItem is not null)
             {
-                Red = (SelectedColorOfPalette.Red * 255).ToString();
-                Green = (SelectedColorOfPalette.Green * 255).ToString();
-                Blue = (SelectedColorOfPalette.Blue * 255).ToString();
-                Alpha = (SelectedColorOfPalette.Alpha * 255).ToString();
-                Hexadecimal = SelectedColorOfPalette.ToRgbaHex(true)[1..];
+                Red = (SelectedPaletteItem.Red * 255).ToString();
+                Green = (SelectedPaletteItem.Green * 255).ToString();
+                Blue = (SelectedPaletteItem.Blue * 255).ToString();
+                Alpha = (SelectedPaletteItem.Alpha * 255).ToString();
+                Hexadecimal = SelectedPaletteItem.ToRgbaHex(true)[1..];
             }
         }
 
@@ -217,44 +217,16 @@ public partial class PgNewEditItemColorViewModel : ObservableValidator
     {
         base.OnPropertyChanging(e);
 
-        if (e.PropertyName == nameof(SelectedColorOfPalette))
+        if (e.PropertyName == nameof(SelectedPaletteItem))
         {
-            if (SelectedColorOfPalette is not null && !IsDefaultColor)
+            if (SelectedPaletteItem is not null && !IsDefaultColor)
             {
-                LastColorSelected = SelectedColorOfPalette;
+                LastColorSelected = SelectedPaletteItem;
             }
         }
     }
 
     #region EXTRA
-    public void GetColorPaletteMAUI()
-    {
-        HashSet<Color> allColors = [];
-        var colorType = typeof(Colors);
-
-        foreach (var field in colorType.GetFields(BindingFlags.Public | BindingFlags.Static))
-        {
-            if (field.FieldType == typeof(Color))
-            {
-                var color = (Color)field.GetValue(null)!;
-                allColors.Add(color);
-            }
-        }
-
-        if (allColors.Count != 0)
-        {
-            ColorPalette = [.. allColors];
-            if (ColorPalette is not null && ColorPalette.Count > 0)
-            {
-                SelectedColorOfPalette = ColorPalette[0];
-            }
-        }
-        else
-        {
-            ColorPalette = [Colors.White];
-            SelectedColorOfPalette = ColorPalette[0];
-        }
-    }
 
     #endregion
 }

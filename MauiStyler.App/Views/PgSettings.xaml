@@ -36,36 +36,51 @@
         <!--#region CONTENIDO-->
         <ScrollView Grid.Row="1" Padding="8">
             <FlexLayout AlignItems="Start">
-                <Frame Margin="0,0,8,0">
-                    <VerticalStackLayout Spacing="8">
+                <Frame Margin="0,0,8,0" WidthRequest="300">
+                    <Grid RowDefinitions="auto,300,auto" RowSpacing="8">
                         <Label
                             FontAttributes="Bold"
                             Text="Paletas de colores:"
                             TextTransform="Uppercase" />
                         <CollectionView
+                            Grid.Row="1"
                             ItemsSource="{Binding PaletteItems}"
-                            MaximumHeightRequest="250"
-                            MinimumHeightRequest="150"
                             SelectedItem="{Binding SelectedaPaletteItem}"
-                            SelectionMode="Single"
-                            WidthRequest="200">
+                            SelectionChanged="CollectionView_SelectionChanged"
+                            SelectionMode="Single">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="model:ColorPaletteItem">
                                     <Border Style="{StaticResource colorItemBorder}">
                                         <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
-                                            <Label Text="{Binding Name}" />
-                                            <Label Grid.Column="1" Text="{Binding Length}" />
+                                            <Label LineBreakMode="TailTruncation" Text="{Binding Name}" />
+                                            <Label Grid.Column="1" Text="{Binding Length, StringFormat='{0} colores'}" />
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
                         </CollectionView>
-                        <Button
-                            Command="{Binding ImportGIMPPaletteFileCommand}"
-                            Text="Importar paletas GIMP (.gpl)"
-                            VerticalOptions="Start" />
-                        <Button Text="Eliminar paleta" VerticalOptions="Start" />
-                    </VerticalStackLayout>
+                        <Grid
+                            Grid.Row="2"
+                            ColumnDefinitions="*,auto"
+                            ColumnSpacing="8">
+                            <Label Text="{Binding PaletteItems.Count, StringFormat='Paletas: {0}'}" VerticalOptions="Center" />
+                            <HorizontalStackLayout Grid.Column="1" Spacing="8">
+                                <Button
+                                    Style="{StaticResource onlyIconButon}"
+                                    Command="{Binding ImportGIMPPaletteFileCommand}"
+                                    Text="{StaticResource FolderOpen}"
+                                    ToolTipProperties.Text="Importar paletas GIMP (.gpl)."
+                                    VerticalOptions="Start" />
+                                <Button
+                                    Style="{StaticResource onlyIconButon}"
+                                    Command="{Binding DeletedPaletteCommand}"
+                                    IsEnabled="{Binding SelectedaPaletteItem, Converter={ctk:IsNotNullConverter}}"
+                                    Text="{StaticResource UiDelete}"
+                                    ToolTipProperties.Text="Eliminar paleta seleccionada"
+                                    VerticalOptions="Start" />
+                            </HorizontalStackLayout>
+                        </Grid>
+                    </Grid>
                 </Frame>
             </FlexLayout>
         </ScrollView>

@@ -73,7 +73,7 @@ public class FileHelper
         }
         catch (Exception ex)
         {
-            // The user canceled or something went wrong
+            Console.WriteLine(ex);
         }
 
         return [];

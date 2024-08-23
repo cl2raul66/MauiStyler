@@ -40,5 +40,5 @@ public class StyleTemplate
 public class ColorPalette
 {
     public string? Name { get; set; }
-    public Color[]? ColorsList { get; set; }
+    public Dictionary<string, Color>? ColorsList { get; set; }
 }
