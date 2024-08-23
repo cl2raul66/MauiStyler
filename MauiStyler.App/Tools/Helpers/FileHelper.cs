@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Maui.Storage;
-using Microsoft.Maui.Storage;
 
 namespace MauiStyler.App.Tools;
 
@@ -50,5 +49,33 @@ public class FileHelper
                 await inputStream.CopyToAsync(outputStream);
             }
         }
+    }
+
+    public static async Task<IEnumerable<FileResult>> OpenFileGPL()
+    {
+        var customFileType = new FilePickerFileType(
+                new Dictionary<DevicePlatform, IEnumerable<string>>
+                {
+                    { DevicePlatform.WinUI, new[] { ".gpl", ".gpl" } }, // file extension
+                });
+
+        PickOptions options = new()
+        {
+            PickerTitle = "Por favor seleccione uno o varios ficheros de paleta de GIMP",
+            FileTypes = customFileType,
+        };
+
+        try
+        {
+            var result = await FilePicker.Default.PickMultipleAsync(options);
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            // The user canceled or something went wrong
+        }
+
+        return [];
     }
 }

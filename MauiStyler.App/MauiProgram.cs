@@ -25,6 +25,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IStyleTemplateService, StyleTemplateService>();
 
         builder.Services.AddTransient<PgMain, PgMainViewModel>();
+        builder.Services.AddTransient<PgSettings, PgSettingsViewModel>();
         builder.Services.AddTransient<PgStyleEditor, PgStyleEditorViewModel>();
         builder.Services.AddTransient<PgNewEditItemColor, PgNewEditItemColorViewModel>();
 

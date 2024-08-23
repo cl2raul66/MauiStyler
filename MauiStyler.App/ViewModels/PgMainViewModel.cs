@@ -32,6 +32,12 @@ public partial class PgMainViewModel : ObservableObject
     bool isEdit;
 
     [RelayCommand]
+    async Task GoToSetting()
+    {
+        await Shell.Current.GoToAsync(nameof(PgSettings), true);
+    }
+
+    [RelayCommand]
     async Task GoToNewTemplate()
     {
         await Shell.Current.GoToAsync(nameof(PgStyleEditor), true);

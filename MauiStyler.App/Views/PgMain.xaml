@@ -133,6 +133,12 @@
                                            Default='True'}"
                     Text="{StaticResource Save}"
                     ToolTipProperties.Text="Aplica la plantilla seleccionada a un proyecto." />
+                <BoxView Style="{StaticResource HorizontalElementSeparator}" />
+                <Button
+                    Style="{StaticResource onlyIconButon}"
+                    Command="{Binding GoToSettingCommand}"
+                    Text="{StaticResource UiSettings}"
+                    ToolTipProperties.Text="Ajustes." />
             </HorizontalStackLayout>
         </Grid>
         <!--#endregion-->

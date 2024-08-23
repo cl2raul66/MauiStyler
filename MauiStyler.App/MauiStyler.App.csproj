@@ -70,6 +70,9 @@
 	  <MauiXaml Update="Views\PgMain.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\PgSettings.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\StyleEditor\PgNewEditItemColor.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

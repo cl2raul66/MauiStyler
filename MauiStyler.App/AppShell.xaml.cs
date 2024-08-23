@@ -8,6 +8,7 @@ public partial class AppShell : Shell
     {
         InitializeComponent();
 
+        Routing.RegisterRoute(nameof(PgSettings), typeof(PgSettings));
         Routing.RegisterRoute(nameof(PgStyleEditor), typeof(PgStyleEditor));
         Routing.RegisterRoute(nameof(PgNewEditItemColor), typeof(PgNewEditItemColor));
     }
