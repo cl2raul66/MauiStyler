@@ -15,7 +15,7 @@
                 <Border
                     Style="{StaticResource colorItemBorder}"
                     Padding="0"
-                    BackgroundColor="{StaticResource Primary}">
+                    BackgroundColor="{StaticResource PrimaryCL}">
                     <Grid RowDefinitions="auto,auto,*,*">
                         <Grid
                             Margin="8"
@@ -33,7 +33,7 @@
                                 Grid.Column="1"
                                 BackgroundColor="Black"
                                 HeightRequest="20"
-                                Stroke="{StaticResource Gray500}"
+                                Stroke="{StaticResource Gray500CL}"
                                 StrokeShape="RoundRectangle 2"
                                 StrokeThickness="1"
                                 WidthRequest="20">
@@ -64,7 +64,7 @@
                         </Grid>
                         <BoxView
                             Grid.Row="2"
-                            BackgroundColor="{StaticResource Gray500}"
+                            BackgroundColor="{StaticResource Gray500CL}"
                             HeightRequest="1"
                             VerticalOptions="Start" />
                         <Grid Grid.Row="3" ColumnDefinitions="*,*,*">

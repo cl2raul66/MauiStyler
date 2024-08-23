@@ -19,9 +19,7 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
     public PgStyleEditorViewModel(IStyleTemplateService styleTemplateService, IDocumentService documentService)
     {
         styleTemplateServ = styleTemplateService;
-        documentServ = documentService;
-
-        InitializerProperty();
+        documentServ = documentService;        
     }
 
     [ObservableProperty]
@@ -58,52 +56,71 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
     [ObservableProperty]
     ObservableCollection<ItemColor>? principalsColors;
 
-    //[ObservableProperty]
-    //ItemColor? selectedPrincipalColor;
-
     [ObservableProperty]
     ObservableCollection<ItemColor>? semanticsColors;
-
-    //[ObservableProperty]
-    //ItemColor? selectedSemanticColor;
 
     [ObservableProperty]
     ObservableCollection<ItemColor>? neutralsColors;
 
-    //[ObservableProperty]
-    //ItemColor? selectedNeutralColor;
-
     [ObservableProperty]
     ObservableCollection<ItemColor>? principalsDarkColors;
-
-    //[ObservableProperty]
-    //ItemColor? selectedPrincipalDarkColor;
 
     [ObservableProperty]
     ObservableCollection<ItemColor>? semanticsDarkColors;
 
-    //[ObservableProperty]
-    //ItemColor? selectedSemanticDarkColor;
-
     [ObservableProperty]
     ObservableCollection<ItemColor>? neutralsDarkColors;
-
-    //[ObservableProperty]
-    //ItemColor? selectedNeutralDarkColor;
 
     [ObservableProperty]
     ItemColor? selectedItemColor;
 
     [RelayCommand]
-    async Task ShowNewItemColor()
+    async Task ShowNewItemColorForSemanticColor()
     {
         IsActive = true;
 
-        var (CurrentSeptionName, CurrentItemColor) = GetSelectedItemColor();
+        Dictionary<string, object> sendData = new()
+        {
+            { "CurrentSeptionName", "CurrentSemanticColor" }
+        };
+
+        await Shell.Current.GoToAsync(nameof(PgNewEditItemColor), true, sendData);
+    }
+
+    [RelayCommand]
+    async Task ShowNewItemColorForSemanticDarkColor()
+    {
+        IsActive = true;
 
         Dictionary<string, object> sendData = new()
         {
-            { "CurrentSeptionName", CurrentSeptionName }
+            { "CurrentSeptionName", "CurrentSemanticDarkColor" }
+        };
+
+        await Shell.Current.GoToAsync(nameof(PgNewEditItemColor), true, sendData);
+    }
+
+    [RelayCommand]
+    async Task ShowNewItemColorForNeutralColor()
+    {
+        IsActive = true;
+
+        Dictionary<string, object> sendData = new()
+        {
+            { "CurrentSeptionName", "CurrentNeutralColor" }
+        };
+
+        await Shell.Current.GoToAsync(nameof(PgNewEditItemColor), true, sendData);
+    }
+
+    [RelayCommand]
+    async Task ShowNewItemColorForNeutralDarkColor()
+    {
+        IsActive = true;
+
+        Dictionary<string, object> sendData = new()
+        {
+            { "CurrentSeptionName", "CurrentNeutralDarkColor" }
         };
 
         await Shell.Current.GoToAsync(nameof(PgNewEditItemColor), true, sendData);
@@ -222,91 +239,24 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
                 //SemanticsDarkColors = new(sectionsColors["SEMANTIC"]);
                 //PrincipalsDarkColors = new(sectionsColors["PRINCIPAL"]);
             }
-        }
-
-        //if (e.PropertyName == nameof(SelectedPrincipalColor))
-        //{
-        //    if (SelectedPrincipalColor is not null)
-        //    {
-        //        SelectedNeutralDarkColor = null;
-        //        SelectedNeutralColor = null;
-        //        SelectedSemanticDarkColor = null;
-        //        SelectedSemanticColor = null;
-        //        SelectedPrincipalDarkColor = null;
-        //    }
-        //}
-
-        //if (e.PropertyName == nameof(SelectedPrincipalDarkColor))
-        //{
-        //    if (SelectedPrincipalDarkColor is not null)
-        //    {
-        //        SelectedNeutralDarkColor = null;
-        //        SelectedNeutralColor = null;
-        //        SelectedSemanticDarkColor = null;
-        //        SelectedSemanticColor = null;
-        //        SelectedPrincipalColor = null;
-        //    }
-        //}
-
-        //if (e.PropertyName == nameof(SelectedSemanticColor))
-        //{
-        //    if (SelectedSemanticColor is not null)
-        //    {
-        //        SelectedNeutralDarkColor = null;
-        //        SelectedNeutralColor = null;
-        //        SelectedSemanticDarkColor = null;
-        //        SelectedPrincipalDarkColor = null;
-        //        SelectedPrincipalColor = null;
-        //    }
-        //}
-
-        //if (e.PropertyName == nameof(SelectedSemanticDarkColor))
-        //{
-        //    if (SelectedSemanticDarkColor is not null)
-        //    {
-        //        SelectedNeutralDarkColor = null;
-        //        SelectedNeutralColor = null;
-        //        SelectedSemanticColor = null;
-        //        SelectedPrincipalDarkColor = null;
-        //        SelectedPrincipalColor = null;
-        //    }
-        //}
-
-        //if (e.PropertyName == nameof(SelectedNeutralColor))
-        //{
-        //    if (SelectedNeutralColor is not null)
-        //    {
-        //        SelectedNeutralDarkColor = null;
-        //        SelectedSemanticDarkColor = null;
-        //        SelectedSemanticColor = null;
-        //        SelectedPrincipalDarkColor = null;
-        //        SelectedPrincipalColor = null;
-        //    }
-        //}
-
-        //if (e.PropertyName == nameof(SelectedNeutralDarkColor))
-        //{
-        //    if (SelectedNeutralDarkColor is not null)
-        //    {
-        //        SelectedNeutralColor = null;
-        //        SelectedSemanticDarkColor = null;
-        //        SelectedSemanticColor = null;
-        //        SelectedPrincipalDarkColor = null;
-        //        SelectedPrincipalColor = null;
-        //    }
-        //}
+        }        
     }
 
     protected override void OnActivated()
     {
         base.OnActivated();
 
-        WeakReferenceMessenger.Default.Register<PgStyleEditorViewModel, ItemColor, string>(this, "NewItemColor", (r, m) => { 
-        
+        WeakReferenceMessenger.Default.Register<PgStyleEditorViewModel, ItemColor, string>(this, "NewItemColor", (r, m) => 
+        {
+
+            IsActive = false;
+
+            SelectedItemColor = null;
         });
 
         WeakReferenceMessenger.Default.Register<PgStyleEditorViewModel, ItemColor, string>(this, "EditItemColor", (r, m) =>
         {
+            IsActive = false;
             var (currentSectionName, currentItemColor) = GetSelectedItemColor();
 
             if (currentItemColor is null || string.IsNullOrEmpty(currentSectionName))
@@ -314,7 +264,6 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
                 return;
             }
 
-            // Determinar qué colección debe ser actualizada
             ObservableCollection<ItemColor>? targetCollection = currentSectionName switch
             {
                 "CurrentPrincipalColor" => PrincipalsColors,
@@ -331,32 +280,31 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
                 return;
             }
 
-            // Encontrar el índice del item a editar
             int index = targetCollection.IndexOf(currentItemColor);
             if (index != -1)
             {
-                // Reemplazar el item antiguo con el nuevo (m es el nuevo ItemColor)
                 targetCollection[index] = m;
 
-                // Actualizar la selección al nuevo item
                 SelectedItemColor = m;
 
-                // Notificar cambios en la colección
                 OnPropertyChanged(nameof(targetCollection));
             }
+
+            SelectedItemColor = null;
         });
     }
 
     #region EXTRA
-    void InitializerProperty()
+    public async void InitializerPropertyAsync()
     {
         var assembly = typeof(View).Assembly;
-        var types = assembly.GetTypes()
+        var types = await Task.Run(() => assembly.GetTypes()
             .Where(t => t.IsSubclassOf(typeof(View)) && t.Namespace == "Microsoft.Maui.Controls")
-            .Select(t => t.Name);
+            .Select(t => t.Name));
 
-        GetAllViews = [.. types];
+        GetAllViews = [..types];
     }
+
 
     (string CurrentSectionName, ItemColor? CurrentItemColor) GetSelectedItemColor()
     {
@@ -396,29 +344,6 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
         }
 
         return ("", null);
-    }
-
-    //(string CurrentSeptionName, ItemColor? CurrentItemColor) GetSelectedItemColor()
-    //{
-    //    var selections = new Dictionary<string, ItemColor?>
-    //    {
-    //        { nameof(SelectedPrincipalColor), SelectedPrincipalColor },
-    //        { nameof(SelectedPrincipalDarkColor), SelectedPrincipalDarkColor },
-    //        { nameof(SelectedSemanticColor), SelectedSemanticColor },
-    //        { nameof(SelectedSemanticDarkColor), SelectedSemanticDarkColor },
-    //        { nameof(SelectedNeutralColor), SelectedNeutralColor },
-    //        { nameof(SelectedNeutralDarkColor), SelectedNeutralDarkColor }
-    //    };
-
-    //    foreach (var (key, value) in selections)
-    //    {
-    //        if (value is not null)
-    //        {
-    //            return (key.Replace("Selected", "Current"), value);
-    //        }
-    //    }
-
-    //    return ("", null);
-    //}
+    }    
     #endregion
 }

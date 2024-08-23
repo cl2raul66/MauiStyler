@@ -91,6 +91,13 @@ public partial class PgNewEditItemColorViewModel : ObservableValidator
     [RelayCommand]
     async Task Save()
     {
+        ValidateAllProperties();
+
+        if (HasErrors)
+        {
+            return;
+        }
+
         ItemColor itemColor = new()
         {
             Name = NameColor,

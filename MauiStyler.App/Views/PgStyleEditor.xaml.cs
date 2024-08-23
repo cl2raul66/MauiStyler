@@ -8,6 +8,7 @@ public partial class PgStyleEditor : ContentPage
 	{
 		InitializeComponent();
 
+        vm.InitializerPropertyAsync();
 		BindingContext = vm;
 	}
 

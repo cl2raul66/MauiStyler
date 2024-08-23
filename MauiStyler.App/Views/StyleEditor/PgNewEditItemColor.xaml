@@ -23,14 +23,14 @@
                 <Setter Property="HeightRequest" Value="40" />
                 <Setter Property="StrokeShape" Value="RoundRectangle 6" />
                 <Setter Property="StrokeThickness" Value="1" />
-                <Setter Property="Stroke" Value="{StaticResource Gray500}" />
+                <Setter Property="Stroke" Value="{StaticResource Gray500CL}" />
                 <Setter Property="VisualStateManager.VisualStateGroups">
                     <VisualStateGroupList>
                         <VisualStateGroup Name="CommonStates">
                             <VisualState Name="Normal" />
                             <VisualState Name="Selected">
                                 <VisualState.Setters>
-                                    <Setter Property="Stroke" Value="{StaticResource Primary}" />
+                                    <Setter Property="Stroke" Value="{StaticResource PrimaryCL}" />
                                 </VisualState.Setters>
                             </VisualState>
                             <VisualState Name="Disabled" />
@@ -42,10 +42,10 @@
     </ContentPage.Resources>
 
     <Frame HorizontalOptions="Center" VerticalOptions="Center">
-        <Grid RowDefinitions="auto,*,auto">
+        <Grid RowDefinitions="auto,*,auto" RowSpacing="16">
             <!--#region ENCABEZADO-->
             <Grid
-                Padding="8"
+                Margin="8"
                 ColumnDefinitions="*,auto"
                 ColumnSpacing="8">
                 <Label
@@ -170,7 +170,7 @@
                 </VerticalStackLayout>
                 <VerticalStackLayout Grid.Column="1" Spacing="8">
                     <Grid ColumnDefinitions="auto,*" ColumnSpacing="8">
-                        <Label Text="Nombre:" VerticalOptions="CenterAndExpand" />
+                        <Label Text="* Nombre:" VerticalOptions="CenterAndExpand" />
                         <Entry
                             Grid.Column="1"
                             Placeholder="Escriba aquí"
@@ -224,12 +224,22 @@
             <Grid
                 Grid.Row="2"
                 Margin="8"
-                Padding="8"
                 ColumnDefinitions="*,auto"
                 ColumnSpacing="8">
+                <HorizontalStackLayout Spacing="4">
+                    <Label
+                        FontFamily="icofont"
+                        Text="{StaticResource InfoCircle}"
+                        TextColor="{StaticResource ErrorCL}"
+                        VerticalOptions="Center" />
+                    <Label
+                        Text="Complete los requeridos (*)"
+                        TextColor="{StaticResource ErrorCL}"
+                        VerticalOptions="Center" />
+                </HorizontalStackLayout>
                 <HorizontalStackLayout Grid.Column="1" Spacing="8">
                     <Button
-                        BackgroundColor="{StaticResource Accent}"
+                        BackgroundColor="{StaticResource AccentCL}"
                         Command="{Binding SaveCommand}"
                         Text="Guardar"
                         ToolTipProperties.Text="Guarda propiedades del estilo y color en una plantilla." />

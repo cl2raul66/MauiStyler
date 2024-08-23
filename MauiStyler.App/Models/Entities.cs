@@ -36,3 +36,9 @@ public class StyleTemplate
     public NeutralStyle? NeutralStyle { get; set; }
     public bool IsCustomTemplate { get; set; }
 }
+
+public class ColorPalette
+{
+    public string? Name { get; set; }
+    public Color[]? Colors { get; set; }
+}
