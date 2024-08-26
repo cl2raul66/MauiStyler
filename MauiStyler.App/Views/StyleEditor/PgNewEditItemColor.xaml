@@ -192,14 +192,21 @@
                         </Entry>
                     </Grid>
                     <Grid RowDefinitions="auto,auto" RowSpacing="8">
-                        <Label Text="Paleta de colores de .NET MAUI:" />
+                        <Grid ColumnDefinitions="auto,*" ColumnSpacing="8">
+                            <Label Text="Seleccione una paleta:" />
+                            <Picker
+                                Title="Seleccione una paleta"
+                                ItemDisplayBinding="{Binding Name}"
+                                ItemsSource="{Binding Palettes}"
+                                SelectedItem="{Binding SelectedPaletteItem}" />
+                        </Grid>
                         <ScrollView
                             Grid.Row="1"
                             HeightRequest="384"
                             VerticalScrollBarVisibility="Always">
                             <CollectionView
                                 Margin="0,0,12,0"
-                                ItemsSource="{Binding ColorPalette}"
+                                ItemsSource="{Binding ColorsOfPalette}"
                                 SelectedItem="{Binding SelectedColorOfPalette}"
                                 SelectionChanged="OnSelectionChanged"
                                 SelectionMode="Single">

@@ -2,8 +2,8 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using MauiStyler.App.Models;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Reflection;
 
 namespace MauiStyler.App.ViewModels;
 
@@ -27,6 +27,12 @@ public partial class PgNewEditItemColorViewModel : ObservableValidator
 
     [ObservableProperty]
     ColorPalette? selectedPaletteItem;
+
+    [ObservableProperty]
+    ObservableCollection<Color>? colorsOfPalette;
+
+    [ObservableProperty]
+    Color? selectedColorOfPalette;
 
     [ObservableProperty]
     Color? lastColorSelected = Colors.Black;
@@ -140,24 +146,25 @@ public partial class PgNewEditItemColorViewModel : ObservableValidator
 
         if (e.PropertyName == nameof(IsDefaultColor))
         {
-            LastColorSelected = IsDefaultColor ? DefaultColor : SelectedPaletteItem.;
+            LastColorSelected = IsDefaultColor ? DefaultColor : SelectedColorOfPalette;
         }
 
         if (e.PropertyName == nameof(SelectedPaletteItem))
         {
             if (SelectedPaletteItem is not null)
             {
-                Red = (SelectedPaletteItem.Red * 255).ToString();
-                Green = (SelectedPaletteItem.Green * 255).ToString();
-                Blue = (SelectedPaletteItem.Blue * 255).ToString();
-                Alpha = (SelectedPaletteItem.Alpha * 255).ToString();
-                Hexadecimal = SelectedPaletteItem.ToRgbaHex(true)[1..];
+                ColorsOfPalette = [..SelectedPaletteItem.ColorsList!.Values];
+                SelectedColorOfPalette = ColorsOfPalette[0];                
             }
         }
 
-        if (e.PropertyName == nameof(CurrentColor))
+        if (e.PropertyName == nameof(SelectedColorOfPalette))
         {
-
+            Red = (SelectedColorOfPalette!.Red * 255).ToString();
+            Green = (SelectedColorOfPalette!.Green * 255).ToString();
+            Blue = (SelectedColorOfPalette!.Blue * 255).ToString();
+            Alpha = (SelectedColorOfPalette!.Alpha * 255).ToString();
+            Hexadecimal = SelectedColorOfPalette!.ToRgbaHex(true)[1..];
         }
 
         if (e.PropertyName == nameof(Red))
@@ -221,7 +228,7 @@ public partial class PgNewEditItemColorViewModel : ObservableValidator
         {
             if (SelectedPaletteItem is not null && !IsDefaultColor)
             {
-                LastColorSelected = SelectedPaletteItem;
+                LastColorSelected = SelectedColorOfPalette;
             }
         }
     }
