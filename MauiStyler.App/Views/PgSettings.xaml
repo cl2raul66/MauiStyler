@@ -36,8 +36,8 @@
         <!--#region CONTENIDO-->
         <ScrollView Grid.Row="1" Padding="8">
             <FlexLayout AlignItems="Start">
-                <Frame Margin="0,0,8,0" WidthRequest="300">
-                    <Grid RowDefinitions="auto,300,auto" RowSpacing="8">
+                <Frame Margin="0,0,8,0" WidthRequest="350">
+                    <Grid RowDefinitions="auto,304,auto" RowSpacing="8">
                         <Label
                             FontAttributes="Bold"
                             Text="Paletas de colores:"
@@ -52,9 +52,9 @@
                                 <DataTemplate x:DataType="model:ColorPaletteItem">
                                     <Border Style="{StaticResource colorItemBorder}" BackgroundColor="{StaticResource PrimaryCL}">
                                         <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
-                                            <HorizontalStackLayout Spacing="4">
+                                            <HorizontalStackLayout Spacing="8">
                                                 <Border
-                                                    BackgroundColor="Black"
+                                                    BackgroundColor="{StaticResource SecondaryCL}"
                                                     HeightRequest="20"
                                                     Stroke="{StaticResource Gray500CL}"
                                                     StrokeShape="RoundRectangle 2"
@@ -72,12 +72,14 @@
                                                 <Label
                                                     LineBreakMode="TailTruncation"
                                                     Text="{Binding Name}"
-                                                    TextColor="White" />
+                                                    TextColor="White"
+                                                    VerticalOptions="Center" />
                                             </HorizontalStackLayout>
                                             <Label
                                                 Grid.Column="1"
                                                 Text="{Binding Length, StringFormat='{0} colores'}"
-                                                TextColor="White" />
+                                                TextColor="White"
+                                                VerticalOptions="Center" />
                                         </Grid>
                                     </Border>
                                 </DataTemplate>

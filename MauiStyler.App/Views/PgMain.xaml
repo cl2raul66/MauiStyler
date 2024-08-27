@@ -31,7 +31,7 @@
                                 VerticalOptions="Center" />
                             <Border
                                 Grid.Column="1"
-                                BackgroundColor="Black"
+                                BackgroundColor="{StaticResource SecondaryCL}"
                                 HeightRequest="20"
                                 Stroke="{StaticResource Gray500CL}"
                                 StrokeShape="RoundRectangle 2"
