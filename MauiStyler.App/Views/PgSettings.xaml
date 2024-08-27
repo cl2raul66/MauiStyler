@@ -50,10 +50,34 @@
                             SelectionMode="Single">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="model:ColorPaletteItem">
-                                    <Border Style="{StaticResource colorItemBorder}">
+                                    <Border Style="{StaticResource colorItemBorder}" BackgroundColor="{StaticResource PrimaryCL}">
                                         <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
-                                            <Label LineBreakMode="TailTruncation" Text="{Binding Name}" />
-                                            <Label Grid.Column="1" Text="{Binding Length, StringFormat='{0} colores'}" />
+                                            <HorizontalStackLayout Spacing="4">
+                                                <Border
+                                                    BackgroundColor="Black"
+                                                    HeightRequest="20"
+                                                    Stroke="{StaticResource Gray500CL}"
+                                                    StrokeShape="RoundRectangle 2"
+                                                    StrokeThickness="1"
+                                                    WidthRequest="20">
+                                                    <Label
+                                                        x:Name="selectedCheckBox"
+                                                        FontFamily="icofont"
+                                                        FontSize="18"
+                                                        HorizontalOptions="Center"
+                                                        Text="{StaticResource Check}"
+                                                        TextColor="White"
+                                                        VerticalOptions="Center" />
+                                                </Border>
+                                                <Label
+                                                    LineBreakMode="TailTruncation"
+                                                    Text="{Binding Name}"
+                                                    TextColor="White" />
+                                            </HorizontalStackLayout>
+                                            <Label
+                                                Grid.Column="1"
+                                                Text="{Binding Length, StringFormat='{0} colores'}"
+                                                TextColor="White" />
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
