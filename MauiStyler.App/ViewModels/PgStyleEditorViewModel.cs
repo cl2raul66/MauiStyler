@@ -19,7 +19,7 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
     public PgStyleEditorViewModel(IStyleTemplateService styleTemplateService, IDocumentService documentService)
     {
         styleTemplateServ = styleTemplateService;
-        documentServ = documentService;        
+        documentServ = documentService;
     }
 
     [ObservableProperty]
@@ -130,7 +130,7 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
     async Task ShowEditItemColor()
     {
         IsActive = true;
-        
+
         var (CurrentSeptionName, CurrentItemColor) = GetSelectedItemColor();
 
         if (CurrentItemColor is null)
@@ -172,7 +172,7 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
                     Title = bool.Parse(IsEdit!) ?
                         $"Editar tema {CurrentTemplate!.Name}"
                         : $"Nuevo tema basado en {CurrentTemplate!.Name}";
-                }                
+                }
             }
         }
 
@@ -208,14 +208,14 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
                 {
                     var defaultTemplate = styleTemplateServ.GetAll().First();
 
-                    PrincipalsColors = [..defaultTemplate.PrincipalStyle!.DefaultColorsStyle];
-                    PrincipalsDarkColors = [..defaultTemplate.PrincipalStyle!.DarkColorsStyle];
+                    PrincipalsColors = [.. defaultTemplate.PrincipalStyle!.DefaultColorsStyle];
+                    PrincipalsDarkColors = [.. defaultTemplate.PrincipalStyle!.DarkColorsStyle];
 
-                    SemanticsColors = [..defaultTemplate.SemanticStyle!.DefaultColorsStyle];
-                    SemanticsDarkColors = [..defaultTemplate.SemanticStyle!.DarkColorsStyle];
+                    SemanticsColors = [.. defaultTemplate.SemanticStyle!.DefaultColorsStyle];
+                    SemanticsDarkColors = [.. defaultTemplate.SemanticStyle!.DarkColorsStyle];
 
-                    NeutralsColors = [..defaultTemplate.NeutralStyle!.DefaultColorsStyle];
-                    NeutralsDarkColors = [..defaultTemplate.NeutralStyle!.DarkColorsStyle];
+                    NeutralsColors = [.. defaultTemplate.NeutralStyle!.DefaultColorsStyle];
+                    NeutralsDarkColors = [.. defaultTemplate.NeutralStyle!.DarkColorsStyle];
                 }
                 else
                 {
@@ -239,16 +239,15 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
                 //SemanticsDarkColors = new(sectionsColors["SEMANTIC"]);
                 //PrincipalsDarkColors = new(sectionsColors["PRINCIPAL"]);
             }
-        }        
+        }
     }
 
     protected override void OnActivated()
     {
         base.OnActivated();
 
-        WeakReferenceMessenger.Default.Register<PgStyleEditorViewModel, ItemColor, string>(this, "NewItemColor", (r, m) => 
+        WeakReferenceMessenger.Default.Register<PgStyleEditorViewModel, ItemColor, string>(this, "NewItemColor", (r, m) =>
         {
-
             IsActive = false;
 
             SelectedItemColor = null;
@@ -292,6 +291,15 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
 
             SelectedItemColor = null;
         });
+
+        WeakReferenceMessenger.Default.Register<PgStyleEditorViewModel, string, string>(this, "F4E5D6C7-B8A9-0B1C-D2E3-F4567890ABCD", (r, m) =>
+        {
+            if (m == "cancel")
+            {
+                SelectedItemColor = null;
+            }
+            IsActive = false;
+        });
     }
 
     #region EXTRA
@@ -302,7 +310,7 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
             .Where(t => t.IsSubclassOf(typeof(View)) && t.Namespace == "Microsoft.Maui.Controls")
             .Select(t => t.Name));
 
-        GetAllViews = [..types];
+        GetAllViews = [.. types];
     }
 
 
@@ -344,6 +352,6 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
         }
 
         return ("", null);
-    }    
+    }
     #endregion
 }

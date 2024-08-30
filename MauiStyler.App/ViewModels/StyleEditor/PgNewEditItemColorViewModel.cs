@@ -2,8 +2,9 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using MauiStyler.App.Models;
+using MauiStyler.App.Services;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace MauiStyler.App.ViewModels;
 
@@ -11,9 +12,16 @@ namespace MauiStyler.App.ViewModels;
 [QueryProperty(nameof(CurrentItemColor), nameof(CurrentItemColor))]
 public partial class PgNewEditItemColorViewModel : ObservableValidator
 {
-    public PgNewEditItemColorViewModel()
-    {
+    readonly IColorsPalettesService colorsPalettesServ;
 
+    public PgNewEditItemColorViewModel(IColorsPalettesService colorsPalettesService)
+    {
+        colorsPalettesServ = colorsPalettesService;
+        Palettes = [.. colorsPalettesServ.GetAll()];
+        if (Palettes is not null && Palettes.Count > 0)
+        {
+            SelectedPaletteItem = Palettes[0];
+        }        
     }
 
     [ObservableProperty]
@@ -23,7 +31,7 @@ public partial class PgNewEditItemColorViewModel : ObservableValidator
     ItemColor? currentItemColor;
 
     [ObservableProperty]
-    List<ColorPalette>? palettes;
+    ObservableCollection<ColorPalette>? palettes;
 
     [ObservableProperty]
     ColorPalette? selectedPaletteItem;
@@ -33,6 +41,9 @@ public partial class PgNewEditItemColorViewModel : ObservableValidator
 
     [ObservableProperty]
     Color? selectedColorOfPalette;
+
+    [ObservableProperty]
+    bool isLoadingColorsOfPalette;
 
     [ObservableProperty]
     Color? lastColorSelected = Colors.Black;
@@ -65,7 +76,12 @@ public partial class PgNewEditItemColorViewModel : ObservableValidator
     string? title = "Nuevo";
 
     [ObservableProperty]
+    [Required]
+    [MinLength(2)]
     string? nameColor;
+
+    [ObservableProperty]
+    bool isVisibleInfo;
 
     [RelayCommand]
     void SetHexColor()
@@ -101,12 +117,15 @@ public partial class PgNewEditItemColorViewModel : ObservableValidator
 
         if (HasErrors)
         {
+            IsVisibleInfo = true;
+            await Task.Delay(4000);
+            IsVisibleInfo = false;
             return;
         }
 
         ItemColor itemColor = new()
         {
-            Name = NameColor,
+            Name = NameColor!.Trim().ToUpper(),
             Value = CurrentColor
         };
 
@@ -120,118 +139,123 @@ public partial class PgNewEditItemColorViewModel : ObservableValidator
     [RelayCommand]
     async Task GoToBack()
     {
+        _ = WeakReferenceMessenger.Default.Send("cancel", "F4E5D6C7-B8A9-0B1C-D2E3-F4567890ABCD");
         await Shell.Current.GoToAsync("..", true);
     }
 
-    protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+    [RelayCommand]
+    private void SelectColor(Color color)
     {
-        base.OnPropertyChanged(e);
-
-        if (e.PropertyName == nameof(CurrentItemColor))
-        {
-            if (CurrentItemColor is not null)
-            {
-                NameColor = CurrentItemColor.Name;
-                Title = "Modificar";
-
-                if (CurrentItemColor.Value is null)
-                {
-                    return;
-                }
-
-                DefaultColor = CurrentItemColor.Value;
-                IsDefaultColor = true;
-            }
-        }
-
-        if (e.PropertyName == nameof(IsDefaultColor))
-        {
-            LastColorSelected = IsDefaultColor ? DefaultColor : SelectedColorOfPalette;
-        }
-
-        if (e.PropertyName == nameof(SelectedPaletteItem))
-        {
-            if (SelectedPaletteItem is not null)
-            {
-                ColorsOfPalette = [..SelectedPaletteItem.ColorsList!.Values];
-                SelectedColorOfPalette = ColorsOfPalette[0];                
-            }
-        }
-
-        if (e.PropertyName == nameof(SelectedColorOfPalette))
-        {
-            Red = (SelectedColorOfPalette!.Red * 255).ToString();
-            Green = (SelectedColorOfPalette!.Green * 255).ToString();
-            Blue = (SelectedColorOfPalette!.Blue * 255).ToString();
-            Alpha = (SelectedColorOfPalette!.Alpha * 255).ToString();
-            Hexadecimal = SelectedColorOfPalette!.ToRgbaHex(true)[1..];
-        }
-
-        if (e.PropertyName == nameof(Red))
-        {
-            if (!string.IsNullOrEmpty(Red) && !string.IsNullOrEmpty(Green) && !string.IsNullOrEmpty(Blue) && !string.IsNullOrEmpty(Alpha))
-            {
-                var vRed = float.Parse(Red!) / 255;
-                var vGreen = float.Parse(Green!) / 255;
-                var vBlue = float.Parse(Blue!) / 255;
-                var vAlpha = float.Parse(Alpha!) / 255;
-                CurrentColor = Color.FromRgba(vRed, vGreen, vBlue, vAlpha);
-                Hexadecimal = CurrentColor.ToRgbaHex(true)[1..];
-            }
-        }
-
-        if (e.PropertyName == nameof(Green))
-        {
-            if (!string.IsNullOrEmpty(Red) && !string.IsNullOrEmpty(Green) && !string.IsNullOrEmpty(Blue) && !string.IsNullOrEmpty(Alpha))
-            {
-                var vRed = float.Parse(Red!) / 255;
-                var vGreen = float.Parse(Green!) / 255;
-                var vBlue = float.Parse(Blue!) / 255;
-                var vAlpha = float.Parse(Alpha!) / 255;
-                CurrentColor = Color.FromRgba(vRed, vGreen, vBlue, vAlpha);
-                Hexadecimal = CurrentColor.ToRgbaHex(true)[1..];
-            }
-        }
-
-        if (e.PropertyName == nameof(Blue))
-        {
-            if (!string.IsNullOrEmpty(Red) && !string.IsNullOrEmpty(Green) && !string.IsNullOrEmpty(Blue) && !string.IsNullOrEmpty(Alpha))
-            {
-                var vRed = float.Parse(Red!) / 255;
-                var vGreen = float.Parse(Green!) / 255;
-                var vBlue = float.Parse(Blue!) / 255;
-                var vAlpha = float.Parse(Alpha!) / 255;
-                CurrentColor = Color.FromRgba(vRed, vGreen, vBlue, vAlpha);
-                Hexadecimal = CurrentColor.ToRgbaHex(true)[1..];
-            }
-        }
-
-        if (e.PropertyName == nameof(Alpha))
-        {
-            if (!string.IsNullOrEmpty(Red) && !string.IsNullOrEmpty(Green) && !string.IsNullOrEmpty(Blue) && !string.IsNullOrEmpty(Alpha))
-            {
-                var vRed = float.Parse(Red!) / 255;
-                var vGreen = float.Parse(Green!) / 255;
-                var vBlue = float.Parse(Blue!) / 255;
-                var vAlpha = float.Parse(Alpha!) / 255;
-                CurrentColor = Color.FromRgba(vRed, vGreen, vBlue, vAlpha);
-                Hexadecimal = CurrentColor.ToRgbaHex(true)[1..];
-            }
-        }
+        SelectedColorOfPalette = color;
     }
 
-    protected override void OnPropertyChanging(System.ComponentModel.PropertyChangingEventArgs e)
+    partial void OnIsDefaultColorChanged(bool value)
     {
-        base.OnPropertyChanging(e);
-
-        if (e.PropertyName == nameof(SelectedPaletteItem))
+        if (value && CurrentItemColor is not null)
         {
-            if (SelectedPaletteItem is not null && !IsDefaultColor)
-            {
-                LastColorSelected = SelectedColorOfPalette;
-            }
+            LastColorSelected = CurrentItemColor.Value;
         }
     }
+    partial void OnCurrentItemColorChanged(ItemColor? value)
+    {
+        IsDefaultColor = value is not null;
+        if (value is not null)
+        {
+            Title = "Modificar";
+            NameColor = value.Name;
+        }        
+    }
+    partial void OnSelectedPaletteItemChanged(ColorPalette? value)
+    {
+        if (value is null) return;
+
+        IsLoadingColorsOfPalette = true;
+        ColorsOfPalette = null;
+
+        ColorsOfPalette = [.. value.ColorsList!.Values];
+
+        IsLoadingColorsOfPalette = false;
+    }
+    partial void OnColorsOfPaletteChanged(ObservableCollection<Color>? value)
+    {
+        if (value is not null && value.Count > 0)
+        {
+            SelectedColorOfPalette = value[0];
+        }
+    }
+    partial void OnSelectedColorOfPaletteChanging(Color? value)
+    {
+        if (value is not null && !IsDefaultColor)
+        {
+            LastColorSelected = CurrentColor;
+        }
+    }
+    partial void OnSelectedColorOfPaletteChanged(Color? value)
+    {
+        if (value is not null)
+        {
+            Red = (value.Red * 255).ToString();
+            Green = (value.Green * 255).ToString();
+            Blue = (value.Blue * 255).ToString();
+            Alpha = (value.Alpha * 255).ToString();
+            Hexadecimal = value.ToRgbaHex(true)[1..];
+            CurrentColor = value;
+        }
+    }
+    //partial void OnRedChanged(string? value){
+    //    if (!Color.TryParse(value, out Color color)) return;
+    //    Red = Math.Round(color.Red * 255).ToString();
+    //    Hexadecimal = color.ToHex();
+    //}
+    //partial void OnGreenChanged(string? value)
+    //{
+    //    if (!Color.TryParse(value, out Color color)) return;
+    //    Green = Math.Round(color.Green * 255).ToString();
+    //}
+    //partial void OnBlueChanged(string? value)
+    //{
+    //    if (!Color.TryParse(value, out Color color)) return;
+    //    Blue = Math.Round(color.Blue * 255).ToString();
+    //}
+    //partial void OnAlphaChanged(string? value)
+    //{
+    //    if (!Color.TryParse(value, out Color color)) return;
+    //    Alpha = Math.Round(color.Alpha * 255).ToString();
+    //}
+    //partial void OnHexadecimalChanged(string? value)
+    //{
+    //    if (!string.IsNullOrEmpty(value) && value.Length >= 6)
+    //    {
+    //        string argbHex = value;
+    //        if (value.Length == 8)
+    //        {
+    //            string a = value.Substring(6, 2);
+    //            string rgb = value[..6];
+    //            argbHex = a + rgb;
+    //        }
+
+    //        if (Color.TryParse("#" + argbHex, out Color color))
+    //        {
+    //            UpdateColorComponents(color);
+    //            CurrentColor = color;
+    //        }
+    //    }
+    //}
+
+    //async Task UpdateColorFromComponents()
+    //{
+    //    if (!string.IsNullOrEmpty(Red) && !string.IsNullOrEmpty(Green) &&
+    //        !string.IsNullOrEmpty(Blue) && !string.IsNullOrEmpty(Alpha))
+    //    {
+    //        var vRed = float.Parse(Red) / 255;
+    //        var vGreen = float.Parse(Green) / 255;
+    //        var vBlue = float.Parse(Blue) / 255;
+    //        var vAlpha = float.Parse(Alpha) / 255;
+    //        CurrentColor = Color.FromRgba(vRed, vGreen, vBlue, vAlpha);
+    //        Hexadecimal = CurrentColor.ToHex();
+    //    }
+    //    await Task.CompletedTask;
+    //}
 
     #region EXTRA
 
