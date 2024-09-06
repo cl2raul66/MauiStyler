@@ -20,7 +20,8 @@
             <Style x:Key="colorItemPaletteBorder" TargetType="Border">
                 <Setter Property="Padding" Value="0" />
                 <Setter Property="Margin" Value="0" />
-                <Setter Property="HeightRequest" Value="40" />
+                <Setter Property="HeightRequest" Value="42" />
+                <!--<Setter Property="WidthRequest" Value="17" />-->
                 <Setter Property="StrokeShape" Value="RoundRectangle 6" />
                 <Setter Property="StrokeThickness" Value="1" />
                 <Setter Property="Stroke" Value="{StaticResource Gray500CL}" />
@@ -202,7 +203,7 @@
                                 ItemDisplayBinding="{Binding Name}"
                                 ItemsSource="{Binding Palettes}"
                                 SelectedItem="{Binding SelectedPaletteItem}"
-                                WidthRequest="300" />
+                                WidthRequest="300"/>
                         </Grid>
                         <ActivityIndicator
                             HorizontalOptions="Center"
@@ -217,6 +218,7 @@
                             <CollectionView
                                 Margin="0,0,12,0"
                                 ItemsSource="{Binding ColorsOfPalette}"
+                                ItemsUpdatingScrollMode="KeepItemsInView"
                                 SelectedItem="{Binding SelectedColorOfPalette}"
                                 SelectionChanged="OnSelectionChanged"
                                 SelectionMode="Single">
@@ -224,7 +226,7 @@
                                     <GridItemsLayout
                                         HorizontalItemSpacing="2"
                                         Orientation="Vertical"
-                                        Span="8"
+                                        Span="10"
                                         VerticalItemSpacing="2" />
                                 </CollectionView.ItemsLayout>
                                 <CollectionView.ItemTemplate>
@@ -244,7 +246,7 @@
                 Margin="8"
                 ColumnDefinitions="*,auto"
                 ColumnSpacing="8">
-                <HorizontalStackLayout Spacing="4" IsVisible="{Binding IsVisibleInfo}">
+                <HorizontalStackLayout IsVisible="{Binding IsVisibleInfo}" Spacing="4">
                     <Label
                         FontFamily="icofont"
                         Text="{StaticResource InfoCircle}"

@@ -194,7 +194,7 @@
                                 </HorizontalStackLayout>
                             </Grid>
                             <CollectionView
-                                Grid.Row="1"
+                                Grid.Row="1" x:Name="CvPrincipals"
                                 ItemTemplate="{StaticResource ItemColorTemplate}"
                                 ItemsLayout="{StaticResource ItemColorLayout}"
                                 ItemsSource="{Binding PrincipalsColors}"
@@ -215,7 +215,7 @@
                                 </HorizontalStackLayout>
                             </Grid>
                             <CollectionView
-                                Grid.Row="1"
+                                Grid.Row="1" x:Name="CvSemantics"
                                 ItemTemplate="{StaticResource ItemColorTemplate}"
                                 ItemsLayout="{StaticResource ItemColorLayout}"
                                 ItemsSource="{Binding SemanticsColors}"
@@ -236,7 +236,7 @@
                                 </HorizontalStackLayout>
                             </Grid>
                             <CollectionView
-                                Grid.Row="1"
+                                Grid.Row="1" x:Name="CvNeutrals"
                                 ItemTemplate="{StaticResource ItemColorTemplate}"
                                 ItemsLayout="{StaticResource ItemColorLayout}"
                                 ItemsSource="{Binding NeutralsColors}"
@@ -268,7 +268,7 @@
                                 </HorizontalStackLayout>
                             </Grid>
                             <CollectionView
-                                Grid.Row="1"
+                                Grid.Row="1"  x:Name="CvPrincipalsDark"
                                 ItemTemplate="{StaticResource ItemColorTemplate}"
                                 ItemsLayout="{StaticResource ItemColorLayout}"
                                 ItemsSource="{Binding PrincipalsDarkColors}"
@@ -290,7 +290,7 @@
                                 </HorizontalStackLayout>
                             </Grid>
                             <CollectionView
-                                Grid.Row="1"
+                                Grid.Row="1" x:Name="CvSemanticsDark"
                                 ItemTemplate="{StaticResource ItemColorTemplate}"
                                 ItemsLayout="{StaticResource ItemColorLayout}"
                                 ItemsSource="{Binding SemanticsDarkColors}"
@@ -312,7 +312,7 @@
                                 </HorizontalStackLayout>
                             </Grid>
                             <CollectionView
-                                Grid.Row="1"
+                                Grid.Row="1" x:Name="CvNeutralsDark"
                                 ItemTemplate="{StaticResource ItemColorTemplate}"
                                 ItemsLayout="{StaticResource ItemColorLayout}"
                                 ItemsSource="{Binding NeutralsDarkColors}"

@@ -18,10 +18,10 @@ public partial class PgNewEditItemColorViewModel : ObservableValidator
     {
         colorsPalettesServ = colorsPalettesService;
         Palettes = [.. colorsPalettesServ.GetAll()];
-        if (Palettes is not null && Palettes.Count > 0)
+        if (Palettes.Count > 0)
         {
             SelectedPaletteItem = Palettes[0];
-        }        
+        }
     }
 
     [ObservableProperty]
@@ -143,11 +143,11 @@ public partial class PgNewEditItemColorViewModel : ObservableValidator
         await Shell.Current.GoToAsync("..", true);
     }
 
-    [RelayCommand]
-    private void SelectColor(Color color)
-    {
-        SelectedColorOfPalette = color;
-    }
+    //[RelayCommand]
+    //async Task ActionSelectedPaletteItem(SelectedPaletteItem)
+    //{
+
+    //}
 
     partial void OnIsDefaultColorChanged(bool value)
     {
@@ -163,23 +163,25 @@ public partial class PgNewEditItemColorViewModel : ObservableValidator
         {
             Title = "Modificar";
             NameColor = value.Name;
-        }        
+        }
+    }
+    partial void OnSelectedPaletteItemChanging(ColorPalette? value)
+    {
+        if (value is null) return;
+
+        IsLoadingColorsOfPalette = true;
     }
     partial void OnSelectedPaletteItemChanged(ColorPalette? value)
     {
         if (value is null) return;
 
-        IsLoadingColorsOfPalette = true;
-        ColorsOfPalette = null;
-
-        ColorsOfPalette = [.. value.ColorsList!.Values];
-
-        IsLoadingColorsOfPalette = false;
+        ColorsOfPalette = [.. value.ColorsList!.Values];        
     }
     partial void OnColorsOfPaletteChanged(ObservableCollection<Color>? value)
     {
         if (value is not null && value.Count > 0)
         {
+            IsLoadingColorsOfPalette = false;
             SelectedColorOfPalette = value[0];
         }
     }
