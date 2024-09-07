@@ -43,9 +43,6 @@ public partial class PgNewEditItemColorViewModel : ObservableValidator
     Color? selectedColorOfPalette;
 
     [ObservableProperty]
-    bool isLoadingColorsOfPalette;
-
-    [ObservableProperty]
     Color? lastColorSelected = Colors.Black;
 
     [ObservableProperty]
@@ -143,12 +140,6 @@ public partial class PgNewEditItemColorViewModel : ObservableValidator
         await Shell.Current.GoToAsync("..", true);
     }
 
-    //[RelayCommand]
-    //async Task ActionSelectedPaletteItem(SelectedPaletteItem)
-    //{
-
-    //}
-
     partial void OnIsDefaultColorChanged(bool value)
     {
         if (value && CurrentItemColor is not null)
@@ -165,12 +156,6 @@ public partial class PgNewEditItemColorViewModel : ObservableValidator
             NameColor = value.Name;
         }
     }
-    partial void OnSelectedPaletteItemChanging(ColorPalette? value)
-    {
-        if (value is null) return;
-
-        IsLoadingColorsOfPalette = true;
-    }
     partial void OnSelectedPaletteItemChanged(ColorPalette? value)
     {
         if (value is null) return;
@@ -181,7 +166,6 @@ public partial class PgNewEditItemColorViewModel : ObservableValidator
     {
         if (value is not null && value.Count > 0)
         {
-            IsLoadingColorsOfPalette = false;
             SelectedColorOfPalette = value[0];
         }
     }
@@ -203,61 +187,7 @@ public partial class PgNewEditItemColorViewModel : ObservableValidator
             Hexadecimal = value.ToRgbaHex(true)[1..];
             CurrentColor = value;
         }
-    }
-    //partial void OnRedChanged(string? value){
-    //    if (!Color.TryParse(value, out Color color)) return;
-    //    Red = Math.Round(color.Red * 255).ToString();
-    //    Hexadecimal = color.ToHex();
-    //}
-    //partial void OnGreenChanged(string? value)
-    //{
-    //    if (!Color.TryParse(value, out Color color)) return;
-    //    Green = Math.Round(color.Green * 255).ToString();
-    //}
-    //partial void OnBlueChanged(string? value)
-    //{
-    //    if (!Color.TryParse(value, out Color color)) return;
-    //    Blue = Math.Round(color.Blue * 255).ToString();
-    //}
-    //partial void OnAlphaChanged(string? value)
-    //{
-    //    if (!Color.TryParse(value, out Color color)) return;
-    //    Alpha = Math.Round(color.Alpha * 255).ToString();
-    //}
-    //partial void OnHexadecimalChanged(string? value)
-    //{
-    //    if (!string.IsNullOrEmpty(value) && value.Length >= 6)
-    //    {
-    //        string argbHex = value;
-    //        if (value.Length == 8)
-    //        {
-    //            string a = value.Substring(6, 2);
-    //            string rgb = value[..6];
-    //            argbHex = a + rgb;
-    //        }
-
-    //        if (Color.TryParse("#" + argbHex, out Color color))
-    //        {
-    //            UpdateColorComponents(color);
-    //            CurrentColor = color;
-    //        }
-    //    }
-    //}
-
-    //async Task UpdateColorFromComponents()
-    //{
-    //    if (!string.IsNullOrEmpty(Red) && !string.IsNullOrEmpty(Green) &&
-    //        !string.IsNullOrEmpty(Blue) && !string.IsNullOrEmpty(Alpha))
-    //    {
-    //        var vRed = float.Parse(Red) / 255;
-    //        var vGreen = float.Parse(Green) / 255;
-    //        var vBlue = float.Parse(Blue) / 255;
-    //        var vAlpha = float.Parse(Alpha) / 255;
-    //        CurrentColor = Color.FromRgba(vRed, vGreen, vBlue, vAlpha);
-    //        Hexadecimal = CurrentColor.ToHex();
-    //    }
-    //    await Task.CompletedTask;
-    //}
+    }    
 
     #region EXTRA
 

@@ -8,10 +8,10 @@
     xmlns:model="clr-namespace:MauiStyler.App.Models"
     xmlns:vm="clr-namespace:MauiStyler.App.ViewModels"
     Title="NewEdit"
-    Style="{StaticResource modalContentPage}"
     x:DataType="vm:PgNewEditItemColorViewModel"
     Shell.NavBarIsVisible="False"
-    Shell.PresentationMode="ModalAnimated">
+    Shell.PresentationMode="ModalAnimated"
+    Style="{StaticResource modalContentPage}">
     <Shell.BackButtonBehavior>
         <BackButtonBehavior IsVisible="False" />
     </Shell.BackButtonBehavior>
@@ -21,7 +21,7 @@
                 <Setter Property="Padding" Value="0" />
                 <Setter Property="Margin" Value="0" />
                 <Setter Property="HeightRequest" Value="42" />
-                <!--<Setter Property="WidthRequest" Value="17" />-->
+                <Setter Property="WidthRequest" Value="42" />
                 <Setter Property="StrokeShape" Value="RoundRectangle 6" />
                 <Setter Property="StrokeThickness" Value="1" />
                 <Setter Property="Stroke" Value="{StaticResource Gray500CL}" />
@@ -43,12 +43,9 @@
     </ContentPage.Resources>
 
     <Frame HorizontalOptions="Center" VerticalOptions="Center">
-        <Grid RowDefinitions="auto,*,auto" RowSpacing="16">
+        <Grid RowDefinitions="auto,auto,*,auto,auto" RowSpacing="8">
             <!--#region ENCABEZADO-->
-            <Grid
-                Margin="8"
-                ColumnDefinitions="*,auto"
-                ColumnSpacing="8">
+            <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
                 <Label
                     FontAttributes="Bold"
                     FontSize="18"
@@ -60,9 +57,33 @@
             <!--#endregion-->
             <Grid
                 Grid.Row="1"
-                Margin="8,0"
-                ColumnDefinitions="230,auto"
-                ColumnSpacing="16">
+                ColumnDefinitions="auto,*"
+                ColumnSpacing="8">
+                <Label Text="* Nombre:" VerticalOptions="CenterAndExpand" />
+                <Entry
+                    Grid.Column="1"
+                    Placeholder="Escriba aquí"
+                    Text="{Binding NameColor}">
+                    <Entry.Triggers>
+                        <DataTrigger
+                            Binding="{Binding CurrentSeptionName}"
+                            TargetType="Entry"
+                            Value="CurrentPrincipalColor">
+                            <Setter Property="IsEnabled" Value="False" />
+                        </DataTrigger>
+                        <DataTrigger
+                            Binding="{Binding CurrentSeptionName}"
+                            TargetType="Entry"
+                            Value="CurrentPrincipalDarkColor">
+                            <Setter Property="IsEnabled" Value="False" />
+                        </DataTrigger>
+                    </Entry.Triggers>
+                </Entry>
+            </Grid>
+            <Grid
+                Grid.Row="2"
+                ColumnDefinitions="250,250"
+                ColumnSpacing="8">
                 <!--#region PANEL IZQUIERDO-->
                 <VerticalStackLayout Spacing="8">
                     <Label Text="Vista previa :" />
@@ -82,7 +103,7 @@
                                     BackgroundColor="Black"
                                     FontAttributes="Bold"
                                     HorizontalOptions="Start"
-                                    Text="Antes"
+                                    Text="Anterior"
                                     TextColor="White"
                                     TextTransform="Uppercase" />
                                 <Label
@@ -127,6 +148,10 @@
                             <Label Text="Mantener predeterminado" VerticalOptions="Center" />
                         </HorizontalStackLayout>
                     </Grid>
+                </VerticalStackLayout>
+                <!--#endregion-->
+                <!--#region PANEL DERECHO-->
+                <VerticalStackLayout Grid.Column="1" Spacing="8">
                     <Label Text="Personalización :" />
                     <Grid ColumnDefinitions="*,50" ColumnSpacing="4">
                         <Label Text="Rojo: (0-255)" VerticalOptions="Center" />
@@ -163,87 +188,48 @@
                             HorizontalTextAlignment="End"
                             Text="{Binding Hexadecimal}" />
                         <Button
-                            Style="{StaticResource onlyIconButon}"
                             Grid.Column="2"
                             Command="{Binding SetHexColorCommand}"
                             FontFamily="icofont"
+                            Style="{StaticResource onlyIconButon}"
                             Text="{StaticResource UiCheck}" />
                     </Grid>
                 </VerticalStackLayout>
                 <!--#endregion-->
-                <!--#region PANEL DERECHO-->
-                <VerticalStackLayout Grid.Column="1" Spacing="8">
-                    <Grid ColumnDefinitions="auto,*" ColumnSpacing="8">
-                        <Label Text="* Nombre:" VerticalOptions="CenterAndExpand" />
-                        <Entry
-                            Grid.Column="1"
-                            Placeholder="Escriba aquí"
-                            Text="{Binding NameColor}">
-                            <Entry.Triggers>
-                                <DataTrigger
-                                    Binding="{Binding CurrentSeptionName}"
-                                    TargetType="Entry"
-                                    Value="CurrentPrincipalColor">
-                                    <Setter Property="IsEnabled" Value="False" />
-                                </DataTrigger>
-                                <DataTrigger
-                                    Binding="{Binding CurrentSeptionName}"
-                                    TargetType="Entry"
-                                    Value="CurrentPrincipalDarkColor">
-                                    <Setter Property="IsEnabled" Value="False" />
-                                </DataTrigger>
-                            </Entry.Triggers>
-                        </Entry>
-                    </Grid>
-                    <Grid RowDefinitions="auto,auto" RowSpacing="8">
-                        <Grid ColumnDefinitions="auto,*" ColumnSpacing="8">
-                            <Label Text="Seleccione una paleta:" VerticalOptions="Center" />
-                            <Picker
-                                Grid.Column="1"
-                                ItemDisplayBinding="{Binding Name}"
-                                ItemsSource="{Binding Palettes}"
-                                SelectedItem="{Binding SelectedPaletteItem}"
-                                WidthRequest="300"/>
-                        </Grid>
-                        <ActivityIndicator
-                            HorizontalOptions="Center"
-                            IsRunning="{Binding IsLoadingColorsOfPalette}"
-                            IsVisible="{Binding IsLoadingColorsOfPalette}"
-                            VerticalOptions="Center" />
-                        <ScrollView
-                            Grid.Row="1"
-                            HeightRequest="384"
-                            IsVisible="{Binding IsLoadingColorsOfPalette, Converter={ctk:InvertedBoolConverter}}"
-                            VerticalScrollBarVisibility="Always">
-                            <CollectionView
-                                Margin="0,0,12,0"
-                                ItemsSource="{Binding ColorsOfPalette}"
-                                ItemsUpdatingScrollMode="KeepItemsInView"
-                                SelectedItem="{Binding SelectedColorOfPalette}"
-                                SelectionChanged="OnSelectionChanged"
-                                SelectionMode="Single">
-                                <CollectionView.ItemsLayout>
-                                    <GridItemsLayout
-                                        HorizontalItemSpacing="2"
-                                        Orientation="Vertical"
-                                        Span="10"
-                                        VerticalItemSpacing="2" />
-                                </CollectionView.ItemsLayout>
-                                <CollectionView.ItemTemplate>
-                                    <DataTemplate x:DataType="Color">
-                                        <Border Style="{StaticResource colorItemPaletteBorder}" BackgroundColor="{Binding .}" />
-                                    </DataTemplate>
-                                </CollectionView.ItemTemplate>
-                            </CollectionView>
-                        </ScrollView>
-                    </Grid>
-                </VerticalStackLayout>
-                <!--#endregion-->
             </Grid>
+            <VerticalStackLayout
+                Grid.Row="3"
+                MaximumWidthRequest="508"
+                Spacing="8">
+                <Grid ColumnDefinitions="auto,*" ColumnSpacing="8">
+                    <Label Text="Seleccione una paleta:" VerticalOptions="Center" />
+                    <Picker
+                        Grid.Column="1"
+                        ItemDisplayBinding="{Binding Name}"
+                        ItemsSource="{Binding Palettes}"
+                        SelectedItem="{Binding SelectedPaletteItem}" />
+                </Grid>
+                <ScrollView HeightRequest="48" VerticalScrollBarVisibility="Always">
+                    <CollectionView
+                        ItemsSource="{Binding ColorsOfPalette}"
+                        ItemsUpdatingScrollMode="KeepItemsInView"
+                        SelectedItem="{Binding SelectedColorOfPalette}"
+                        SelectionChanged="OnSelectionChanged"
+                        SelectionMode="Single">
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout ItemSpacing="2" Orientation="Horizontal" />
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="Color">
+                                <Border BackgroundColor="{Binding .}" Style="{StaticResource colorItemPaletteBorder}" />
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </ScrollView>
+            </VerticalStackLayout>
             <!--#region pie-->
             <Grid
-                Grid.Row="2"
-                Margin="8"
+                Grid.Row="4"
                 ColumnDefinitions="*,auto"
                 ColumnSpacing="8">
                 <HorizontalStackLayout IsVisible="{Binding IsVisibleInfo}" Spacing="4">
