@@ -12,6 +12,7 @@ public interface IStyleTemplateService
     void Commit();
     bool Delete(ObjectId id);
     IEnumerable<StyleTemplate> GetAll();
+    StyleTemplate? GetFirst();
     StyleTemplate? GetById(ObjectId id);
     string Insert(StyleTemplate entity);
     void Rollback();
@@ -50,6 +51,8 @@ public class StyleTemplateService : IStyleTemplateService
     public bool Exist => collection.Count() > 0;
 
     public IEnumerable<StyleTemplate> GetAll() => collection.FindAll();
+
+    public StyleTemplate? GetFirst() => collection.Query().FirstOrDefault();
 
     public StyleTemplate? GetById(ObjectId id) => collection.FindById(id);
 

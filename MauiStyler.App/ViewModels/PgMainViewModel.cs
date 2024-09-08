@@ -73,7 +73,7 @@ public partial class PgMainViewModel : ObservableObject
         {
             return;
         }
-        var docs = documentServ.GenerateColorTemplate(template.PrincipalStyle!, template.SemanticStyle!, template.NeutralStyle!);
+        var docs = documentServ.GenerateColorTemplate(template);
         await FileHelper.ExportTemplate([.. docs.Values]);
         await FileHelper.DeleteFilesAndDirectoriesAsync([.. docs.Values]);
         await Shell.Current.DisplayAlert("Mensaje", "Se exporto el tema satisfactoriamente.", "Cerrar");
@@ -98,78 +98,41 @@ public partial class PgMainViewModel : ObservableObject
     {
         if (!styleTemplateServ.Exist)
         {
-            // PRINCIPAL
-            List<ItemColor> principalsColorsStyle =
+            List<ColorStyle> colorsStyle =
             [
-                new() { Name = "Primary", Value = Color.Parse("#FF512BD4") },
-                new() { Name = "Secondary", Value = Color.Parse("#FF2B0B98") },
-                new() { Name = "Accent", Value = Color.Parse("#FF2B0B98") }
+                // PRINCIPAL
+                new() { Name = "Primary", Value = Color.Parse("#FF512BD4"), Tag="PRINCIPAL", Scheme = ColorScheme.Light },
+                new() { Name = "Secondary", Value = Color.Parse("#FF2B0B98"), Tag="PRINCIPAL", Scheme = ColorScheme.Light },
+                new() { Name = "Accent", Value = Color.Parse("#FF2D6FCC"), Tag="PRINCIPAL", Scheme = ColorScheme.Light },
+                new() { Name = "PrimaryDark", Value = Color.Parse("#FF512BD4"), Tag="PRINCIPAL", Scheme = ColorScheme.Dark },
+                new() { Name = "SecondaryDark", Value = Color.Parse("#FF2B0B98"), Tag="PRINCIPAL", Scheme = ColorScheme.Dark },
+                new() { Name = "AccentDark", Value = Color.Parse("#FF2D6FCC"), Tag="PRINCIPAL", Scheme = ColorScheme.Dark },
+                // SEMANTIC
+                new() { Name = "Error", Value = Color.Parse("#FFFF0000"), Tag="SEMANTIC", Scheme = ColorScheme.Light },
+                new() { Name = "Success", Value = Color.Parse("#FF00FF00"), Tag="SEMANTIC", Scheme = ColorScheme.Light },
+                new() { Name = "Warning", Value = Color.Parse("#FFFFFF00"), Tag="SEMANTIC", Scheme = ColorScheme.Light },
+                new() { Name = "ErrorDark", Value = Color.Parse("#FFFF0000"), Tag="SEMANTIC", Scheme = ColorScheme.Dark },
+                new() { Name = "SuccessDark", Value = Color.Parse("#FF00FF00"), Tag="SEMANTIC", Scheme = ColorScheme.Dark },
+                new() { Name = "WarningDark", Value = Color.Parse("#FFFFFF00"), Tag="SEMANTIC", Scheme = ColorScheme.Dark },            
+                // NEUTRAL
+                new() { Name = "Foreground", Value = Color.Parse("#FFF7F5FF"), Tag="NEUTRAL", Scheme = ColorScheme.Light },
+                new() { Name = "Background", Value = Color.Parse("#FF23135E"), Tag="NEUTRAL", Scheme = ColorScheme.Light },
+                new() { Name = "Gray250", Value = Color.Parse("#FFE1E1E1"), Tag="NEUTRAL", Scheme = ColorScheme.Light },
+                new() { Name = "Gray500", Value = Color.Parse("#FFACACAC"), Tag="NEUTRAL", Scheme = ColorScheme.Light },
+                new() { Name = "Gray750", Value = Color.Parse("#FF6E6E6E"), Tag="NEUTRAL", Scheme = ColorScheme.Light },
+                new() { Name = "ForegroundDark", Value = Color.Parse("#FFF7F5FF"), Tag="NEUTRAL", Scheme = ColorScheme.Dark },
+                new() { Name = "BackgroundDark", Value = Color.Parse("#FF23135E"), Tag="NEUTRAL", Scheme = ColorScheme.Dark },
+                new() { Name = "Gray250Dark", Value = Color.Parse("#FFE1E1E1"), Tag="NEUTRAL", Scheme = ColorScheme.Dark },
+                new() { Name = "Gray500Dark", Value = Color.Parse("#FFACACAC"), Tag="NEUTRAL", Scheme = ColorScheme.Dark },
+                new() { Name = "Gray750Dark", Value = Color.Parse("#FF6E6E6E"), Tag="NEUTRAL", Scheme = ColorScheme.Dark }
             ];
-            List<ItemColor> principalsDarkColorsStyle =
-            [
-                new() { Name = "PrimaryDark", Value = Color.Parse("#FF512BD4") },
-                new() { Name = "SecondaryDark", Value = Color.Parse("#FF2B0B98") },
-                new() { Name = "AccentDark", Value = Color.Parse("#FF2B0B98") }
-            ];
-
-            PrincipalStyle ps = new()
-            {
-                DefaultColorsStyle = [.. principalsColorsStyle],
-                DarkColorsStyle = [.. principalsDarkColorsStyle]
-            };
-
-            // SEMANTIC
-            List<ItemColor> semanticsColorsStyle =
-            [
-                new() { Name = "Error", Value = Color.Parse("#FFFF0000") },
-                new() { Name = "Success", Value = Color.Parse("#FF00FF00") },
-                new() { Name = "Warning", Value = Color.Parse("#FFFFFF00") }
-            ];
-            List<ItemColor> semanticsDarkColorsStyle =
-            [
-                new() { Name = "ErrorDark", Value = Color.Parse("#FFFF0000") },
-                new() { Name = "SuccessDark", Value = Color.Parse("#FF00FF00") },
-                new() { Name = "WarningDark", Value = Color.Parse("#FFFFFF00") }
-            ];
-
-            SemanticStyle ss = new()
-            {
-                DefaultColorsStyle = [.. semanticsColorsStyle],
-                DarkColorsStyle = [.. semanticsDarkColorsStyle]
-            };
-
-            // NEUTRAL
-            List<ItemColor> neutralsColorsStyle =
-            [
-                new() { Name = "Foreground", Value = Color.Parse("#FFF7F5FF") },
-                new() { Name = "Background", Value = Color.Parse("#FF23135E") },
-                new() { Name = "Gray250", Value = Color.Parse("#FFE1E1E1") },
-                new() { Name = "Gray500", Value = Color.Parse("#FFACACAC") },
-                new() { Name = "Gray750", Value = Color.Parse("#FF6E6E6E") }
-            ];
-            List<ItemColor> neutralsDarkColorsStyle =
-            [
-                new() { Name = "ForegroundDark", Value = Color.Parse("#FFF7F5FF") },
-                new() { Name = "BackgroundDark", Value = Color.Parse("#FF23135E") },
-                new() { Name = "Gray250Dark", Value = Color.Parse("#FFE1E1E1") },
-                new() { Name = "Gray500Dark", Value = Color.Parse("#FFACACAC") },
-                new() { Name = "Gray750Dark", Value = Color.Parse("#FF6E6E6E") }
-            ];
-
-            NeutralStyle ns = new()
-            {
-                DefaultColorsStyle = [.. neutralsColorsStyle],
-                DarkColorsStyle = [.. neutralsDarkColorsStyle]
-            };
 
             StyleTemplate mauiTemplate = new()
             {
                 Name = "MAUI",
                 Description = "Tema predeterminado.",
                 IsCustomTemplate = false,
-                PrincipalStyle = ps,
-                SemanticStyle = ss,
-                NeutralStyle = ns
+                ColorStyles = [.. colorsStyle]
             };
 
             _ = styleTemplateServ.Insert(mauiTemplate);

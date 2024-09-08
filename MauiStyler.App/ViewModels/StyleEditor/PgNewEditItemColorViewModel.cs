@@ -8,8 +8,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MauiStyler.App.ViewModels;
 
-[QueryProperty(nameof(CurrentSeptionName), nameof(CurrentSeptionName))]
-[QueryProperty(nameof(CurrentItemColor), nameof(CurrentItemColor))]
+[QueryProperty(nameof(SendToken), nameof(SendToken))]
+[QueryProperty(nameof(CurrentColorStyle), nameof(CurrentColorStyle))]
 public partial class PgNewEditItemColorViewModel : ObservableValidator
 {
     readonly IColorsPalettesService colorsPalettesServ;
@@ -25,10 +25,10 @@ public partial class PgNewEditItemColorViewModel : ObservableValidator
     }
 
     [ObservableProperty]
-    string? currentSeptionName;
+    string? sendToken;
 
     [ObservableProperty]
-    ItemColor? currentItemColor;
+    ColorStyle? currentColorStyle;
 
     [ObservableProperty]
     ObservableCollection<ColorPalette>? palettes;
@@ -120,15 +120,15 @@ public partial class PgNewEditItemColorViewModel : ObservableValidator
             return;
         }
 
-        ItemColor itemColor = new()
+        ColorStyle colorStyle = new()
         {
             Name = NameColor!.Trim().ToUpper(),
             Value = CurrentColor
         };
 
-        string tokenSend = CurrentColor is null ? "NewItemColor" : "EditItemColor";
+        //string tokenSend = CurrentColor is null ? "NewItemColor" : "EditItemColor";
 
-        _ = WeakReferenceMessenger.Default.Send(itemColor, tokenSend);
+        _ = WeakReferenceMessenger.Default.Send(colorStyle, SendToken!);
 
         await Shell.Current.GoToAsync("..", true);
     }
@@ -142,12 +142,12 @@ public partial class PgNewEditItemColorViewModel : ObservableValidator
 
     partial void OnIsDefaultColorChanged(bool value)
     {
-        if (value && CurrentItemColor is not null)
+        if (value && CurrentColorStyle is not null)
         {
-            LastColorSelected = CurrentItemColor.Value;
+            LastColorSelected = CurrentColorStyle.Value;
         }
     }
-    partial void OnCurrentItemColorChanged(ItemColor? value)
+    partial void OnCurrentColorStyleChanged(ColorStyle? value)
     {
         IsDefaultColor = value is not null;
         if (value is not null)

@@ -1,5 +1,4 @@
-﻿
-namespace MauiStyler.App.Models;
+﻿namespace MauiStyler.App.Models;
 
 public class TemplateItem
 {

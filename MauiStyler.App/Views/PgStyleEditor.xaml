@@ -4,7 +4,9 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:ctk="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:enum="clr-namespace:MauiStyler.App.Tools"
     xmlns:model="clr-namespace:MauiStyler.App.Models"
+    xmlns:model1="clr-namespace:System.Linq;assembly=netstandard"
     xmlns:vm="clr-namespace:MauiStyler.App.ViewModels"
     Title="Editar estilo"
     x:DataType="vm:PgStyleEditorViewModel"
@@ -14,8 +16,8 @@
     </Shell.BackButtonBehavior>
     <ContentPage.Resources>
         <ResourceDictionary>
-            <DataTemplate x:Key="ItemColorTemplate" x:DataType="model:ItemColor">
-                <Border Style="{StaticResource colorItemBorder}" BackgroundColor="{Binding Value}">
+            <DataTemplate x:Key="ItemColorTemplate" x:DataType="model:ColorStyle">
+                <Border BackgroundColor="{Binding Value}" Style="{StaticResource colorItemBorder}">
                     <VerticalStackLayout Spacing="4">
                         <Grid ColumnDefinitions="*,auto" ColumnSpacing="4">
                             <Label
@@ -58,13 +60,29 @@
                     </VerticalStackLayout>
                 </Border>
             </DataTemplate>
+            <DataTemplate x:Key="ColorStyleGroupHeaderTemplate" x:DataType="model1:IGrouping(x:String, model:ColorStyle)">
+                <!--  Element  -->
+                <Label
+                    FontSize="16"
+                    Text="{Binding Key}"
+                    TextTransform="Uppercase">
+                    <Label.Triggers>
+                        <DataTrigger
+                            Binding="{Binding SelectedColorStyle.Scheme}"
+                            TargetType="Label"
+                            Value="Dark">
+                            <Setter Property="TextColor" Value="White" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
+            </DataTemplate>
+            <GridItemsLayout
+                x:Key="ItemColorLayout"
+                HorizontalItemSpacing="6"
+                Orientation="Vertical"
+                Span="3"
+                VerticalItemSpacing="4" />
         </ResourceDictionary>
-        <GridItemsLayout
-            x:Key="ItemColorLayout"
-            HorizontalItemSpacing="6"
-            Orientation="Vertical"
-            Span="3"
-            VerticalItemSpacing="4" />
         <Style x:Key="addButton" TargetType="Button">
             <Setter Property="Padding" Value="0" />
             <Setter Property="FontFamily" Value="icofont" />
@@ -148,15 +166,15 @@
                 </Label>
                 <HorizontalStackLayout Grid.Column="1" Spacing="8">
                     <Button
-                        Style="{StaticResource onlyIconButon}"
                         Command="{Binding SetVisibleStyleCommand}"
                         IsEnabled="{Binding IsVisibleStyle, Converter={ctk:InvertedBoolConverter}}"
+                        Style="{StaticResource onlyIconButon}"
                         Text="{StaticResource UiTheme}"
                         ToolTipProperties.Text="Muestra los ajustes de estilo." />
                     <Button
-                        Style="{StaticResource onlyIconButon}"
                         Command="{Binding SetVisibleStyleCommand}"
                         IsEnabled="{Binding IsVisibleStyle}"
+                        Style="{StaticResource onlyIconButon}"
                         Text="{StaticResource ColorBucket}"
                         ToolTipProperties.Text="Muestra los ajustes de color." />
                 </HorizontalStackLayout>
@@ -180,20 +198,33 @@
                                 HorizontalOptions="CenterAndExpand"
                                 Text="Claro"
                                 TextTransform="Uppercase" />
-                            <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
+                            <!--<Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
                                 <Label
                                     FontSize="16"
                                     Text="Principales"
                                     TextTransform="Uppercase"
                                     VerticalOptions="Center" />
                                 <HorizontalStackLayout Grid.Column="1" Spacing="4">
-                                    <!--<Button
+                            -->
+                            <!--<Button
                                         Style="{StaticResource undoButton}"
                                         IsEnabled="{Binding SelectedItemColor, Converter={ctk:IsNotNullConverter}}"
                                         ToolTipProperties.Text="Restaura color anterior." />-->
+                            <!--
                                 </HorizontalStackLayout>
-                            </Grid>
+                            </Grid>-->
                             <CollectionView
+                                x:Name="CvPrincipals"
+                                Grid.Row="1"
+                                GroupHeaderTemplate="{StaticResource ColorStyleGroupHeaderTemplate}"
+                                IsGrouped="True"
+                                ItemTemplate="{StaticResource ItemColorTemplate}"
+                                ItemsLayout="{StaticResource ItemColorLayout}"
+                                ItemsSource="{Binding DefaultColorStyle}"
+                                SelectedItem="{Binding SelectedColorStyle}"
+                                SelectionChanged="CollectionView_SelectionChanged"
+                                SelectionMode="Single" />
+                            <!--<CollectionView
                                 Grid.Row="1" x:Name="CvPrincipals"
                                 ItemTemplate="{StaticResource ItemColorTemplate}"
                                 ItemsLayout="{StaticResource ItemColorLayout}"
@@ -242,7 +273,7 @@
                                 ItemsSource="{Binding NeutralsColors}"
                                 SelectedItem="{Binding SelectedItemColor}"
                                 SelectionChanged="CollectionView_SelectionChanged"
-                                SelectionMode="Single" />
+                                SelectionMode="Single" />-->
                         </VerticalStackLayout>
                     </Frame>
                     <Frame Grid.Column="1" BackgroundColor="Black">
@@ -253,7 +284,7 @@
                                 Text="Oscuro"
                                 TextColor="White"
                                 TextTransform="Uppercase" />
-                            <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
+                            <!--<Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
                                 <Label
                                     FontSize="16"
                                     Text="Principales"
@@ -261,13 +292,26 @@
                                     TextTransform="Uppercase"
                                     VerticalOptions="Center" />
                                 <HorizontalStackLayout Grid.Column="1" Spacing="4">
-                                    <!--<Button
+                            -->
+                            <!--<Button
                                         Style="{StaticResource undoButton}"
                                         IsEnabled="{Binding SelectedItemColor, Converter={ctk:IsNotNullConverter}}"
                                         ToolTipProperties.Text="Restaurar color anterior" />-->
+                            <!--
                                 </HorizontalStackLayout>
-                            </Grid>
+                            </Grid>-->
                             <CollectionView
+                                x:Name="CvPrincipalsDark"
+                                Grid.Row="1"
+                                GroupHeaderTemplate="{StaticResource ColorStyleGroupHeaderTemplate}"
+                                IsGrouped="True"
+                                ItemTemplate="{StaticResource ItemColorTemplate}"
+                                ItemsLayout="{StaticResource ItemColorLayout}"
+                                ItemsSource="{Binding DarkColorStyle}"
+                                SelectedItem="{Binding SelectedColorStyle}"
+                                SelectionChanged="CollectionView_SelectionChanged"
+                                SelectionMode="Single" />
+                            <!--<CollectionView
                                 Grid.Row="1"  x:Name="CvPrincipalsDark"
                                 ItemTemplate="{StaticResource ItemColorTemplate}"
                                 ItemsLayout="{StaticResource ItemColorLayout}"
@@ -318,7 +362,7 @@
                                 ItemsSource="{Binding NeutralsDarkColors}"
                                 SelectedItem="{Binding SelectedItemColor}"
                                 SelectionChanged="CollectionView_SelectionChanged"
-                                SelectionMode="Single" />
+                                SelectionMode="Single" />-->
                         </VerticalStackLayout>
                     </Frame>
                 </Grid>
@@ -336,13 +380,13 @@
                             ToolTipProperties.Text="Restaurar los colores por defecto." />
                         <BoxView Style="{StaticResource HorizontalElementSeparator}" />
                         <Button
+                            Command="{Binding ShowEditColorStyleCommand}"
+                            IsEnabled="{Binding SelectedColorStyle, Converter={ctk:IsNotNullConverter}}"
                             Style="{StaticResource editButton}"
-                            Command="{Binding ShowEditItemColorCommand}"
-                            IsEnabled="{Binding SelectedItemColor, Converter={ctk:IsNotNullConverter}}"
                             ToolTipProperties.Text="Modificar selección." />
                         <Button
+                            IsEnabled="{Binding SelectedColorStyle, Converter={ctk:IsNotNullConverter}}"
                             Style="{StaticResource undoButton}"
-                            IsEnabled="{Binding SelectedItemColor, Converter={ctk:IsNotNullConverter}}"
                             ToolTipProperties.Text="Restaurar color anterior" />
                     </HorizontalStackLayout>
                 </Grid>

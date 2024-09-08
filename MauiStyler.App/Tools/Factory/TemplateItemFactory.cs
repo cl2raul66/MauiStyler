@@ -16,21 +16,17 @@ public class TemplateItemFactory
         };
 
         // Mapeo de los colores
-        if (styleTemplate.PrincipalStyle is not null)
+        if (styleTemplate.ColorStyles is not null)
         {
-            if (styleTemplate.PrincipalStyle.DefaultColorsStyle is not null)
-            {
-                templateItem.DefaultColorsStyle = styleTemplate.PrincipalStyle.DefaultColorsStyle
-                    .Select(itemColor => itemColor.Value)
-                    .ToArray()!;
-            }
+            templateItem.DefaultColorsStyle = styleTemplate.ColorStyles
+                .Where(x => x.Tag == "PRINCIPAL" && x.Scheme == ColorScheme.Light)
+                .Select(itemColor => itemColor.Value)
+                .ToArray()!;
 
-            if (styleTemplate.PrincipalStyle.DarkColorsStyle is not null)
-            {
-                templateItem.DarkColorsStyle = styleTemplate.PrincipalStyle.DarkColorsStyle
-                    .Select(itemColor => itemColor.Value)
-                    .ToArray()!;
-            }
+            templateItem.DarkColorsStyle = styleTemplate.ColorStyles
+                .Where(x => x.Tag == "PRINCIPAL" && x.Scheme == ColorScheme.Dark)
+                .Select(itemColor => itemColor.Value)
+                .ToArray()!;
         }
 
         return templateItem;

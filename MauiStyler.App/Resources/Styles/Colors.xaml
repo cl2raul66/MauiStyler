@@ -4,7 +4,7 @@
     <!--  PRINCIPAL  -->
     <Color x:Key="PrimaryCL">#FF512BD4</Color>
     <Color x:Key="SecondaryCL">#FF2B0B98</Color>
-    <Color x:Key="AccentCL">#FF2B0B98</Color>
+    <Color x:Key="AccentCL">#FF2D6FCC</Color>
     <!--  SEMANTIC  -->
     <Color x:Key="ErrorCL">#FFFF0000</Color>
     <Color x:Key="SuccessCL">#FF00FF00</Color>

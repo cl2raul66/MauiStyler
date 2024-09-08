@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using MauiStyler.App.Models;
 using MauiStyler.App.Services;
+using MauiStyler.App.Tools;
 using MauiStyler.App.Views;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -54,94 +55,87 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
 
     #region COLORES
     [ObservableProperty]
-    ObservableCollection<ItemColor>? principalsColors;
+    ObservableCollection<IGrouping<string, ColorStyle>>? defaultColorStyle;
 
     [ObservableProperty]
-    ObservableCollection<ItemColor>? semanticsColors;
+    ObservableCollection<IGrouping<string, ColorStyle>>? darkColorStyle;
 
     [ObservableProperty]
-    ObservableCollection<ItemColor>? neutralsColors;
-
-    [ObservableProperty]
-    ObservableCollection<ItemColor>? principalsDarkColors;
-
-    [ObservableProperty]
-    ObservableCollection<ItemColor>? semanticsDarkColors;
-
-    [ObservableProperty]
-    ObservableCollection<ItemColor>? neutralsDarkColors;
-
-    [ObservableProperty]
-    ItemColor? selectedItemColor;
+    ColorStyle? selectedColorStyle;
 
     [RelayCommand]
-    async Task ShowNewItemColorForSemanticColor()
+    async Task ShowNewColorStyleForSemanticColor()
     {
         IsActive = true;
 
         Dictionary<string, object> sendData = new()
         {
-            { "CurrentSeptionName", "CurrentSemanticColor" }
+            { "SendToken", "H1I2J3K4-L5M6-N7O8-P9Q0-R1S2T3U4V5W6" },
+            //{ "CurrentSeptionName", "CurrentSemanticColor" }
         };
 
         await Shell.Current.GoToAsync(nameof(PgNewEditItemColor), true, sendData);
     }
 
     [RelayCommand]
-    async Task ShowNewItemColorForSemanticDarkColor()
+    async Task ShowNewColorStyleForSemanticDarkColor()
     {
         IsActive = true;
 
         Dictionary<string, object> sendData = new()
         {
-            { "CurrentSeptionName", "CurrentSemanticDarkColor" }
+            { "SendToken", "H1I2J3K4-L5M6-N7O8-P9Q0-R1S2T3U4V5W6" },
+            //{ "CurrentSeptionName", "CurrentSemanticDarkColor" }
         };
 
         await Shell.Current.GoToAsync(nameof(PgNewEditItemColor), true, sendData);
     }
 
     [RelayCommand]
-    async Task ShowNewItemColorForNeutralColor()
+    async Task ShowNewColorStyleForNeutralColor()
     {
         IsActive = true;
 
         Dictionary<string, object> sendData = new()
         {
-            { "CurrentSeptionName", "CurrentNeutralColor" }
+            { "SendToken", "H1I2J3K4-L5M6-N7O8-P9Q0-R1S2T3U4V5W6" },
+            //{ "CurrentSeptionName", "CurrentNeutralColor" }
         };
 
         await Shell.Current.GoToAsync(nameof(PgNewEditItemColor), true, sendData);
     }
 
     [RelayCommand]
-    async Task ShowNewItemColorForNeutralDarkColor()
+    async Task ShowNewColorStyleForNeutralDarkColor()
     {
         IsActive = true;
 
         Dictionary<string, object> sendData = new()
         {
-            { "CurrentSeptionName", "CurrentNeutralDarkColor" }
+            { "SendToken", "H1I2J3K4-L5M6-N7O8-P9Q0-R1S2T3U4V5W6" },
+            //{ "CurrentSeptionName", "CurrentNeutralDarkColor" }
         };
 
         await Shell.Current.GoToAsync(nameof(PgNewEditItemColor), true, sendData);
     }
 
     [RelayCommand]
-    async Task ShowEditItemColor()
+    async Task ShowEditColorStyle()
     {
         IsActive = true;
 
-        var (CurrentSeptionName, CurrentItemColor) = GetSelectedItemColor();
+        //var (CurrentSeptionName, CurrentColorStyle) = GetSelectedColorStyle();
 
-        if (CurrentItemColor is null)
-        {
-            return;
-        }
+        //if (CurrentColorStyle is null)
+        //{
+        //    return;
+        //}
 
         Dictionary<string, object> sendData = new()
         {
-            { "CurrentSeptionName", CurrentSeptionName },
-            { "CurrentItemColor", CurrentItemColor }
+            { "SendToken", "A1B2C3D4-E5F6-7890-ABCD-EF1234567890" },
+            //{ "CurrentSeptionName", CurrentSeptionName },
+            { "CurrentColorStyle", SelectedColorStyle! }
         };
 
         await Shell.Current.GoToAsync(nameof(PgNewEditItemColor), true, sendData);
@@ -178,12 +172,8 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
 
         if (e.PropertyName == nameof(IsVisibleStyle))
         {
-            bool checkColors = (PrincipalsColors is null || PrincipalsColors.Count == 0)
-                && (SemanticsColors is null || SemanticsColors.Count == 0)
-                && (NeutralsColors is null || NeutralsColors.Count == 0)
-                && (PrincipalsDarkColors is null || PrincipalsDarkColors.Count == 0)
-                && (SemanticsDarkColors is null || SemanticsDarkColors.Count == 0)
-                && (NeutralsDarkColors is null || NeutralsDarkColors.Count == 0);
+            bool checkColors = (DefaultColorStyle is null || DefaultColorStyle.Count == 0)
+                && (DarkColorStyle is null || DarkColorStyle.Count == 0);
             if (!IsVisibleStyle && checkColors)
             {
                 //PrincipalsColors = [
@@ -204,30 +194,8 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
                 //    new ItemColor() { Name = "Gray750", Value = Color.Parse("#6E6E6E") }
                 //];
                 //bool result = colorStyleServ.GenerateColorTemplate([.. PrincipalsColors], [.. SemanticsColors], [.. NeutralsColors]);
-                if (CurrentTemplate is null)
-                {
-                    var defaultTemplate = styleTemplateServ.GetAll().First();
 
-                    PrincipalsColors = [.. defaultTemplate.PrincipalStyle!.DefaultColorsStyle];
-                    PrincipalsDarkColors = [.. defaultTemplate.PrincipalStyle!.DarkColorsStyle];
-
-                    SemanticsColors = [.. defaultTemplate.SemanticStyle!.DefaultColorsStyle];
-                    SemanticsDarkColors = [.. defaultTemplate.SemanticStyle!.DarkColorsStyle];
-
-                    NeutralsColors = [.. defaultTemplate.NeutralStyle!.DefaultColorsStyle];
-                    NeutralsDarkColors = [.. defaultTemplate.NeutralStyle!.DarkColorsStyle];
-                }
-                else
-                {
-                    PrincipalsColors = [.. CurrentTemplate.PrincipalStyle!.DefaultColorsStyle];
-                    PrincipalsDarkColors = [.. CurrentTemplate.PrincipalStyle!.DarkColorsStyle];
-
-                    SemanticsColors = [.. CurrentTemplate.SemanticStyle!.DefaultColorsStyle];
-                    SemanticsDarkColors = [.. CurrentTemplate.SemanticStyle!.DarkColorsStyle];
-
-                    NeutralsColors = [.. CurrentTemplate.NeutralStyle!.DefaultColorsStyle];
-                    NeutralsDarkColors = [.. CurrentTemplate.NeutralStyle!.DarkColorsStyle];
-                }
+                LoadColorStylesObservableCollections();
 
                 //var sectionsColors = documentServ.LoadSelectedTemplate();
 
@@ -245,58 +213,80 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
     protected override void OnActivated()
     {
         base.OnActivated();
-
-        WeakReferenceMessenger.Default.Register<PgStyleEditorViewModel, ItemColor, string>(this, "NewItemColor", (r, m) =>
+        // NewColorStyle
+        WeakReferenceMessenger.Default.Register<PgStyleEditorViewModel, ColorStyle, string>(this, "H1I2J3K4-L5M6-N7O8-P9Q0-R1S2T3U4V5W6", (r, m) =>
         {
             IsActive = false;
 
-            SelectedItemColor = null;
+            SelectedColorStyle = null;
         });
 
-        WeakReferenceMessenger.Default.Register<PgStyleEditorViewModel, ItemColor, string>(this, "EditItemColor", (r, m) =>
+        // EditColorStyle
+        WeakReferenceMessenger.Default.Register<PgStyleEditorViewModel, ColorStyle, string>(this, "A1B2C3D4-E5F6-7890-ABCD-EF1234567890", (r, m) =>
         {
             IsActive = false;
-            var (currentSectionName, currentItemColor) = GetSelectedItemColor();
+            //var (currentSectionName, CurrentColorStyle) = GetSelectedColorStyle();
 
-            if (currentItemColor is null || string.IsNullOrEmpty(currentSectionName))
+            //if (CurrentColorStyle is null || string.IsNullOrEmpty(currentSectionName))
+            //{
+            //    return;
+            //}
+
+            //ObservableCollection<ColorStyle>? targetCollection = currentSectionName switch
+            //{
+            //    "CurrentPrincipalColor" => PrincipalsColors,
+            //    "CurrentPrincipalDarkColor" => PrincipalsDarkColors,
+            //    "CurrentSemanticColor" => SemanticsColors,
+            //    "CurrentSemanticDarkColor" => SemanticsDarkColors,
+            //    "CurrentNeutralColor" => NeutralsColors,
+            //    "CurrentNeutralDarkColor" => NeutralsDarkColors,
+            //    _ => null
+            //};
+
+            //if (targetCollection is null)
+            //{
+            //    return;
+            //}
+
+            //int index = targetCollection.IndexOf(CurrentColorStyle);
+            //if (index != -1)
+            //{
+            //    targetCollection[index] = m;
+
+            //    SelectedColorStyle = m;
+
+            //    OnPropertyChanged(nameof(targetCollection));
+            //}
+            //codigo bueno
+            //int index = -1;
+            //if (DefaultColorStyle!.IndexOf(SelectedColorStyle!) == index)
+            //{
+            //    index = DarkColorStyle!.IndexOf(SelectedColorStyle!);
+            //    DarkColorStyle[index] = m;
+            //}
+            //else
+            //{
+            //    index = DefaultColorStyle!.IndexOf(SelectedColorStyle!);
+            //    DefaultColorStyle[index] = m;
+            //}
+
+            if (m.Scheme == ColorScheme.Light)
             {
-                return;
+                LoadDefaultColorStyle();
+            }
+            else
+            {
+                LoadDarkColorStyle();
             }
 
-            ObservableCollection<ItemColor>? targetCollection = currentSectionName switch
-            {
-                "CurrentPrincipalColor" => PrincipalsColors,
-                "CurrentPrincipalDarkColor" => PrincipalsDarkColors,
-                "CurrentSemanticColor" => SemanticsColors,
-                "CurrentSemanticDarkColor" => SemanticsDarkColors,
-                "CurrentNeutralColor" => NeutralsColors,
-                "CurrentNeutralDarkColor" => NeutralsDarkColors,
-                _ => null
-            };
-
-            if (targetCollection is null)
-            {
-                return;
-            }
-
-            int index = targetCollection.IndexOf(currentItemColor);
-            if (index != -1)
-            {
-                targetCollection[index] = m;
-
-                SelectedItemColor = m;
-
-                OnPropertyChanged(nameof(targetCollection));
-            }
-
-            SelectedItemColor = null;
+            SelectedColorStyle = null;
         });
 
         WeakReferenceMessenger.Default.Register<PgStyleEditorViewModel, string, string>(this, "F4E5D6C7-B8A9-0B1C-D2E3-F4567890ABCD", (r, m) =>
         {
             if (m == "cancel")
             {
-                SelectedItemColor = null;
+                SelectedColorStyle = null;
             }
             IsActive = false;
         });
@@ -313,45 +303,111 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
         GetAllViews = [.. types];
     }
 
-
-    (string CurrentSectionName, ItemColor? CurrentItemColor) GetSelectedItemColor()
+    void LoadColorStylesObservableCollections()
     {
-        if (SelectedItemColor is null)
+        var defaultColorThread = new Thread(() =>
         {
-            return ("", null);
-        }
+            LoadDefaultColorStyle();
+        });
 
-        if (PrincipalsColors?.Contains(SelectedItemColor) == true)
+        var darkColorThread = new Thread(() =>
         {
-            return ("CurrentPrincipalColor", SelectedItemColor);
-        }
+            LoadDarkColorStyle();
+        });
 
-        if (PrincipalsDarkColors?.Contains(SelectedItemColor) == true)
-        {
-            return ("CurrentPrincipalDarkColor", SelectedItemColor);
-        }
+        defaultColorThread.Start();
+        darkColorThread.Start();
 
-        if (SemanticsColors?.Contains(SelectedItemColor) == true)
-        {
-            return ("CurrentSemanticColor", SelectedItemColor);
-        }
-
-        if (SemanticsDarkColors?.Contains(SelectedItemColor) == true)
-        {
-            return ("CurrentSemanticDarkColor", SelectedItemColor);
-        }
-
-        if (NeutralsColors?.Contains(SelectedItemColor) == true)
-        {
-            return ("CurrentNeutralColor", SelectedItemColor);
-        }
-
-        if (NeutralsDarkColors?.Contains(SelectedItemColor) == true)
-        {
-            return ("CurrentNeutralDarkColor", SelectedItemColor);
-        }
-
-        return ("", null);
+        defaultColorThread.Join();
+        darkColorThread.Join();
     }
+
+    void LoadDefaultColorStyle()
+    {
+        if (CurrentTemplate is null)
+        {
+            var defaultTemplate = styleTemplateServ.GetFirst();
+            if (defaultTemplate is not null)
+            {
+                DefaultColorStyle = [
+                    .. defaultTemplate!.ColorStyles!
+                            .Where(x => x.Scheme == ColorScheme.Light)
+                            .GroupBy(cs => cs.Tag)
+                ];
+            }
+        }
+        else
+        {
+            DefaultColorStyle = [
+                .. CurrentTemplate!.ColorStyles!
+                        .Where(x => x.Scheme == ColorScheme.Light)
+                        .GroupBy(cs => cs.Tag)
+            ];
+        }
+    }
+
+    void LoadDarkColorStyle()
+    {
+        if (CurrentTemplate is null)
+        {
+            var defaultTemplate = styleTemplateServ.GetFirst();
+            if (defaultTemplate is not null)
+            {
+                DarkColorStyle = [
+                    .. defaultTemplate!.ColorStyles!
+                            .Where(x => x.Scheme == ColorScheme.Dark)
+                            .GroupBy(cs => cs.Tag)
+                ];
+            }
+        }
+        else
+        {
+            DarkColorStyle = [
+                .. CurrentTemplate!.ColorStyles!
+                        .Where(x => x.Scheme == ColorScheme.Dark)
+                        .GroupBy(cs => cs.Tag)
+            ];
+        }
+    }
+
+    //(string CurrentSectionName, ColorStyle? CurrentColorStyle) GetSelectedColorStyle()
+    //{
+    //    if (SelectedColorStyle is null)
+    //    {
+    //        return ("", null);
+    //    }
+
+    //    if (PrincipalsColors?.Contains(SelectedColorStyle) == true)
+    //    {
+    //        return ("CurrentPrincipalColor", SelectedColorStyle);
+    //    }
+
+    //    if (PrincipalsDarkColors?.Contains(SelectedColorStyle) == true)
+    //    {
+    //        return ("CurrentPrincipalDarkColor", SelectedColorStyle);
+    //    }
+
+    //    if (SemanticsColors?.Contains(SelectedColorStyle) == true)
+    //    {
+    //        return ("CurrentSemanticColor", SelectedColorStyle);
+    //    }
+
+    //    if (SemanticsDarkColors?.Contains(SelectedColorStyle) == true)
+    //    {
+    //        return ("CurrentSemanticDarkColor", SelectedColorStyle);
+    //    }
+
+    //    if (NeutralsColors?.Contains(SelectedColorStyle) == true)
+    //    {
+    //        return ("CurrentNeutralColor", SelectedColorStyle);
+    //    }
+
+    //    if (NeutralsDarkColors?.Contains(SelectedColorStyle) == true)
+    //    {
+    //        return ("CurrentNeutralDarkColor", SelectedColorStyle);
+    //    }
+
+    //    return ("", null);
+    //}
     #endregion
 }

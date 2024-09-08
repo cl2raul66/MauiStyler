@@ -13,9 +13,9 @@
         <ResourceDictionary>
             <DataTemplate x:Key="styleTemplateTemplate" x:DataType="models:TemplateItem">
                 <Border
-                    Style="{StaticResource colorItemBorder}"
                     Padding="0"
-                    BackgroundColor="{StaticResource PrimaryCL}">
+                    BackgroundColor="{StaticResource PrimaryCL}"
+                    Style="{StaticResource colorItemBorder}">
                     <Grid RowDefinitions="auto,auto,*,*">
                         <Grid
                             Margin="8"
@@ -98,45 +98,45 @@
                 VerticalOptions="Center" />
             <HorizontalStackLayout Grid.Column="1" Spacing="8">
                 <Button
-                    Style="{StaticResource onlyIconButon}"
                     Command="{Binding GoToNewTemplateCommand}"
+                    Style="{StaticResource onlyIconButon}"
                     Text="{StaticResource UiAdd}"
                     ToolTipProperties.Text="Crea nuevo estilo." />
                 <Button
-                    Style="{StaticResource onlyIconButon}"
                     Command="{Binding GoToNewTemplateBasedSelectedCommand}"
                     IsEnabled="{Binding SelectedTemplate, Converter={ctk:IsNotNullConverter}}"
+                    Style="{StaticResource onlyIconButon}"
                     Text="{StaticResource FileAlt}"
                     ToolTipProperties.Text="Crea estilo a partir de la plantilla seleccionada." />
                 <Button
-                    Style="{StaticResource onlyIconButon}"
                     Command="{Binding GoToEditTemplateCommand}"
                     IsEnabled="{Binding IsEdit}"
+                    Style="{StaticResource onlyIconButon}"
                     Text="{StaticResource UiEdit}"
                     ToolTipProperties.Text="Modifica el estilo de la plantilla seleccionada." />
                 <Button
-                    Style="{StaticResource onlyIconButon}"
                     IsEnabled="False"
+                    Style="{StaticResource onlyIconButon}"
                     Text="{StaticResource UiDelete}"
                     ToolTipProperties.Text="Elimina la plantilla seleccionada." />
                 <BoxView Style="{StaticResource HorizontalElementSeparator}" />
                 <Button
-                    Style="{StaticResource onlyIconButon}"
                     Command="{Binding ExportCommand}"
                     IsEnabled="{Binding SelectedTemplate, Converter={ctk:IsNotNullConverter}}"
+                    Style="{StaticResource onlyIconButon}"
                     Text="{StaticResource ShareAlt}"
                     ToolTipProperties.Text="Exporta la plantilla a un directorio." />
                 <Button
-                    Style="{StaticResource onlyIconButon}"
                     IsEnabled="False"
                     IsVisible="{OnPlatform Android='False',
                                            Default='True'}"
+                    Style="{StaticResource onlyIconButon}"
                     Text="{StaticResource Save}"
                     ToolTipProperties.Text="Aplica la plantilla seleccionada a un proyecto." />
                 <BoxView Style="{StaticResource HorizontalElementSeparator}" />
                 <Button
-                    Style="{StaticResource onlyIconButon}"
                     Command="{Binding GoToSettingCommand}"
+                    Style="{StaticResource onlyIconButon}"
                     Text="{StaticResource UiSettings}"
                     ToolTipProperties.Text="Ajustes." />
             </HorizontalStackLayout>
