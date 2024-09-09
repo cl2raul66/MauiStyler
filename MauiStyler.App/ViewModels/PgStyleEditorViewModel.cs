@@ -58,10 +58,13 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
     ObservableCollection<IGrouping<string, ColorStyle>>? defaultColorStyle;
 
     [ObservableProperty]
+    ColorStyle? selectedDefaultColorStyle;
+
+    [ObservableProperty]
     ObservableCollection<IGrouping<string, ColorStyle>>? darkColorStyle;
 
     [ObservableProperty]
-    ColorStyle? selectedColorStyle;
+    ColorStyle? selectedDarkColorStyle;
 
     [RelayCommand]
     async Task ShowNewColorStyleForSemanticColor()
@@ -130,6 +133,8 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
         //{
         //    return;
         //}
+
+        var SelectedColorStyle = SelectedDefaultColorStyle is null ? SelectedDarkColorStyle : SelectedDefaultColorStyle;
 
         Dictionary<string, object> sendData = new()
         {
@@ -208,6 +213,22 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
                 //PrincipalsDarkColors = new(sectionsColors["PRINCIPAL"]);
             }
         }
+
+        if (e.PropertyName == nameof(SelectedDefaultColorStyle))
+        {
+            if (SelectedDefaultColorStyle is not null)
+            {
+                SelectedDarkColorStyle = null;
+            }
+        }
+
+        if (e.PropertyName == nameof(SelectedDarkColorStyle))
+        {
+            if (SelectedDarkColorStyle is not null)
+            {
+                SelectedDefaultColorStyle = null;
+            }
+        }
     }
 
     protected override void OnActivated()
@@ -218,7 +239,8 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
         {
             IsActive = false;
 
-            SelectedColorStyle = null;
+            SelectedDefaultColorStyle = null;
+            SelectedDarkColorStyle = null;
         });
 
         // EditColorStyle
@@ -279,14 +301,16 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
                 LoadDarkColorStyle();
             }
 
-            SelectedColorStyle = null;
+            SelectedDefaultColorStyle = null;
+            SelectedDarkColorStyle = null;
         });
 
         WeakReferenceMessenger.Default.Register<PgStyleEditorViewModel, string, string>(this, "F4E5D6C7-B8A9-0B1C-D2E3-F4567890ABCD", (r, m) =>
         {
             if (m == "cancel")
             {
-                SelectedColorStyle = null;
+                SelectedDefaultColorStyle = null;
+                SelectedDarkColorStyle = null;
             }
             IsActive = false;
         });

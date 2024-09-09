@@ -60,21 +60,18 @@
                     </VerticalStackLayout>
                 </Border>
             </DataTemplate>
-            <DataTemplate x:Key="ColorStyleGroupHeaderTemplate" x:DataType="model1:IGrouping(x:String, model:ColorStyle)">
-                <!--  Element  -->
+            <DataTemplate x:Key="DarkColorStyleGroupHeaderTemplate" x:DataType="model1:IGrouping(x:String, model:ColorStyle)">
                 <Label
                     FontSize="16"
                     Text="{Binding Key}"
-                    TextTransform="Uppercase">
-                    <Label.Triggers>
-                        <DataTrigger
-                            Binding="{Binding SelectedColorStyle.Scheme}"
-                            TargetType="Label"
-                            Value="Dark">
-                            <Setter Property="TextColor" Value="White" />
-                        </DataTrigger>
-                    </Label.Triggers>
-                </Label>
+                    TextColor="White"
+                    TextTransform="Uppercase" />
+            </DataTemplate>
+            <DataTemplate x:Key="DefaultColorStyleGroupHeaderTemplate" x:DataType="model1:IGrouping(x:String, model:ColorStyle)">
+                <Label
+                    FontSize="16"
+                    Text="{Binding Key}"
+                    TextTransform="Uppercase" />
             </DataTemplate>
             <GridItemsLayout
                 x:Key="ItemColorLayout"
@@ -214,14 +211,14 @@
                                 </HorizontalStackLayout>
                             </Grid>-->
                             <CollectionView
-                                x:Name="CvPrincipals"
+                                x:Name="CvDefaultColorStyle"
                                 Grid.Row="1"
-                                GroupHeaderTemplate="{StaticResource ColorStyleGroupHeaderTemplate}"
+                                GroupHeaderTemplate="{StaticResource DefaultColorStyleGroupHeaderTemplate}"
                                 IsGrouped="True"
                                 ItemTemplate="{StaticResource ItemColorTemplate}"
                                 ItemsLayout="{StaticResource ItemColorLayout}"
                                 ItemsSource="{Binding DefaultColorStyle}"
-                                SelectedItem="{Binding SelectedColorStyle}"
+                                SelectedItem="{Binding SelectedDefaultColorStyle}"
                                 SelectionChanged="CollectionView_SelectionChanged"
                                 SelectionMode="Single" />
                             <!--<CollectionView
@@ -301,14 +298,14 @@
                                 </HorizontalStackLayout>
                             </Grid>-->
                             <CollectionView
-                                x:Name="CvPrincipalsDark"
+                                x:Name="CvDarkColorStyle"
                                 Grid.Row="1"
-                                GroupHeaderTemplate="{StaticResource ColorStyleGroupHeaderTemplate}"
+                                GroupHeaderTemplate="{StaticResource DarkColorStyleGroupHeaderTemplate}"
                                 IsGrouped="True"
                                 ItemTemplate="{StaticResource ItemColorTemplate}"
                                 ItemsLayout="{StaticResource ItemColorLayout}"
                                 ItemsSource="{Binding DarkColorStyle}"
-                                SelectedItem="{Binding SelectedColorStyle}"
+                                SelectedItem="{Binding SelectedDarkColorStyle}"
                                 SelectionChanged="CollectionView_SelectionChanged"
                                 SelectionMode="Single" />
                             <!--<CollectionView
@@ -381,13 +378,29 @@
                         <BoxView Style="{StaticResource HorizontalElementSeparator}" />
                         <Button
                             Command="{Binding ShowEditColorStyleCommand}"
-                            IsEnabled="{Binding SelectedColorStyle, Converter={ctk:IsNotNullConverter}}"
                             Style="{StaticResource editButton}"
-                            ToolTipProperties.Text="Modificar selección." />
-                        <Button
-                            IsEnabled="{Binding SelectedColorStyle, Converter={ctk:IsNotNullConverter}}"
-                            Style="{StaticResource undoButton}"
-                            ToolTipProperties.Text="Restaurar color anterior" />
+                            ToolTipProperties.Text="Modificar selección.">
+                            <Button.IsEnabled>
+                                <MultiBinding>
+                                    <MultiBinding.Converter>
+                                        <ctk:VariableMultiValueConverter ConditionType="Any" Count="2" />
+                                    </MultiBinding.Converter>
+                                    <Binding Converter="{ctk:IsNotNullConverter}" Path="SelectedDefaultColorStyle" />
+                                    <Binding Converter="{ctk:IsNotNullConverter}" Path="SelectedDarkColorStyle" />
+                                </MultiBinding>
+                            </Button.IsEnabled>
+                        </Button>
+                        <Button Style="{StaticResource undoButton}" ToolTipProperties.Text="Restaurar color anterior">
+                            <Button.IsEnabled>
+                                <MultiBinding>
+                                    <MultiBinding.Converter>
+                                        <ctk:VariableMultiValueConverter ConditionType="Any" Count="2" />
+                                    </MultiBinding.Converter>
+                                    <Binding Converter="{ctk:IsNotNullConverter}" Path="SelectedDefaultColorStyle" />
+                                    <Binding Converter="{ctk:IsNotNullConverter}" Path="SelectedDarkColorStyle" />
+                                </MultiBinding>
+                            </Button.IsEnabled>
+                        </Button>
                     </HorizontalStackLayout>
                 </Grid>
             </Frame>
