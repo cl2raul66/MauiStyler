@@ -187,7 +187,7 @@
                 <Grid
                     Grid.Row="1"
                     ColumnDefinitions="*,*"
-                    ColumnSpacing="16">
+                    ColumnSpacing="8">
                     <Frame BackgroundColor="White">
                         <VerticalStackLayout Spacing="8">
                             <Label
@@ -195,21 +195,6 @@
                                 HorizontalOptions="CenterAndExpand"
                                 Text="Claro"
                                 TextTransform="Uppercase" />
-                            <!--<Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
-                                <Label
-                                    FontSize="16"
-                                    Text="Principales"
-                                    TextTransform="Uppercase"
-                                    VerticalOptions="Center" />
-                                <HorizontalStackLayout Grid.Column="1" Spacing="4">
-                            -->
-                            <!--<Button
-                                        Style="{StaticResource undoButton}"
-                                        IsEnabled="{Binding SelectedItemColor, Converter={ctk:IsNotNullConverter}}"
-                                        ToolTipProperties.Text="Restaura color anterior." />-->
-                            <!--
-                                </HorizontalStackLayout>
-                            </Grid>-->
                             <CollectionView
                                 x:Name="CvDefaultColorStyle"
                                 Grid.Row="1"
@@ -221,56 +206,6 @@
                                 SelectedItem="{Binding SelectedDefaultColorStyle}"
                                 SelectionChanged="CollectionView_SelectionChanged"
                                 SelectionMode="Single" />
-                            <!--<CollectionView
-                                Grid.Row="1" x:Name="CvPrincipals"
-                                ItemTemplate="{StaticResource ItemColorTemplate}"
-                                ItemsLayout="{StaticResource ItemColorLayout}"
-                                ItemsSource="{Binding PrincipalsColors}"
-                                SelectedItem="{Binding SelectedItemColor}"
-                                SelectionChanged="CollectionView_SelectionChanged"
-                                SelectionMode="Single" />
-                            <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
-                                <Label
-                                    FontSize="16"
-                                    Text="Semánticos"
-                                    TextTransform="Uppercase"
-                                    VerticalOptions="Center" />
-                                <HorizontalStackLayout Grid.Column="1" Spacing="4">
-                                    <Button
-                                        Style="{StaticResource addButton}"
-                                        Command="{Binding ShowNewItemColorForSemanticColorCommand}"
-                                        ToolTipProperties.Text="Nuevo" />
-                                </HorizontalStackLayout>
-                            </Grid>
-                            <CollectionView
-                                Grid.Row="1" x:Name="CvSemantics"
-                                ItemTemplate="{StaticResource ItemColorTemplate}"
-                                ItemsLayout="{StaticResource ItemColorLayout}"
-                                ItemsSource="{Binding SemanticsColors}"
-                                SelectedItem="{Binding SelectedItemColor}"
-                                SelectionChanged="CollectionView_SelectionChanged"
-                                SelectionMode="Single" />
-                            <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
-                                <Label
-                                    FontSize="16"
-                                    Text="Neutrales"
-                                    TextTransform="Uppercase"
-                                    VerticalOptions="Center" />
-                                <HorizontalStackLayout Grid.Column="1" Spacing="4">
-                                    <Button
-                                        Style="{StaticResource addButton}"
-                                        Command="{Binding ShowNewItemColorForNeutralColorCommand}"
-                                        ToolTipProperties.Text="Nuevo" />
-                                </HorizontalStackLayout>
-                            </Grid>
-                            <CollectionView
-                                Grid.Row="1" x:Name="CvNeutrals"
-                                ItemTemplate="{StaticResource ItemColorTemplate}"
-                                ItemsLayout="{StaticResource ItemColorLayout}"
-                                ItemsSource="{Binding NeutralsColors}"
-                                SelectedItem="{Binding SelectedItemColor}"
-                                SelectionChanged="CollectionView_SelectionChanged"
-                                SelectionMode="Single" />-->
                         </VerticalStackLayout>
                     </Frame>
                     <Frame Grid.Column="1" BackgroundColor="Black">
@@ -281,22 +216,6 @@
                                 Text="Oscuro"
                                 TextColor="White"
                                 TextTransform="Uppercase" />
-                            <!--<Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
-                                <Label
-                                    FontSize="16"
-                                    Text="Principales"
-                                    TextColor="White"
-                                    TextTransform="Uppercase"
-                                    VerticalOptions="Center" />
-                                <HorizontalStackLayout Grid.Column="1" Spacing="4">
-                            -->
-                            <!--<Button
-                                        Style="{StaticResource undoButton}"
-                                        IsEnabled="{Binding SelectedItemColor, Converter={ctk:IsNotNullConverter}}"
-                                        ToolTipProperties.Text="Restaurar color anterior" />-->
-                            <!--
-                                </HorizontalStackLayout>
-                            </Grid>-->
                             <CollectionView
                                 x:Name="CvDarkColorStyle"
                                 Grid.Row="1"
@@ -308,58 +227,6 @@
                                 SelectedItem="{Binding SelectedDarkColorStyle}"
                                 SelectionChanged="CollectionView_SelectionChanged"
                                 SelectionMode="Single" />
-                            <!--<CollectionView
-                                Grid.Row="1"  x:Name="CvPrincipalsDark"
-                                ItemTemplate="{StaticResource ItemColorTemplate}"
-                                ItemsLayout="{StaticResource ItemColorLayout}"
-                                ItemsSource="{Binding PrincipalsDarkColors}"
-                                SelectedItem="{Binding SelectedItemColor}"
-                                SelectionChanged="CollectionView_SelectionChanged"
-                                SelectionMode="Single" />
-                            <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
-                                <Label
-                                    FontSize="16"
-                                    Text="Semánticos"
-                                    TextColor="White"
-                                    TextTransform="Uppercase"
-                                    VerticalOptions="Center" />
-                                <HorizontalStackLayout Grid.Column="1" Spacing="4">
-                                    <Button
-                                        Style="{StaticResource addButton}"
-                                        Command="{Binding ShowNewItemColorForSemanticDarkColorCommand}"
-                                        ToolTipProperties.Text="Nuevo" />
-                                </HorizontalStackLayout>
-                            </Grid>
-                            <CollectionView
-                                Grid.Row="1" x:Name="CvSemanticsDark"
-                                ItemTemplate="{StaticResource ItemColorTemplate}"
-                                ItemsLayout="{StaticResource ItemColorLayout}"
-                                ItemsSource="{Binding SemanticsDarkColors}"
-                                SelectedItem="{Binding SelectedItemColor}"
-                                SelectionChanged="CollectionView_SelectionChanged"
-                                SelectionMode="Single" />
-                            <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
-                                <Label
-                                    FontSize="16"
-                                    Text="Neutrales"
-                                    TextColor="White"
-                                    TextTransform="Uppercase"
-                                    VerticalOptions="Center" />
-                                <HorizontalStackLayout Grid.Column="1" Spacing="4">
-                                    <Button
-                                        Style="{StaticResource addButton}"
-                                        Command="{Binding ShowNewItemColorForNeutralDarkColorCommand}"
-                                        ToolTipProperties.Text="Nuevo" />
-                                </HorizontalStackLayout>
-                            </Grid>
-                            <CollectionView
-                                Grid.Row="1" x:Name="CvNeutralsDark"
-                                ItemTemplate="{StaticResource ItemColorTemplate}"
-                                ItemsLayout="{StaticResource ItemColorLayout}"
-                                ItemsSource="{Binding NeutralsDarkColors}"
-                                SelectedItem="{Binding SelectedItemColor}"
-                                SelectionChanged="CollectionView_SelectionChanged"
-                                SelectionMode="Single" />-->
                         </VerticalStackLayout>
                     </Frame>
                 </Grid>
