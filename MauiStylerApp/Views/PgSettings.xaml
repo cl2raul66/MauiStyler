@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MauiStylerApp.Views.PgSettings"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:ctk="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:model="clr-namespace:MauiStylerApp.Models"
+    xmlns:vm="clr-namespace:MauiStylerApp.ViewModels"
+    Title="PgSettings"
+    x:DataType="vm:PgSettingsViewModel"
+    Shell.NavBarIsVisible="False">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior IsVisible="False" />
+    </Shell.BackButtonBehavior>
+
+    <Grid RowDefinitions="auto,*,auto">
+        <!--#region ENCABEZADO-->
+        <Grid
+            Padding="8,8,8,0"
+            ColumnDefinitions="*,auto"
+            ColumnSpacing="8">
+            <HorizontalStackLayout Spacing="8">
+                <Button
+                    Command="{Binding GoToBackCommand}"
+                    Style="{StaticResource OnlyIconButon}"
+                    Text="{StaticResource ico:ArrowLeft}" />
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="18"
+                    Text="Ajustes"
+                    TextTransform="Uppercase"
+                    VerticalOptions="Center" />
+            </HorizontalStackLayout>
+        </Grid>
+        <!--#endregion-->
+        <!--#region CONTENIDO-->
+        <ScrollView Grid.Row="1" Padding="8">
+            <FlexLayout AlignItems="Start">
+                <Frame Margin="0,0,8,0" WidthRequest="350">
+                    <Grid RowDefinitions="auto,304,auto" RowSpacing="8">
+                        <Label
+                            FontAttributes="Bold"
+                            Text="Paletas de colores:"
+                            TextTransform="Uppercase" />
+                        <CollectionView
+                            Grid.Row="1"
+                            ItemsSource="{Binding PaletteItems}"
+                            SelectedItem="{Binding SelectedaPaletteItem}"
+                            SelectionChanged="CollectionView_SelectionChanged"
+                            SelectionMode="Single">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="model:ColorPaletteItem">
+                                    <Border BackgroundColor="{StaticResource PrimaryCL}" Style="{StaticResource colorItemBorder}">
+                                        <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
+                                            <HorizontalStackLayout Spacing="8">
+                                                <Border
+                                                    BackgroundColor="{StaticResource SecondaryCL}"
+                                                    HeightRequest="20"
+                                                    Stroke="{StaticResource Gray500CL}"
+                                                    StrokeShape="RoundRectangle 2"
+                                                    StrokeThickness="1"
+                                                    WidthRequest="20">
+                                                    <Label
+                                                        x:Name="selectedCheckBox"
+                                                        FontFamily="icofont"
+                                                        FontSize="18"
+                                                        HorizontalOptions="Center"
+                                                        Text="{StaticResource ico:Check}"
+                                                        TextColor="White"
+                                                        VerticalOptions="Center" />
+                                                </Border>
+                                                <Label
+                                                    LineBreakMode="TailTruncation"
+                                                    Text="{Binding Name}"
+                                                    TextColor="White"
+                                                    VerticalOptions="Center" />
+                                            </HorizontalStackLayout>
+                                            <Label
+                                                Grid.Column="1"
+                                                Text="{Binding Length, StringFormat='{0} colores'}"
+                                                TextColor="White"
+                                                VerticalOptions="Center" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                        <Grid
+                            Grid.Row="2"
+                            ColumnDefinitions="*,auto"
+                            ColumnSpacing="8">
+                            <Label Text="{Binding PaletteItems.Count, StringFormat='Paletas: {0}'}" VerticalOptions="Center" />
+                            <HorizontalStackLayout Grid.Column="1" Spacing="8">
+                                <Button
+                                    Command="{Binding ImportGIMPPaletteFileCommand}"
+                                    Style="{StaticResource OnlyIconButon}"
+                                    Text="{StaticResource ico:FolderOpen}"
+                                    ToolTipProperties.Text="Importar paletas GIMP (.gpl)."
+                                    VerticalOptions="Start" />
+                                <Button
+                                    Command="{Binding DeletedPaletteCommand}"
+                                    IsEnabled="{Binding SelectedaPaletteItem, Converter={ctk:IsNotNullConverter}}"
+                                    Style="{StaticResource OnlyIconButon}"
+                                    Text="{StaticResource ico:UiDelete}"
+                                    ToolTipProperties.Text="Eliminar paleta seleccionada"
+                                    VerticalOptions="Start" />
+                            </HorizontalStackLayout>
+                        </Grid>
+                    </Grid>
+                </Frame>
+            </FlexLayout>
+        </ScrollView>
+        <!--#endregion-->
+        <!--#region PIE-->
+        <Grid Grid.Row="2" Margin="8">
+            <Label
+                FontSize="12"
+                HorizontalOptions="Center"
+                Text="by R and A Media Lab, Group"
+                VerticalOptions="Center" />
+        </Grid>
+    </Grid>
+
+</ContentPage>
