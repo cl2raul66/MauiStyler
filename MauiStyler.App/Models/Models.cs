@@ -10,6 +10,26 @@ public class TemplateItem
     public bool IsCustomTemplate { get; set; }
 }
 
+public class ColorStyleGroup : List<ColorStyle>
+{
+    public string? Key { get; private set; }
+
+    public ColorStyleGroup(string nameGroup, IEnumerable<ColorStyle> colorStyles) : base (colorStyles)
+    {
+        Key = nameGroup;
+    }
+
+    public ColorStyleGroup(string nameGroup, ColorStyle[] colorStyles) : base (colorStyles)
+    {
+        Key = nameGroup;
+    }
+
+    public ColorStyleGroup(string nameGroup, List<ColorStyle> colorStyles) : base (colorStyles)
+    {
+        Key = nameGroup;
+    }
+}
+
 public class ColorPaletteItem
 {
     public string? Name { get; set; }

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="MauiStyler.App.Views.PgNewEditItemColor"
+    x:Class="MauiStyler.App.Views.PgEditColor"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:c="clr-namespace:Microsoft.Maui.Graphics;assembly=Microsoft.Maui"
     xmlns:ctk="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:model="clr-namespace:MauiStyler.App.Models"
     xmlns:vm="clr-namespace:MauiStyler.App.ViewModels"
-    Title="NewEdit"
-    x:DataType="vm:PgNewEditItemColorViewModel"
+    Title="Edit"
+    x:DataType="vm:PgEditColorViewModel"
     Shell.NavBarIsVisible="False"
     Shell.PresentationMode="ModalAnimated"
     Style="{StaticResource modalContentPage}">
@@ -43,45 +43,20 @@
     </ContentPage.Resources>
 
     <Frame HorizontalOptions="Center" VerticalOptions="Center">
-        <Grid RowDefinitions="auto,auto,*,auto,auto" RowSpacing="8">
+        <Grid RowDefinitions="auto,*,auto,auto" RowSpacing="8">
             <!--#region ENCABEZADO-->
             <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
                 <Label
                     FontAttributes="Bold"
                     FontSize="18"
                     HorizontalOptions="Center"
-                    Text="{Binding Title}"
+                    Text="Modificar"
                     TextTransform="Uppercase"
                     VerticalOptions="Center" />
             </Grid>
-            <!--#endregion-->
+            <!--#endregion-->            
             <Grid
                 Grid.Row="1"
-                ColumnDefinitions="auto,*"
-                ColumnSpacing="8">
-                <Label Text="* Nombre:" VerticalOptions="CenterAndExpand" />
-                <Entry
-                    Grid.Column="1"
-                    Placeholder="Escriba aquí"
-                    Text="{Binding NameColor}">
-                    <Entry.Triggers>
-                        <DataTrigger
-                            Binding="{Binding CurrentSeptionName}"
-                            TargetType="Entry"
-                            Value="CurrentPrincipalColor">
-                            <Setter Property="IsEnabled" Value="False" />
-                        </DataTrigger>
-                        <DataTrigger
-                            Binding="{Binding CurrentSeptionName}"
-                            TargetType="Entry"
-                            Value="CurrentPrincipalDarkColor">
-                            <Setter Property="IsEnabled" Value="False" />
-                        </DataTrigger>
-                    </Entry.Triggers>
-                </Entry>
-            </Grid>
-            <Grid
-                Grid.Row="2"
                 ColumnDefinitions="250,250"
                 ColumnSpacing="8">
                 <!--#region PANEL IZQUIERDO-->
@@ -198,7 +173,7 @@
                 <!--#endregion-->
             </Grid>
             <VerticalStackLayout
-                Grid.Row="3"
+                Grid.Row="2"
                 MaximumWidthRequest="508"
                 Spacing="8">
                 <Grid ColumnDefinitions="auto,*" ColumnSpacing="8">
@@ -229,7 +204,7 @@
             </VerticalStackLayout>
             <!--#region pie-->
             <Grid
-                Grid.Row="4"
+                Grid.Row="3"
                 ColumnDefinitions="*,auto"
                 ColumnSpacing="8">
                 <HorizontalStackLayout IsVisible="{Binding IsVisibleInfo}" Spacing="4">

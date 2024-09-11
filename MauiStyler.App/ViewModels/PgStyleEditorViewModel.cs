@@ -55,13 +55,13 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
 
     #region COLORES
     [ObservableProperty]
-    ObservableCollection<IGrouping<string, ColorStyle>>? defaultColorStyle;
+    ObservableCollection<ColorStyleGroup>? defaultColorStyle;
 
     [ObservableProperty]
     ColorStyle? selectedDefaultColorStyle;
 
     [ObservableProperty]
-    ObservableCollection<IGrouping<string, ColorStyle>>? darkColorStyle;
+    ObservableCollection<ColorStyleGroup>? darkColorStyle;
 
     [ObservableProperty]
     ColorStyle? selectedDarkColorStyle;
@@ -77,7 +77,7 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
             //{ "CurrentSeptionName", "CurrentSemanticColor" }
         };
 
-        await Shell.Current.GoToAsync(nameof(PgNewEditItemColor), true, sendData);
+        await Shell.Current.GoToAsync(nameof(PgEditColor), true, sendData);
     }
 
     [RelayCommand]
@@ -91,7 +91,7 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
             //{ "CurrentSeptionName", "CurrentSemanticDarkColor" }
         };
 
-        await Shell.Current.GoToAsync(nameof(PgNewEditItemColor), true, sendData);
+        await Shell.Current.GoToAsync(nameof(PgEditColor), true, sendData);
     }
 
     [RelayCommand]
@@ -105,7 +105,7 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
             //{ "CurrentSeptionName", "CurrentNeutralColor" }
         };
 
-        await Shell.Current.GoToAsync(nameof(PgNewEditItemColor), true, sendData);
+        await Shell.Current.GoToAsync(nameof(PgEditColor), true, sendData);
     }
 
     [RelayCommand]
@@ -119,20 +119,13 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
             //{ "CurrentSeptionName", "CurrentNeutralDarkColor" }
         };
 
-        await Shell.Current.GoToAsync(nameof(PgNewEditItemColor), true, sendData);
+        await Shell.Current.GoToAsync(nameof(PgEditColor), true, sendData);
     }
 
     [RelayCommand]
     async Task ShowEditColorStyle()
     {
         IsActive = true;
-
-        //var (CurrentSeptionName, CurrentColorStyle) = GetSelectedColorStyle();
-
-        //if (CurrentColorStyle is null)
-        //{
-        //    return;
-        //}
 
         var SelectedColorStyle = SelectedDefaultColorStyle is null ? SelectedDarkColorStyle : SelectedDefaultColorStyle;
 
@@ -143,7 +136,7 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
             { "CurrentColorStyle", SelectedColorStyle! }
         };
 
-        await Shell.Current.GoToAsync(nameof(PgNewEditItemColor), true, sendData);
+        await Shell.Current.GoToAsync(nameof(PgEditColor), true, sendData);
     }
     #endregion
 
@@ -181,36 +174,7 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
                 && (DarkColorStyle is null || DarkColorStyle.Count == 0);
             if (!IsVisibleStyle && checkColors)
             {
-                //PrincipalsColors = [
-                //    new ItemColor() { Name = "Primary", Value = Color.Parse("#512BD4") },
-                //    new ItemColor() { Name = "Secondary", Value = Color.Parse("#2B0B98") },
-                //    new ItemColor() { Name = "Accent", Value = Color.Parse("#2B0B98") }
-                //];
-
-                //SemanticsColors = [
-                //    new ItemColor() { Name = "Error", Value = Color.Parse("#FF0000") },
-                //    new ItemColor() { Name = "Success", Value = Color.Parse("#00FF00") },
-                //    new ItemColor() { Name = "Warning", Value = Color.Parse("#FFFF00") }
-                //];
-
-                //NeutralsColors = [
-                //    new ItemColor() { Name = "Gray250", Value = Color.Parse("#E1E1E1") },
-                //    new ItemColor() { Name = "Gray500", Value = Color.Parse("#ACACAC") },
-                //    new ItemColor() { Name = "Gray750", Value = Color.Parse("#6E6E6E") }
-                //];
-                //bool result = colorStyleServ.GenerateColorTemplate([.. PrincipalsColors], [.. SemanticsColors], [.. NeutralsColors]);
-
                 LoadColorStylesObservableCollections();
-
-                //var sectionsColors = documentServ.LoadSelectedTemplate();
-
-                //NeutralsColors = new(sectionsColors["NEUTRAL"]);
-                //SemanticsColors = new(sectionsColors["SEMANTIC"]);
-                //PrincipalsColors = new(sectionsColors["PRINCIPAL"]);
-
-                //NeutralsDarkColors = new(sectionsColors["NEUTRAL"]);
-                //SemanticsDarkColors = new(sectionsColors["SEMANTIC"]);
-                //PrincipalsDarkColors = new(sectionsColors["PRINCIPAL"]);
             }
         }
 
@@ -247,51 +211,6 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
         WeakReferenceMessenger.Default.Register<PgStyleEditorViewModel, ColorStyle, string>(this, "A1B2C3D4-E5F6-7890-ABCD-EF1234567890", (r, m) =>
         {
             IsActive = false;
-            //var (currentSectionName, CurrentColorStyle) = GetSelectedColorStyle();
-
-            //if (CurrentColorStyle is null || string.IsNullOrEmpty(currentSectionName))
-            //{
-            //    return;
-            //}
-
-            //ObservableCollection<ColorStyle>? targetCollection = currentSectionName switch
-            //{
-            //    "CurrentPrincipalColor" => PrincipalsColors,
-            //    "CurrentPrincipalDarkColor" => PrincipalsDarkColors,
-            //    "CurrentSemanticColor" => SemanticsColors,
-            //    "CurrentSemanticDarkColor" => SemanticsDarkColors,
-            //    "CurrentNeutralColor" => NeutralsColors,
-            //    "CurrentNeutralDarkColor" => NeutralsDarkColors,
-            //    _ => null
-            //};
-
-            //if (targetCollection is null)
-            //{
-            //    return;
-            //}
-
-            //int index = targetCollection.IndexOf(CurrentColorStyle);
-            //if (index != -1)
-            //{
-            //    targetCollection[index] = m;
-
-            //    SelectedColorStyle = m;
-
-            //    OnPropertyChanged(nameof(targetCollection));
-            //}
-            //codigo bueno
-            //int index = -1;
-            //if (DefaultColorStyle!.IndexOf(SelectedColorStyle!) == index)
-            //{
-            //    index = DarkColorStyle!.IndexOf(SelectedColorStyle!);
-            //    DarkColorStyle[index] = m;
-            //}
-            //else
-            //{
-            //    index = DefaultColorStyle!.IndexOf(SelectedColorStyle!);
-            //    DefaultColorStyle[index] = m;
-            //}
-
             if (m.Scheme == ColorScheme.Light)
             {
                 LoadDefaultColorStyle();
@@ -353,20 +272,26 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
             var defaultTemplate = styleTemplateServ.GetFirst();
             if (defaultTemplate is not null)
             {
-                DefaultColorStyle = [
-                    .. defaultTemplate!.ColorStyles!
-                            .Where(x => x.Scheme == ColorScheme.Light)
-                            .GroupBy(cs => cs.Tag)
-                ];
+                List<ColorStyleGroup> groups = [];
+                foreach (var item in defaultTemplate!.ColorStyles!.Where(x => x.Scheme == ColorScheme.Light).GroupBy(cs => cs.Tag))
+                {
+                    var s = item.ToArray();
+                    var group = new ColorStyleGroup(item.Key!, item.ToArray());
+                    groups.Add(group);
+                }
+                DefaultColorStyle = [.. groups];
             }
         }
         else
         {
-            DefaultColorStyle = [
-                .. CurrentTemplate!.ColorStyles!
-                        .Where(x => x.Scheme == ColorScheme.Light)
-                        .GroupBy(cs => cs.Tag)
-            ];
+            List<ColorStyleGroup> groups = [];
+            foreach (var item in CurrentTemplate!.ColorStyles!.Where(x => x.Scheme == ColorScheme.Light).GroupBy(cs => cs.Tag))
+            {
+                var s = item.ToArray();
+                var group = new ColorStyleGroup(item.Key!, item.ToArray());
+                groups.Add(group);
+            }
+            DefaultColorStyle = [.. groups];
         }
     }
 
@@ -375,63 +300,26 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
         if (CurrentTemplate is null)
         {
             var defaultTemplate = styleTemplateServ.GetFirst();
-            if (defaultTemplate is not null)
+            List<ColorStyleGroup> groups = [];
+            foreach (var item in defaultTemplate!.ColorStyles!.Where(x => x.Scheme == ColorScheme.Light).GroupBy(cs => cs.Tag))
             {
-                DarkColorStyle = [
-                    .. defaultTemplate!.ColorStyles!
-                            .Where(x => x.Scheme == ColorScheme.Dark)
-                            .GroupBy(cs => cs.Tag)
-                ];
+                var s = item.ToArray();
+                var group = new ColorStyleGroup(item.Key!, item.ToArray());
+                groups.Add(group);
             }
+            DarkColorStyle = [.. groups];
         }
         else
         {
-            DarkColorStyle = [
-                .. CurrentTemplate!.ColorStyles!
-                        .Where(x => x.Scheme == ColorScheme.Dark)
-                        .GroupBy(cs => cs.Tag)
-            ];
+            List<ColorStyleGroup> groups = [];
+            foreach (var item in CurrentTemplate!.ColorStyles!.Where(x => x.Scheme == ColorScheme.Light).GroupBy(cs => cs.Tag))
+            {
+                var s = item.ToArray();
+                var group = new ColorStyleGroup(item.Key!, item.ToArray());
+                groups.Add(group);
+            }
+            DarkColorStyle = [.. groups];
         }
     }
-
-    //(string CurrentSectionName, ColorStyle? CurrentColorStyle) GetSelectedColorStyle()
-    //{
-    //    if (SelectedColorStyle is null)
-    //    {
-    //        return ("", null);
-    //    }
-
-    //    if (PrincipalsColors?.Contains(SelectedColorStyle) == true)
-    //    {
-    //        return ("CurrentPrincipalColor", SelectedColorStyle);
-    //    }
-
-    //    if (PrincipalsDarkColors?.Contains(SelectedColorStyle) == true)
-    //    {
-    //        return ("CurrentPrincipalDarkColor", SelectedColorStyle);
-    //    }
-
-    //    if (SemanticsColors?.Contains(SelectedColorStyle) == true)
-    //    {
-    //        return ("CurrentSemanticColor", SelectedColorStyle);
-    //    }
-
-    //    if (SemanticsDarkColors?.Contains(SelectedColorStyle) == true)
-    //    {
-    //        return ("CurrentSemanticDarkColor", SelectedColorStyle);
-    //    }
-
-    //    if (NeutralsColors?.Contains(SelectedColorStyle) == true)
-    //    {
-    //        return ("CurrentNeutralColor", SelectedColorStyle);
-    //    }
-
-    //    if (NeutralsDarkColors?.Contains(SelectedColorStyle) == true)
-    //    {
-    //        return ("CurrentNeutralDarkColor", SelectedColorStyle);
-    //    }
-
-    //    return ("", null);
-    //}
     #endregion
 }

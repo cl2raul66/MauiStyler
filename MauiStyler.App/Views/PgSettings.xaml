@@ -21,8 +21,8 @@
             ColumnSpacing="8">
             <HorizontalStackLayout Spacing="8">
                 <Button
-                    Style="{StaticResource onlyIconButon}"
                     Command="{Binding GoToBackCommand}"
+                    Style="{StaticResource onlyIconButon}"
                     Text="{StaticResource ArrowLeft}" />
                 <Label
                     FontAttributes="Bold"
@@ -50,7 +50,7 @@
                             SelectionMode="Single">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="model:ColorPaletteItem">
-                                    <Border Style="{StaticResource colorItemBorder}" BackgroundColor="{StaticResource PrimaryCL}">
+                                    <Border BackgroundColor="{StaticResource PrimaryCL}" Style="{StaticResource colorItemBorder}">
                                         <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
                                             <HorizontalStackLayout Spacing="8">
                                                 <Border
@@ -92,15 +92,15 @@
                             <Label Text="{Binding PaletteItems.Count, StringFormat='Paletas: {0}'}" VerticalOptions="Center" />
                             <HorizontalStackLayout Grid.Column="1" Spacing="8">
                                 <Button
-                                    Style="{StaticResource onlyIconButon}"
                                     Command="{Binding ImportGIMPPaletteFileCommand}"
+                                    Style="{StaticResource onlyIconButon}"
                                     Text="{StaticResource FolderOpen}"
                                     ToolTipProperties.Text="Importar paletas GIMP (.gpl)."
                                     VerticalOptions="Start" />
                                 <Button
-                                    Style="{StaticResource onlyIconButon}"
                                     Command="{Binding DeletedPaletteCommand}"
                                     IsEnabled="{Binding SelectedaPaletteItem, Converter={ctk:IsNotNullConverter}}"
+                                    Style="{StaticResource onlyIconButon}"
                                     Text="{StaticResource UiDelete}"
                                     ToolTipProperties.Text="Eliminar paleta seleccionada"
                                     VerticalOptions="Start" />

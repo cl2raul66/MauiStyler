@@ -2,9 +2,9 @@ using MauiStyler.App.ViewModels;
 
 namespace MauiStyler.App.Views;
 
-public partial class PgNewEditItemColor : ContentPage
+public partial class PgEditColor : ContentPage
 {
-    public PgNewEditItemColor(PgNewEditItemColorViewModel vm)
+    public PgEditColor(PgEditColorViewModel vm)
 	{
 		InitializeComponent();
 

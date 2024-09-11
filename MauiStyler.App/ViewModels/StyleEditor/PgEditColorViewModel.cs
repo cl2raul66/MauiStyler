@@ -10,11 +10,11 @@ namespace MauiStyler.App.ViewModels;
 
 [QueryProperty(nameof(SendToken), nameof(SendToken))]
 [QueryProperty(nameof(CurrentColorStyle), nameof(CurrentColorStyle))]
-public partial class PgNewEditItemColorViewModel : ObservableValidator
+public partial class PgEditColorViewModel : ObservableValidator
 {
     readonly IColorsPalettesService colorsPalettesServ;
 
-    public PgNewEditItemColorViewModel(IColorsPalettesService colorsPalettesService)
+    public PgEditColorViewModel(IColorsPalettesService colorsPalettesService)
     {
         colorsPalettesServ = colorsPalettesService;
         Palettes = [.. colorsPalettesServ.GetAll()];
@@ -68,9 +68,6 @@ public partial class PgNewEditItemColorViewModel : ObservableValidator
 
     [ObservableProperty]
     bool isDefaultColor;
-
-    [ObservableProperty]
-    string? title = "Nuevo";
 
     [ObservableProperty]
     [Required]
@@ -152,7 +149,6 @@ public partial class PgNewEditItemColorViewModel : ObservableValidator
         IsDefaultColor = value is not null;
         if (value is not null)
         {
-            Title = "Modificar";
             NameColor = value.Name;
         }
     }
