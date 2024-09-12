@@ -66,6 +66,15 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
     [ObservableProperty]
     ColorStyle? selectedDarkColorStyle;
 
+    [ObservableProperty]
+    bool hasDarkTheme;
+
+    [RelayCommand]
+    void SetEnableDisableDarkTheme()
+    {
+        HasDarkTheme = !HasDarkTheme; 
+    }
+
     [RelayCommand]
     async Task ShowNewColorStyleForSemanticColor()
     {
@@ -138,6 +147,18 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
 
         await Shell.Current.GoToAsync(nameof(PgEditColor), true, sendData);
     }
+
+    [RelayCommand]
+    async Task RestoreAllColorsToDefaults()
+    {
+        LoadDefaultColorStyle();
+        if (HasDarkTheme)
+        {
+            LoadDarkColorStyle();
+        }
+        await Task.CompletedTask;
+    }
+
     #endregion
 
     protected override void OnPropertyChanged(PropertyChangedEventArgs e)
@@ -191,6 +212,20 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
             if (SelectedDarkColorStyle is not null)
             {
                 SelectedDefaultColorStyle = null;
+            }
+        }
+
+        if (e.PropertyName == nameof(HasDarkTheme))
+        {
+            if (HasDarkTheme)
+            {
+                var darkColorThread = new Thread(LoadDarkColorStyle);
+                darkColorThread.Start();
+                darkColorThread.Join();
+            }
+            else
+            {
+                DarkColorStyle = null;
             }
         }
     }
@@ -248,21 +283,15 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
 
     void LoadColorStylesObservableCollections()
     {
-        var defaultColorThread = new Thread(() =>
-        {
-            LoadDefaultColorStyle();
-        });
+        var defaultColorThread = new Thread(LoadDefaultColorStyle);
 
-        var darkColorThread = new Thread(() =>
-        {
-            LoadDarkColorStyle();
-        });
+        //var darkColorThread = new Thread(LoadDarkColorStyle);
 
         defaultColorThread.Start();
-        darkColorThread.Start();
+        //darkColorThread.Start();
 
         defaultColorThread.Join();
-        darkColorThread.Join();
+        //darkColorThread.Join();
     }
 
     void LoadDefaultColorStyle()
@@ -301,7 +330,7 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
         {
             var defaultTemplate = styleTemplateServ.GetFirst();
             List<ColorStyleGroup> groups = [];
-            foreach (var item in defaultTemplate!.ColorStyles!.Where(x => x.Scheme == ColorScheme.Light).GroupBy(cs => cs.Tag))
+            foreach (var item in defaultTemplate!.ColorStyles!.Where(x => x.Scheme == ColorScheme.Dark).GroupBy(cs => cs.Tag))
             {
                 var s = item.ToArray();
                 var group = new ColorStyleGroup(item.Key!, item.ToArray());
@@ -312,7 +341,7 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
         else
         {
             List<ColorStyleGroup> groups = [];
-            foreach (var item in CurrentTemplate!.ColorStyles!.Where(x => x.Scheme == ColorScheme.Light).GroupBy(cs => cs.Tag))
+            foreach (var item in CurrentTemplate!.ColorStyles!.Where(x => x.Scheme == ColorScheme.Dark).GroupBy(cs => cs.Tag))
             {
                 var s = item.ToArray();
                 var group = new ColorStyleGroup(item.Key!, item.ToArray());
