@@ -2206,7 +2206,7 @@
     <x:String x:Key="ico:DuotoneicofontEnvelope">&#x13b0e;</x:String>
     <x:String x:Key="ico:Icon49">&#x13b0f;</x:String>
     <x:String x:Key="ico:DuotoneicofontEqualizer">&#x13b10;</x:String>
-    <x:String x:Key="ico:Icon50">&#x13b11;</x:String>
+    <x:String x:Key="ico:Equalizer">&#x13b11;</x:String>
     <x:String x:Key="ico:DuotoneicofontExit">&#x13b12;</x:String>
     <x:String x:Key="ico:Icon51">&#x13b13;</x:String>
     <x:String x:Key="ico:DuotoneicofontExpandFull">&#x13b14;</x:String>

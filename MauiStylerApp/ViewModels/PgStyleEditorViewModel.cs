@@ -17,10 +17,16 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
     readonly IStyleTemplateService styleTemplateServ;
     readonly IDocumentService documentServ;
 
-    public PgStyleEditorViewModel(IStyleTemplateService styleTemplateService, IDocumentService documentService)
+    public PgStyleEditorViewModel(IStyleTemplateService styleTemplateService, IDocumentService documentService, IColorsPalettesService colorsPalettesService)
     {
         styleTemplateServ = styleTemplateService;
         documentServ = documentService;
+        colorsPalettesServ = colorsPalettesService;
+        Palettes = [.. colorsPalettesServ.GetAll()];
+        if (Palettes.Count > 0)
+        {
+            SelectedPaletteItem = Palettes[0];
+        }
     }
 
     [ObservableProperty]
@@ -160,8 +166,45 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
     }
 
     #region PERSONALIZAR COLOR SELECCIONADO
+    #region PALETAS DE COLORES
+    readonly IColorsPalettesService colorsPalettesServ;
+
     [ObservableProperty]
-    Color? newColorSelected = Colors.White;
+    ObservableCollection<ColorPalette>? palettes;
+
+    [ObservableProperty]
+    ColorPalette? selectedPaletteItem;
+
+    [ObservableProperty]
+    ObservableCollection<Color>? colorsOfPalette;
+
+    [ObservableProperty]
+    Color? selectedColorOfPalette;
+
+    [ObservableProperty]
+    bool isVisibleInfo;
+
+    [RelayCommand]
+    void ShowEqualizers()
+    {
+        ColorsOfPalette = null;
+    }
+
+    [RelayCommand]
+    async Task ShowPalettes()
+    {
+        var leng = SelectedPaletteItem!.ColorsList!.Count;
+        if (leng > 42)
+        {
+
+        }
+        ColorsOfPalette = [.. SelectedPaletteItem!.ColorsList!.Values];
+        await Task.CompletedTask;
+    }
+    #endregion
+
+    [ObservableProperty]
+    Color? newColorSelected = Colors.Transparent;
 
     [ObservableProperty]
     Color? currentColor = Colors.Black;
@@ -297,10 +340,19 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
             if (IsDefaultColor)
             {
                 CurrentColor = DefaultColor;
+                NewColorSelected = Colors.White;
             }
-            else
+        }
+
+        if (e.PropertyName == nameof(NewColorSelected))
+        {
+            if (NewColorSelected is not null)
             {
-                CurrentColor = 
+                Red = (NewColorSelected.Red * 255).ToString();
+                Green = (NewColorSelected.Green * 255).ToString();
+                Blue = (NewColorSelected.Blue * 255).ToString();
+                Alpha = (NewColorSelected.Alpha * 255).ToString();
+                Hexadecimal = NewColorSelected.ToRgbaHex(true)[1..];
             }
         }
 
