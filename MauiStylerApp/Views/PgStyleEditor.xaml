@@ -179,63 +179,181 @@
             RowDefinitions="*,auto">
             <Grid ColumnDefinitions="auto,*" ColumnSpacing="8">
                 <!--#region VISTA DE ESQUEMAS DE COLORES-->
-                <Grid
-                    Grid.Row="1"
-                    ColumnDefinitions="5016,*"
-                    ColumnSpacing="8">
-                    <ScrollView>
-                        <HorizontalStackLayout Spacing="8">
-                            <!--#region PREDETERMINADO-->
-                            <Frame BackgroundColor="White" WidthRequest="250">
-                                <VerticalStackLayout Spacing="8">
+                <ScrollView>
+                    <HorizontalStackLayout Spacing="8">
+                        <!--#region PREDETERMINADO-->
+                        <Frame BackgroundColor="White" WidthRequest="250">
+                            <VerticalStackLayout Spacing="8">
+                                <Label
+                                    FontSize="16"
+                                    HorizontalOptions="CenterAndExpand"
+                                    Text="Claro"
+                                    TextTransform="Uppercase" />
+                                <CollectionView
+                                    x:Name="CvDefaultColorStyle"
+                                    Grid.Row="1"
+                                    GroupHeaderTemplate="{StaticResource DefaultColorStyleGroupHeaderTemplate}"
+                                    IsGrouped="True"
+                                    ItemTemplate="{StaticResource ItemColorTemplate}"
+                                    ItemsLayout="{StaticResource ItemColorLayout}"
+                                    ItemsSource="{Binding DefaultColorStyle}"
+                                    SelectedItem="{Binding SelectedDefaultColorStyle}"
+                                    SelectionChanged="CollectionView_SelectionChanged"
+                                    SelectionMode="Single" />
+                            </VerticalStackLayout>
+                        </Frame>
+                        <!--#endregion-->
+                        <!--#region OSCURO-->
+                        <Frame
+                            BackgroundColor="Black"
+                            IsVisible="{Binding HasDarkTheme}"
+                            WidthRequest="250">
+                            <VerticalStackLayout Spacing="8">
+                                <Label
+                                    FontSize="16"
+                                    HorizontalOptions="CenterAndExpand"
+                                    Text="Oscuro"
+                                    TextColor="White"
+                                    TextTransform="Uppercase" />
+                                <CollectionView
+                                    x:Name="CvDarkColorStyle"
+                                    Grid.Row="1"
+                                    GroupHeaderTemplate="{StaticResource DarkColorStyleGroupHeaderTemplate}"
+                                    IsGrouped="True"
+                                    ItemTemplate="{StaticResource ItemColorTemplate}"
+                                    ItemsLayout="{StaticResource ItemColorLayout}"
+                                    ItemsSource="{Binding DarkColorStyle}"
+                                    SelectedItem="{Binding SelectedDarkColorStyle}"
+                                    SelectionChanged="CollectionView_SelectionChanged"
+                                    SelectionMode="Single" />
+                            </VerticalStackLayout>
+                        </Frame>
+                        <!--#endregion-->
+                    </HorizontalStackLayout>
+                </ScrollView>
+                <!--#endregion-->
+                <!--#region HERRAMIENTAS-->
+                <ScrollView Grid.Column="1">
+                    <FlexLayout AlignItems="Start">
+                        <Frame Margin="0,0,8,0" WidthRequest="250">
+                            <VerticalStackLayout Spacing="8">
+                                <!--#region ENCABEZADO-->
+                                <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
                                     <Label
-                                        FontSize="16"
-                                        HorizontalOptions="CenterAndExpand"
-                                        Text="Claro"
-                                        TextTransform="Uppercase" />
-                                    <CollectionView
-                                        x:Name="CvDefaultColorStyle"
-                                        Grid.Row="1"
-                                        GroupHeaderTemplate="{StaticResource DefaultColorStyleGroupHeaderTemplate}"
-                                        IsGrouped="True"
-                                        ItemTemplate="{StaticResource ItemColorTemplate}"
-                                        ItemsLayout="{StaticResource ItemColorLayout}"
-                                        ItemsSource="{Binding DefaultColorStyle}"
-                                        SelectedItem="{Binding SelectedDefaultColorStyle}"
-                                        SelectionChanged="CollectionView_SelectionChanged"
-                                        SelectionMode="Single" />
-                                </VerticalStackLayout>
-                            </Frame>
-                            <!--#endregion-->
-                            <!--#region OSCURO-->
-                            <Frame
-                                BackgroundColor="Black"
-                                IsVisible="{Binding HasDarkTheme}"
-                                WidthRequest="250">
-                                <VerticalStackLayout Spacing="8">
-                                    <Label
-                                        FontSize="16"
-                                        HorizontalOptions="CenterAndExpand"
-                                        Text="Oscuro"
-                                        TextColor="White"
-                                        TextTransform="Uppercase" />
-                                    <CollectionView
-                                        x:Name="CvDarkColorStyle"
-                                        Grid.Row="1"
-                                        GroupHeaderTemplate="{StaticResource DarkColorStyleGroupHeaderTemplate}"
-                                        IsGrouped="True"
-                                        ItemTemplate="{StaticResource ItemColorTemplate}"
-                                        ItemsLayout="{StaticResource ItemColorLayout}"
-                                        ItemsSource="{Binding DarkColorStyle}"
-                                        SelectedItem="{Binding SelectedDarkColorStyle}"
-                                        SelectionChanged="CollectionView_SelectionChanged"
-                                        SelectionMode="Single" />
-                                </VerticalStackLayout>
-                            </Frame>
-                            <!--#endregion-->
-                        </HorizontalStackLayout>
-                    </ScrollView>
-                </Grid>
+                                        FontSize="18"
+                                        HorizontalOptions="Center"
+                                        Text="Modificar color"
+                                        TextTransform="Uppercase"
+                                        VerticalOptions="Center" />
+                                </Grid>
+                                <!--#endregion-->
+                                <!--#region CONTENIDO-->
+                                <Label Text="Valores :" />
+                                <Grid ColumnDefinitions="*,50" ColumnSpacing="4">
+                                    <Label Text="Rojo: (0-255)" VerticalOptions="Center" />
+                                    <Entry
+                                        Grid.Column="1"
+                                        HorizontalTextAlignment="End"
+                                        Text="{Binding Red}" />
+                                </Grid>
+                                <Grid ColumnDefinitions="*,50" ColumnSpacing="4">
+                                    <Label Text="Verde: (0-255)" VerticalOptions="Center" />
+                                    <Entry
+                                        Grid.Column="1"
+                                        HorizontalTextAlignment="End"
+                                        Text="{Binding Green}" />
+                                </Grid>
+                                <Grid ColumnDefinitions="*,50" ColumnSpacing="4">
+                                    <Label Text="Azul: (0-255)" VerticalOptions="Center" />
+                                    <Entry
+                                        Grid.Column="1"
+                                        HorizontalTextAlignment="End"
+                                        Text="{Binding Blue}" />
+                                </Grid>
+                                <Grid ColumnDefinitions="*,50" ColumnSpacing="4">
+                                    <Label Text="Alfa: (0-255)" VerticalOptions="Center" />
+                                    <Entry
+                                        Grid.Column="1"
+                                        HorizontalTextAlignment="End"
+                                        Text="{Binding Alpha}" />
+                                </Grid>
+                                <Grid ColumnDefinitions="auto,*,auto" ColumnSpacing="4">
+                                    <Label Text="Hex: #" VerticalOptions="Center" />
+                                    <Entry
+                                        Grid.Column="1"
+                                        HorizontalTextAlignment="End"
+                                        Text="{Binding Hexadecimal}" />
+                                    <Button
+                                        Grid.Column="2"
+                                        Command="{Binding SetHexColorCommand}"
+                                        FontFamily="icofont"
+                                        Style="{StaticResource OnlyIconButon}"
+                                        Text="{StaticResource ico:UiCheck}" />
+                                </Grid>
+                                <!--#region-->
+                                <Label Text="Vista previa :" />
+                                <Grid
+                                    Padding="0"
+                                    ColumnDefinitions="*,*"
+                                    RowSpacing="0">
+                                    <Border
+                                        Padding="8"
+                                        BackgroundColor="{Binding CurrentColor}"
+                                        StrokeShape="RoundRectangle 6,0,6,0"
+                                        StrokeThickness="0">
+                                        <VerticalStackLayout Spacing="0" VerticalOptions="Center">
+                                            <Label
+                                                Padding="8,4"
+                                                BackgroundColor="Black"
+                                                FontAttributes="Bold"
+                                                HorizontalOptions="Start"
+                                                Text="Anterior"
+                                                TextColor="White"
+                                                TextTransform="Uppercase" />
+                                            <Label
+                                                Padding="8,4"
+                                                BackgroundColor="Black"
+                                                FontAttributes="Bold"
+                                                HorizontalOptions="Start"
+                                                Text="{Binding CurrentColor, Converter={ctk:ColorToHexRgbaStringConverter}}"
+                                                TextColor="White"
+                                                TextTransform="Uppercase" />
+                                        </VerticalStackLayout>
+                                    </Border>
+                                    <Border
+                                        Grid.Column="1"
+                                        Padding="8"
+                                        BackgroundColor="{Binding NewColorSelected}"
+                                        StrokeShape="RoundRectangle 0,6,0,6"
+                                        StrokeThickness="0">
+                                        <VerticalStackLayout Spacing="0" VerticalOptions="Center">
+                                            <Label
+                                                Padding="8,4"
+                                                BackgroundColor="Black"
+                                                FontAttributes="Bold"
+                                                HorizontalOptions="Start"
+                                                Text="Nuevo"
+                                                TextColor="White"
+                                                TextTransform="Uppercase" />
+                                            <Label
+                                                Padding="8,4"
+                                                BackgroundColor="Black"
+                                                FontAttributes="Bold"
+                                                HorizontalOptions="Start"
+                                                Text="{Binding NewColorSelected, Converter={ctk:ColorToHexRgbaStringConverter}}"
+                                                TextColor="White"
+                                                TextTransform="Uppercase" />
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </Grid>
+                                <HorizontalStackLayout Grid.Row="2" Spacing="0">
+                                    <CheckBox Margin="0" IsChecked="{Binding IsDefaultColor}" />
+                                    <Label Text="Mantener predeterminado" VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                        </Frame>
+                    </FlexLayout>
+                </ScrollView>
                 <!--#endregion-->
             </Grid>
             <Frame Grid.Row="1" Margin="0,8,0,0">

@@ -159,6 +159,59 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
         await Task.CompletedTask;
     }
 
+    #region PERSONALIZAR COLOR SELECCIONADO
+    [ObservableProperty]
+    Color? newColorSelected = Colors.White;
+
+    [ObservableProperty]
+    Color? currentColor = Colors.Black;
+
+    [ObservableProperty]
+    string? red;
+
+    [ObservableProperty]
+    string? green;
+
+    [ObservableProperty]
+    string? blue;
+
+    [ObservableProperty]
+    string? alpha;
+
+    [ObservableProperty]
+    string? hexadecimal;
+
+    [ObservableProperty]
+    Color? defaultColor;
+
+    [ObservableProperty]
+    bool isDefaultColor;
+
+    [RelayCommand]
+    void SetHexColor()
+    {
+        if (!string.IsNullOrEmpty(Hexadecimal) && Hexadecimal.Length >= 6)
+        {
+            string argbHex = Hexadecimal;
+            if (Hexadecimal.Length == 8)
+            {
+                string a = Hexadecimal.Substring(6, 2);
+                string rgb = Hexadecimal[..6];
+
+                argbHex = a + rgb;
+            }
+
+            if (Color.TryParse("#" + argbHex, out Color vColor))
+            {
+                Red = (vColor.Red * 255).ToString();
+                Green = (vColor.Green * 255).ToString();
+                Blue = (vColor.Blue * 255).ToString();
+                Alpha = (vColor.Alpha * 255).ToString();
+                Hexadecimal = vColor.ToRgbaHex(true)[1..];
+            }
+        }
+    }
+    #endregion
     #endregion
 
     protected override void OnPropertyChanged(PropertyChangedEventArgs e)
@@ -203,6 +256,7 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
         {
             if (SelectedDefaultColorStyle is not null)
             {
+                DefaultColor = SelectedDefaultColorStyle.Value;
                 SelectedDarkColorStyle = null;
             }
         }
@@ -211,6 +265,7 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
         {
             if (SelectedDarkColorStyle is not null)
             {
+                DefaultColor = SelectedDarkColorStyle.Value;
                 SelectedDefaultColorStyle = null;
             }
         }
@@ -228,6 +283,33 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
                 DarkColorStyle = null;
             }
         }
+
+        if (e.PropertyName == nameof(DefaultColor))
+        {
+            if (DefaultColor is not null)
+            {
+                IsDefaultColor = true;
+            }            
+        }
+
+        if (e.PropertyName == nameof(IsDefaultColor))
+        {
+            if (IsDefaultColor)
+            {
+                CurrentColor = DefaultColor;
+            }
+            else
+            {
+                CurrentColor = 
+            }
+        }
+
+    }
+
+    protected override void OnPropertyChanging(System.ComponentModel.PropertyChangingEventArgs e)
+    {
+        base.OnPropertyChanging(e);
+
     }
 
     protected override void OnActivated()
