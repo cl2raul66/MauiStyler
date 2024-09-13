@@ -144,6 +144,7 @@ public partial class PgEditColorViewModel : ObservableValidator
             LastColorSelected = CurrentColorStyle.Value;
         }
     }
+
     partial void OnCurrentColorStyleChanged(ColorStyle? value)
     {
         IsDefaultColor = value is not null;
@@ -152,12 +153,14 @@ public partial class PgEditColorViewModel : ObservableValidator
             NameColor = value.Name;
         }
     }
+
     partial void OnSelectedPaletteItemChanged(ColorPalette? value)
     {
         if (value is null) return;
 
         ColorsOfPalette = [.. value.ColorsList!.Values];        
     }
+
     partial void OnColorsOfPaletteChanged(ObservableCollection<Color>? value)
     {
         if (value is not null && value.Count > 0)
@@ -165,6 +168,7 @@ public partial class PgEditColorViewModel : ObservableValidator
             SelectedColorOfPalette = value[0];
         }
     }
+
     partial void OnSelectedColorOfPaletteChanging(Color? value)
     {
         if (value is not null && !IsDefaultColor)
@@ -172,6 +176,7 @@ public partial class PgEditColorViewModel : ObservableValidator
             LastColorSelected = CurrentColor;
         }
     }
+
     partial void OnSelectedColorOfPaletteChanged(Color? value)
     {
         if (value is not null)

@@ -6,7 +6,6 @@ using MauiStylerApp.Services;
 using MauiStylerApp.Tools;
 using MauiStylerApp.Views;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 
 namespace MauiStylerApp.ViewModels;
 
@@ -78,7 +77,7 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
     [RelayCommand]
     void SetEnableDisableDarkTheme()
     {
-        HasDarkTheme = !HasDarkTheme; 
+        HasDarkTheme = !HasDarkTheme;
     }
 
     [RelayCommand]
@@ -184,6 +183,9 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
     [ObservableProperty]
     bool isVisibleInfo;
 
+    [ObservableProperty]
+    string? titleToolSelected = "Ecualizadores";
+
     [RelayCommand]
     void ShowEqualizers()
     {
@@ -196,15 +198,39 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
         var leng = SelectedPaletteItem!.ColorsList!.Count;
         if (leng > 42)
         {
-
+            ColorsOfPalette = [.. SelectedPaletteItem!.ColorsList!.Take(42).Select(x => x.Value)];
         }
-        ColorsOfPalette = [.. SelectedPaletteItem!.ColorsList!.Values];
+        else
+        {
+            ColorsOfPalette = [.. SelectedPaletteItem!.ColorsList!.Values];
+        }
         await Task.CompletedTask;
+    }
+
+    partial void OnSelectedColorOfPaletteChanging(Color? value)
+    {
+        if (value is not null && !IsDefaultColor)
+        {
+            CurrentColor = NewColorSelected;
+        }
+    }
+
+    partial void OnSelectedColorOfPaletteChanged(Color? value)
+    {
+        if (value is not null)
+        {
+            NewColorSelected = value;
+        }
+    }
+
+    partial void OnColorsOfPaletteChanged(ObservableCollection<Color>? value)
+    {
+        TitleToolSelected = value is null ? "Ecualizadores" : "Paletas";
     }
     #endregion
 
     [ObservableProperty]
-    Color? newColorSelected = Colors.Transparent;
+    Color? newColorSelected = Colors.White;
 
     [ObservableProperty]
     Color? currentColor = Colors.Black;
@@ -254,114 +280,110 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
             }
         }
     }
-    #endregion
-    #endregion
-
-    protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+    partial void OnDefaultColorChanged(Color? value)
     {
-        base.OnPropertyChanged(e);
-
-        if (e.PropertyName == nameof(IsEdit))
+        if (value is not null)
         {
-            if (!string.IsNullOrEmpty(CurrentTemplateId) && !string.IsNullOrEmpty(IsEdit))
-            {
-                Title = bool.Parse(IsEdit!) ?
-                        $"Editar tema {CurrentTemplate!.Name}"
-                        : $"Nuevo tema basado en {CurrentTemplate!.Name}";
-            }
+            IsDefaultColor = true;
         }
-
-        if (e.PropertyName == nameof(CurrentTemplateId))
-        {
-            if (!string.IsNullOrEmpty(CurrentTemplateId))
-            {
-                CurrentTemplate = styleTemplateServ.GetById(new LiteDB.ObjectId(CurrentTemplateId));
-                if (!string.IsNullOrEmpty(IsEdit))
-                {
-                    Title = bool.Parse(IsEdit!) ?
-                        $"Editar tema {CurrentTemplate!.Name}"
-                        : $"Nuevo tema basado en {CurrentTemplate!.Name}";
-                }
-            }
-        }
-
-        if (e.PropertyName == nameof(IsVisibleStyle))
-        {
-            bool checkColors = (DefaultColorStyle is null || DefaultColorStyle.Count == 0)
-                && (DarkColorStyle is null || DarkColorStyle.Count == 0);
-            if (!IsVisibleStyle && checkColors)
-            {
-                LoadColorStylesObservableCollections();
-            }
-        }
-
-        if (e.PropertyName == nameof(SelectedDefaultColorStyle))
-        {
-            if (SelectedDefaultColorStyle is not null)
-            {
-                DefaultColor = SelectedDefaultColorStyle.Value;
-                SelectedDarkColorStyle = null;
-            }
-        }
-
-        if (e.PropertyName == nameof(SelectedDarkColorStyle))
-        {
-            if (SelectedDarkColorStyle is not null)
-            {
-                DefaultColor = SelectedDarkColorStyle.Value;
-                SelectedDefaultColorStyle = null;
-            }
-        }
-
-        if (e.PropertyName == nameof(HasDarkTheme))
-        {
-            if (HasDarkTheme)
-            {
-                var darkColorThread = new Thread(LoadDarkColorStyle);
-                darkColorThread.Start();
-                darkColorThread.Join();
-            }
-            else
-            {
-                DarkColorStyle = null;
-            }
-        }
-
-        if (e.PropertyName == nameof(DefaultColor))
-        {
-            if (DefaultColor is not null)
-            {
-                IsDefaultColor = true;
-            }            
-        }
-
-        if (e.PropertyName == nameof(IsDefaultColor))
-        {
-            if (IsDefaultColor)
-            {
-                CurrentColor = DefaultColor;
-                NewColorSelected = Colors.White;
-            }
-        }
-
-        if (e.PropertyName == nameof(NewColorSelected))
-        {
-            if (NewColorSelected is not null)
-            {
-                Red = (NewColorSelected.Red * 255).ToString();
-                Green = (NewColorSelected.Green * 255).ToString();
-                Blue = (NewColorSelected.Blue * 255).ToString();
-                Alpha = (NewColorSelected.Alpha * 255).ToString();
-                Hexadecimal = NewColorSelected.ToRgbaHex(true)[1..];
-            }
-        }
-
     }
 
-    protected override void OnPropertyChanging(System.ComponentModel.PropertyChangingEventArgs e)
+    partial void OnIsDefaultColorChanged(bool value)
     {
-        base.OnPropertyChanging(e);
+        if (value)
+        {
+            CurrentColor = DefaultColor;
+            //NewColorSelected = Colors.White;
+        }
+    }
 
+    partial void OnNewColorSelectedChanged(Color? value)
+    {
+        if (value is not null)
+        {
+            Red = (value.Red * 255).ToString();
+            Green = (value.Green * 255).ToString();
+            Blue = (value.Blue * 255).ToString();
+            Alpha = (value.Alpha * 255).ToString();
+            Hexadecimal = value.ToRgbaHex(true)[1..];
+        }
+    }
+
+    partial void OnSelectedPaletteItemChanged(ColorPalette? value)
+    {
+        if (value is not null && ColorsOfPalette is not null)
+        {
+            ColorsOfPalette = null;
+            Task task = ShowPalettes();
+        }
+    }
+    #endregion
+    #endregion
+
+    partial void OnIsEditChanged(string? value)
+    {
+        if (!string.IsNullOrEmpty(CurrentTemplateId) && !string.IsNullOrEmpty(value))
+        {
+            Title = bool.Parse(value) 
+                ? $"Editar tema {CurrentTemplate!.Name}"
+                : $"Nuevo tema basado en {CurrentTemplate!.Name}";
+        }
+    }
+
+    partial void OnCurrentTemplateIdChanged(string? value)
+    {
+        if (!string.IsNullOrEmpty(value))
+        {
+            CurrentTemplate = styleTemplateServ.GetById(new LiteDB.ObjectId(value));
+            if (!string.IsNullOrEmpty(IsEdit))
+            {
+                Title = bool.Parse(IsEdit!) 
+                    ? $"Editar tema {CurrentTemplate!.Name}"
+                    : $"Nuevo tema basado en {CurrentTemplate!.Name}";
+            }
+        }
+    }
+
+    partial void OnIsVisibleStyleChanged(bool value)
+    {
+        bool checkColors = (DefaultColorStyle is null || DefaultColorStyle.Count == 0)
+                && (DarkColorStyle is null || DarkColorStyle.Count == 0);
+        if (!value && checkColors)
+        {
+            LoadColorStylesObservableCollections();
+        }
+    }
+
+    partial void OnSelectedDefaultColorStyleChanged(ColorStyle? value)
+    {
+        if (value is not null)
+        {
+            DefaultColor = value.Value;
+            SelectedDarkColorStyle = null;
+        }
+    }
+
+    partial void OnSelectedDarkColorStyleChanged(ColorStyle? value)
+    {
+        if (value is not null)
+        {
+            DefaultColor = value.Value;
+            SelectedDefaultColorStyle = null;
+        }
+    }
+
+    partial void OnHasDarkThemeChanged(bool value)
+    {
+        if (value)
+        {
+            var darkColorThread = new Thread(LoadDarkColorStyle);
+            darkColorThread.Start();
+            darkColorThread.Join();
+        }
+        else
+        {
+            DarkColorStyle = null;
+        }
     }
 
     protected override void OnActivated()

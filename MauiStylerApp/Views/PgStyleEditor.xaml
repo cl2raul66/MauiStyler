@@ -259,6 +259,15 @@
                     <FlexLayout AlignItems="Start">
                         <!--#region MODIFICAR COLOR SELECCIONADO-->
                         <Frame Margin="0,0,8,0">
+                            <Frame.IsEnabled>
+                                <MultiBinding>
+                                    <MultiBinding.Converter>
+                                        <ctk:VariableMultiValueConverter ConditionType="Any" Count="2" />
+                                    </MultiBinding.Converter>
+                                    <Binding Converter="{ctk:IsNotNullConverter}" Path="SelectedDefaultColorStyle" />
+                                    <Binding Converter="{ctk:IsNotNullConverter}" Path="SelectedDarkColorStyle" />
+                                </MultiBinding>
+                            </Frame.IsEnabled>
                             <Grid
                                 ColumnDefinitions="250,318"
                                 ColumnSpacing="8"
@@ -373,7 +382,10 @@
                                     Grid.Column="1"
                                     Spacing="8">
                                     <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
-                                        <Label Text="Titulo" TextTransform="Uppercase" />
+                                        <Label
+                                            Text="{Binding TitleToolSelected}"
+                                            TextTransform="Uppercase"
+                                            VerticalOptions="Center" />
                                         <HorizontalStackLayout Grid.Column="1" Spacing="8">
                                             <Button
                                                 Command="{Binding ShowEqualizersCommand}"
@@ -389,40 +401,68 @@
                                                 ToolTipProperties.Text="Paletas de colores" />
                                         </HorizontalStackLayout>
                                     </Grid>
+                                    <!--#region EQUALIZADOR-->
+                                    <VerticalStackLayout IsVisible="{Binding ColorsOfPalette, Converter={ctk:IsListNullOrEmptyConverter}}" Spacing="4">
+                                        <Grid ColumnDefinitions="auto,*,50" ColumnSpacing="8">
+                                            <Label
+                                                Text="T"
+                                                ToolTipProperties.Text="Tono"
+                                                VerticalOptions="Center" />
+                                            <Slider Grid.Column="1" />
+                                            <Entry Grid.Column="2" />
+                                        </Grid>
+                                        <Grid ColumnDefinitions="auto,*,50" ColumnSpacing="8">
+                                            <Label
+                                                Text="S"
+                                                ToolTipProperties.Text="Saturación"
+                                                VerticalOptions="Center" />
+                                            <Slider Grid.Column="1" />
+                                            <Entry Grid.Column="2" />
+                                        </Grid>
+                                        <Grid ColumnDefinitions="auto,*,50" ColumnSpacing="8">
+                                            <Label
+                                                Text="B"
+                                                ToolTipProperties.Text="Brillo"
+                                                VerticalOptions="Center" />
+                                            <Slider Grid.Column="1" />
+                                            <Entry Grid.Column="2" />
+                                        </Grid>
+                                    </VerticalStackLayout>
+                                    <!--#endregion-->
                                     <!--#region PALETAS-->
-                                    <Grid
-                                        ColumnDefinitions="auto,*"
-                                        ColumnSpacing="8"
-                                        IsVisible="{Binding ColorsOfPalette, Converter={ctk:IsListNotNullOrEmptyConverter}}">
-                                        <Label Text="Paletas:" VerticalOptions="Center" />
-                                        <Picker
-                                            Grid.Column="1"
-                                            ItemDisplayBinding="{Binding Name}"
-                                            ItemsSource="{Binding Palettes}"
-                                            SelectedItem="{Binding SelectedPaletteItem}" />
-                                    </Grid>
-                                    <ScrollView HeightRequest="278" IsVisible="{Binding ColorsOfPalette, Converter={ctk:IsListNotNullOrEmptyConverter}}">
-                                        <CollectionView
-                                            ItemsSource="{Binding ColorsOfPalette}"
-                                            ItemsUpdatingScrollMode="KeepItemsInView"
-                                            SelectedItem="{Binding SelectedColorOfPalette}"
-                                            SelectionChanged="CollectionView_SelectionChanged"
-                                            SelectionMode="Single">
-                                            <CollectionView.ItemsLayout>
-                                                <GridItemsLayout
-                                                    HorizontalItemSpacing="1"
-                                                    Orientation="Vertical"
-                                                    Span="7"
-                                                    VerticalItemSpacing="1" />
-                                            </CollectionView.ItemsLayout>
-                                            <CollectionView.ItemTemplate>
-                                                <DataTemplate x:DataType="Color">
-                                                    <Border BackgroundColor="{Binding .}" Style="{StaticResource colorItemPaletteBorder}" />
-                                                </DataTemplate>
-                                            </CollectionView.ItemTemplate>
-                                        </CollectionView>
-                                        <!--#endregion-->
-                                    </ScrollView>
+                                    <VerticalStackLayout IsVisible="{Binding ColorsOfPalette, Converter={ctk:IsListNotNullOrEmptyConverter}}" Spacing="4">
+                                        <Grid ColumnDefinitions="auto,*" ColumnSpacing="8">
+                                            <Label Text="Paletas:" VerticalOptions="Center" />
+                                            <Picker
+                                                Grid.Column="1"
+                                                ItemDisplayBinding="{Binding Name}"
+                                                ItemsSource="{Binding Palettes}"
+                                                SelectedItem="{Binding SelectedPaletteItem}" />
+                                        </Grid>
+                                        <ScrollView HeightRequest="278">
+                                            <CollectionView
+                                                ItemsSource="{Binding ColorsOfPalette}"
+                                                ItemsUpdatingScrollMode="KeepItemsInView"
+                                                SelectedItem="{Binding SelectedColorOfPalette}"
+                                                SelectionChanged="CollectionView_SelectionChanged"
+                                                SelectionMode="Single">
+                                                <CollectionView.ItemsLayout>
+                                                    <GridItemsLayout
+                                                        HorizontalItemSpacing="1"
+                                                        Orientation="Vertical"
+                                                        Span="7"
+                                                        VerticalItemSpacing="1" />
+                                                </CollectionView.ItemsLayout>
+                                                <CollectionView.ItemTemplate>
+                                                    <DataTemplate x:DataType="Color">
+                                                        <Border BackgroundColor="{Binding .}" Style="{StaticResource colorItemPaletteBorder}" />
+                                                    </DataTemplate>
+                                                </CollectionView.ItemTemplate>
+                                            </CollectionView>
+
+                                        </ScrollView>
+                                    </VerticalStackLayout>
+                                    <!--#endregion-->
                                 </VerticalStackLayout>
                                 <!--#endregion-->
                                 <!--#endregion-->
