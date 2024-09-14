@@ -538,7 +538,10 @@
                                             Command="{Binding ApplyChangesCommand}"
                                             Text="Aplicar"
                                             ToolTipProperties.Text="Aplica el nuevo color al color seleccionado." />
-                                        <Button Text="Cancelar" ToolTipProperties.Text="Cancela las modificaciones." />
+                                        <Button
+                                            Command="{Binding CancelColorChangeCommand}"
+                                            Text="Cancelar"
+                                            ToolTipProperties.Text="Cancela las modificaciones." />
                                     </HorizontalStackLayout>
                                 </Grid>
                                 <!--#endregion-->

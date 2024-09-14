@@ -354,6 +354,12 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
             }
         }
 
+        CancelColorChange();
+    }
+
+    [RelayCommand]
+    void CancelColorChange()
+    {
         DefaultColor = null;
         SelectedDefaultColorStyle = null;
         SelectedDarkColorStyle = null;
