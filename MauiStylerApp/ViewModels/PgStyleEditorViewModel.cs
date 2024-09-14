@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Maui.Core.Extensions;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using MauiStylerApp.Models;
@@ -21,11 +22,6 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
         styleTemplateServ = styleTemplateService;
         documentServ = documentService;
         colorsPalettesServ = colorsPalettesService;
-        Palettes = [.. colorsPalettesServ.GetAll()];
-        if (Palettes.Count > 0)
-        {
-            SelectedPaletteItem = Palettes[0];
-        }
     }
 
     [ObservableProperty]
@@ -207,6 +203,21 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
         await Task.CompletedTask;
     }
 
+    partial void OnSelectedPaletteItemChanged(ColorPalette? value)
+    {
+        if (value is not null && ColorsOfPalette is not null)
+        {
+            ColorsOfPalette = null;
+            SelectedColorOfPalette = null;
+            Task task = ShowPalettes();
+        }
+    }
+
+    partial void OnColorsOfPaletteChanged(ObservableCollection<Color>? value)
+    {
+        TitleToolSelected = value is null ? "Ecualizadores" : "Paletas";
+    }
+
     partial void OnSelectedColorOfPaletteChanging(Color? value)
     {
         if (value is not null && !IsDefaultColor)
@@ -222,30 +233,40 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
             NewColorSelected = value;
         }
     }
+    #endregion
+    #region EQUALIDADORES
+    [ObservableProperty]
+    double hue;
 
-    partial void OnColorsOfPaletteChanged(ObservableCollection<Color>? value)
+    [ObservableProperty]
+    double saturation;
+
+    [ObservableProperty]
+    double luminosity;
+
+    [RelayCommand]
+    void SetHSL()
     {
-        TitleToolSelected = value is null ? "Ecualizadores" : "Paletas";
+        NewColorSelected = Color.FromHsla(Hue / 360, Saturation / 100, Luminosity / 100, Alpha / 100);
     }
     #endregion
+    [ObservableProperty]
+    Color newColorSelected = Colors.Transparent;
 
     [ObservableProperty]
-    Color? newColorSelected = Colors.White;
+    Color currentColor = Colors.Transparent;
 
     [ObservableProperty]
-    Color? currentColor = Colors.Black;
+    double red;
 
     [ObservableProperty]
-    string? red;
+    double green;
 
     [ObservableProperty]
-    string? green;
+    double blue;
 
     [ObservableProperty]
-    string? blue;
-
-    [ObservableProperty]
-    string? alpha;
+    double alpha;
 
     [ObservableProperty]
     string? hexadecimal;
@@ -255,6 +276,30 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
 
     [ObservableProperty]
     bool isDefaultColor;
+
+    [RelayCommand]
+    void SetRedColor()
+    {
+        NewColorSelected = new((float)(Red / 255), NewColorSelected!.Green, NewColorSelected.Blue, NewColorSelected.Alpha);
+    }
+
+    [RelayCommand]
+    void SetGreenColor()
+    {
+        NewColorSelected = new(NewColorSelected!.Red, (float)(Green / 255), NewColorSelected.Blue, NewColorSelected.Alpha);
+    }
+
+    [RelayCommand]
+    void SetBlueColor()
+    {
+        NewColorSelected = new(NewColorSelected!.Red, NewColorSelected!.Green, (float)(Blue / 255), NewColorSelected.Alpha);
+    }
+
+    [RelayCommand]
+    void SetAlphaColor()
+    {
+        NewColorSelected = new(NewColorSelected!.Red, NewColorSelected!.Green, NewColorSelected.Blue, (float)(Alpha / 100));
+    }
 
     [RelayCommand]
     void SetHexColor()
@@ -272,19 +317,58 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
 
             if (Color.TryParse("#" + argbHex, out Color vColor))
             {
-                Red = (vColor.Red * 255).ToString();
-                Green = (vColor.Green * 255).ToString();
-                Blue = (vColor.Blue * 255).ToString();
-                Alpha = (vColor.Alpha * 255).ToString();
-                Hexadecimal = vColor.ToRgbaHex(true)[1..];
+                NewColorSelected = vColor;
             }
         }
     }
+
+    [RelayCommand]
+    void ApplyChanges()
+    {
+        if (CurrentTemplate is null)
+        {
+            if (SelectedDarkColorStyle is null)
+            {
+                List<ColorStyleGroup> copy = [..DefaultColorStyle!];
+                var group = copy!.FirstOrDefault(x => x.Key == SelectedDefaultColorStyle!.Tag);
+                if (group is null) return;
+                var element = group.FirstOrDefault(x => x.Name == SelectedDefaultColorStyle!.Name);
+                if (element is null) return;
+                element.Value = NewColorSelected;
+                DefaultColorStyle = [..copy];
+            }
+            else
+            {
+                LoadDarkColorStyle();
+            }
+        }
+        else
+        {
+            if (SelectedDarkColorStyle is null)
+            {
+                LoadDefaultColorStyle();
+            }
+            else
+            {
+                LoadDarkColorStyle();
+            }
+        }
+
+        DefaultColor = null;
+        SelectedDefaultColorStyle = null;
+        SelectedDarkColorStyle = null;
+    }
+
     partial void OnDefaultColorChanged(Color? value)
     {
         if (value is not null)
         {
             IsDefaultColor = true;
+            if (IsDefaultColor && !AreColorsEqual(CurrentColor, value!))
+            {
+                CurrentColor = value;
+                NewColorSelected = Colors.White;
+            }
         }
     }
 
@@ -292,29 +376,23 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
     {
         if (value)
         {
-            CurrentColor = DefaultColor;
-            //NewColorSelected = Colors.White;
+            CurrentColor = DefaultColor!;
+            NewColorSelected = Colors.White;
         }
     }
 
-    partial void OnNewColorSelectedChanged(Color? value)
+    partial void OnNewColorSelectedChanged(Color value)
     {
         if (value is not null)
         {
-            Red = (value.Red * 255).ToString();
-            Green = (value.Green * 255).ToString();
-            Blue = (value.Blue * 255).ToString();
-            Alpha = (value.Alpha * 255).ToString();
+            Red = value.GetByteRed();
+            Green = value.GetByteGreen();
+            Blue = value.GetByteBlue();
+            Alpha = value.Alpha * 100;
             Hexadecimal = value.ToRgbaHex(true)[1..];
-        }
-    }
-
-    partial void OnSelectedPaletteItemChanged(ColorPalette? value)
-    {
-        if (value is not null && ColorsOfPalette is not null)
-        {
-            ColorsOfPalette = null;
-            Task task = ShowPalettes();
+            Hue = value.GetDegreeHue();
+            Saturation = value.GetSaturation() * 100;
+            Luminosity = value.GetLuminosity() * 100;
         }
     }
     #endregion
@@ -324,7 +402,7 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
     {
         if (!string.IsNullOrEmpty(CurrentTemplateId) && !string.IsNullOrEmpty(value))
         {
-            Title = bool.Parse(value) 
+            Title = bool.Parse(value)
                 ? $"Editar tema {CurrentTemplate!.Name}"
                 : $"Nuevo tema basado en {CurrentTemplate!.Name}";
         }
@@ -337,7 +415,7 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
             CurrentTemplate = styleTemplateServ.GetById(new LiteDB.ObjectId(value));
             if (!string.IsNullOrEmpty(IsEdit))
             {
-                Title = bool.Parse(IsEdit!) 
+                Title = bool.Parse(IsEdit!)
                     ? $"Editar tema {CurrentTemplate!.Name}"
                     : $"Nuevo tema basado en {CurrentTemplate!.Name}";
             }
@@ -358,8 +436,8 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
     {
         if (value is not null)
         {
-            DefaultColor = value.Value;
             SelectedDarkColorStyle = null;
+            DefaultColor = value.Value;
         }
     }
 
@@ -367,8 +445,8 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
     {
         if (value is not null)
         {
-            DefaultColor = value.Value;
             SelectedDefaultColorStyle = null;
+            DefaultColor = value.Value;
         }
     }
 
@@ -398,23 +476,6 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
             SelectedDarkColorStyle = null;
         });
 
-        // EditColorStyle
-        WeakReferenceMessenger.Default.Register<PgStyleEditorViewModel, ColorStyle, string>(this, "A1B2C3D4-E5F6-7890-ABCD-EF1234567890", (r, m) =>
-        {
-            IsActive = false;
-            if (m.Scheme == ColorScheme.Light)
-            {
-                LoadDefaultColorStyle();
-            }
-            else
-            {
-                LoadDarkColorStyle();
-            }
-
-            SelectedDefaultColorStyle = null;
-            SelectedDarkColorStyle = null;
-        });
-
         WeakReferenceMessenger.Default.Register<PgStyleEditorViewModel, string, string>(this, "F4E5D6C7-B8A9-0B1C-D2E3-F4567890ABCD", (r, m) =>
         {
             if (m == "cancel")
@@ -435,6 +496,12 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
             .Select(t => t.Name));
 
         GetAllViews = [.. types];
+
+        Palettes = [.. colorsPalettesServ.GetAll()];
+        if (Palettes.Count > 0)
+        {
+            SelectedPaletteItem = Palettes[0];
+        }
     }
 
     void LoadColorStylesObservableCollections()
@@ -505,6 +572,14 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
             }
             DarkColorStyle = [.. groups];
         }
+    }
+
+    public static bool AreColorsEqual(Color color1, Color color2)
+    {
+        return color1.Red == color2.Red &&
+               color1.Green == color2.Green &&
+               color1.Blue == color2.Blue &&
+               color1.Alpha == color2.Alpha;
     }
     #endregion
 }

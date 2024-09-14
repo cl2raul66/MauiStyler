@@ -329,40 +329,74 @@
                                         </Border>
                                     </Grid>
                                     <Label Text="Valores rgba:" TextTransform="Uppercase" />
-                                    <Grid ColumnDefinitions="*,50" ColumnSpacing="4">
-                                        <Label Text="Rojo: (0-255)" VerticalOptions="Center" />
-                                        <Entry
+                                    <Grid ColumnDefinitions="auto,*,45" ColumnSpacing="4">
+                                        <Label
+                                            Text="R"
+                                            ToolTipProperties.Text="Rojo"
+                                            VerticalOptions="Center" />
+                                        <Slider
                                             Grid.Column="1"
+                                            DragCompletedCommand="{Binding SetRedColorCommand}"
+                                            Maximum="255"
+                                            Minimum="0"
+                                            Value="{Binding Red}" />
+                                        <Entry
+                                            Grid.Column="2"
                                             HorizontalTextAlignment="End"
-                                            Text="{Binding Red}" />
+                                            Text="{Binding Red, StringFormat='{0:F0}'}" />
                                     </Grid>
-                                    <Grid ColumnDefinitions="*,50" ColumnSpacing="4">
-                                        <Label Text="Verde: (0-255)" VerticalOptions="Center" />
-                                        <Entry
+                                    <Grid ColumnDefinitions="auto,*,45" ColumnSpacing="4">
+                                        <Label
+                                            Text="G"
+                                            ToolTipProperties.Text="Verde"
+                                            VerticalOptions="Center" />
+                                        <Slider
                                             Grid.Column="1"
+                                            DragCompletedCommand="{Binding SetGreenColorCommand}"
+                                            Maximum="255"
+                                            Minimum="0"
+                                            Value="{Binding Green}" />
+                                        <Entry
+                                            Grid.Column="2"
                                             HorizontalTextAlignment="End"
-                                            Text="{Binding Green}" />
+                                            Text="{Binding Green, StringFormat='{0:F0}'}" />
                                     </Grid>
-                                    <Grid ColumnDefinitions="*,50" ColumnSpacing="4">
-                                        <Label Text="Azul: (0-255)" VerticalOptions="Center" />
-                                        <Entry
+                                    <Grid ColumnDefinitions="auto,*,45" ColumnSpacing="4">
+                                        <Label
+                                            Text="B"
+                                            ToolTipProperties.Text="Azúl"
+                                            VerticalOptions="Center" />
+                                        <Slider
                                             Grid.Column="1"
+                                            DragCompletedCommand="{Binding SetBlueColorCommand}"
+                                            Maximum="255"
+                                            Minimum="0"
+                                            Value="{Binding Blue}" />
+                                        <Entry
+                                            Grid.Column="2"
                                             HorizontalTextAlignment="End"
-                                            Text="{Binding Blue}" />
+                                            Text="{Binding Blue, StringFormat='{0:F0}'}" />
                                     </Grid>
-                                    <Grid ColumnDefinitions="*,50" ColumnSpacing="4">
-                                        <Label Text="Alfa: (0-255)" VerticalOptions="Center" />
-                                        <Entry
+                                    <Grid ColumnDefinitions="auto,*,45" ColumnSpacing="4">
+                                        <Label
+                                            Text="A"
+                                            ToolTipProperties.Text="Alfa"
+                                            VerticalOptions="Center" />
+                                        <Slider
                                             Grid.Column="1"
+                                            DragCompletedCommand="{Binding SetAlphaColorCommand}"
+                                            Maximum="100"
+                                            Minimum="0"
+                                            Value="{Binding Alpha}" />
+                                        <Entry
+                                            Grid.Column="2"
                                             HorizontalTextAlignment="End"
-                                            Text="{Binding Alpha}" />
+                                            Text="{Binding Alpha, StringFormat='{0:F0}'}"
+                                            ToolTipProperties.Text="{Binding Alpha, StringFormat='{0:F0}%'}" />
                                     </Grid>
                                     <Grid ColumnDefinitions="auto,*,auto" ColumnSpacing="4">
-                                        <Label Text="Hex: #" VerticalOptions="Center" />
-                                        <Entry
-                                            Grid.Column="1"
-                                            HorizontalTextAlignment="End"
-                                            Text="{Binding Hexadecimal}" />
+                                        <Label Text="Hex (RGBA): #" VerticalOptions="Center" />
+                                        <Entry Grid.Column="1" Text="{Binding Hexadecimal}" />
                                         <Button
                                             Grid.Column="2"
                                             Command="{Binding SetHexColorCommand}"
@@ -403,29 +437,44 @@
                                     </Grid>
                                     <!--#region EQUALIZADOR-->
                                     <VerticalStackLayout IsVisible="{Binding ColorsOfPalette, Converter={ctk:IsListNullOrEmptyConverter}}" Spacing="4">
-                                        <Grid ColumnDefinitions="auto,*,50" ColumnSpacing="8">
+                                        <Grid ColumnDefinitions="auto,*,50" ColumnSpacing="4">
                                             <Label
-                                                Text="T"
+                                                Text="H"
                                                 ToolTipProperties.Text="Tono"
                                                 VerticalOptions="Center" />
-                                            <Slider Grid.Column="1" />
-                                            <Entry Grid.Column="2" />
+                                            <Slider
+                                                Grid.Column="1"
+                                                DragCompletedCommand="{Binding SetHSLCommand}"
+                                                Maximum="360"
+                                                Minimum="0"
+                                                Value="{Binding Hue}" />
+                                            <Entry Grid.Column="2" Text="{Binding Hue, StringFormat='{0:F0}'}" />
                                         </Grid>
-                                        <Grid ColumnDefinitions="auto,*,50" ColumnSpacing="8">
+                                        <Grid ColumnDefinitions="auto,*,50" ColumnSpacing="4">
                                             <Label
                                                 Text="S"
                                                 ToolTipProperties.Text="Saturación"
                                                 VerticalOptions="Center" />
-                                            <Slider Grid.Column="1" />
-                                            <Entry Grid.Column="2" />
+                                            <Slider
+                                                Grid.Column="1"
+                                                DragCompletedCommand="{Binding SetHSLCommand}"
+                                                Maximum="100"
+                                                Minimum="0"
+                                                Value="{Binding Saturation}" />
+                                            <Entry Grid.Column="2" Text="{Binding Saturation, StringFormat='{0:F0}'}" />
                                         </Grid>
-                                        <Grid ColumnDefinitions="auto,*,50" ColumnSpacing="8">
+                                        <Grid ColumnDefinitions="auto,*,50" ColumnSpacing="4">
                                             <Label
-                                                Text="B"
+                                                Text="L"
                                                 ToolTipProperties.Text="Brillo"
                                                 VerticalOptions="Center" />
-                                            <Slider Grid.Column="1" />
-                                            <Entry Grid.Column="2" />
+                                            <Slider
+                                                Grid.Column="1"
+                                                DragCompletedCommand="{Binding SetHSLCommand}"
+                                                Maximum="100"
+                                                Minimum="0"
+                                                Value="{Binding Luminosity}" />
+                                            <Entry Grid.Column="2" Text="{Binding Luminosity, StringFormat='{0:F0}'}" />
                                         </Grid>
                                     </VerticalStackLayout>
                                     <!--#endregion-->
@@ -486,6 +535,7 @@
                                     <HorizontalStackLayout Grid.Column="1" Spacing="8">
                                         <Button
                                             BackgroundColor="{StaticResource AccentCL}"
+                                            Command="{Binding ApplyChangesCommand}"
                                             Text="Aplicar"
                                             ToolTipProperties.Text="Aplica el nuevo color al color seleccionado." />
                                         <Button Text="Cancelar" ToolTipProperties.Text="Cancela las modificaciones." />
