@@ -302,6 +302,12 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
     }
 
     [RelayCommand]
+    void SetStateForIsDefaultColor()
+    {
+        IsDefaultColor = !IsDefaultColor;
+    }
+
+    [RelayCommand]
     void SetHexColor()
     {
         if (!string.IsNullOrEmpty(Hexadecimal) && Hexadecimal.Length >= 6)

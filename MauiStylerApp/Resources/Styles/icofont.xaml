@@ -368,7 +368,7 @@
     <x:String x:Key="ico:LiveSupport">&#xef77;</x:String>
     <x:String x:Key="ico:LocationArrow">&#xef78;</x:String>
     <x:String x:Key="ico:LocationPin">&#xef79;</x:String>
-    <x:String x:Key="ico:Lock">&#xef7a;</x:String>
+    <x:String x:Key="ico:Lock1">&#xef7a;</x:String>
     <x:String x:Key="ico:Login">&#xef7b;</x:String>
     <x:String x:Key="ico:Lollipop">&#xef7d;</x:String>
     <x:String x:Key="ico:LongDrive">&#xef7e;</x:String>
@@ -528,8 +528,8 @@
     <x:String x:Key="ico:Transparent">&#xf017;</x:String>
     <x:String x:Key="ico:Tree">&#xf018;</x:String>
     <x:String x:Key="ico:UniqueIdea">&#xf019;</x:String>
-    <x:String x:Key="ico:Unlock">&#xf01a;</x:String>
-    <x:String x:Key="ico:Unlocked">&#xf01b;</x:String>
+    <x:String x:Key="ico:Unlock1">&#xf01a;</x:String>
+    <x:String x:Key="ico:Unlocked1">&#xf01b;</x:String>
     <x:String x:Key="ico:UploadAlt">&#xf01c;</x:String>
     <x:String x:Key="ico:Upload">&#xf01d;</x:String>
     <x:String x:Key="ico:UsbDrive">&#xf01e;</x:String>
@@ -2275,6 +2275,7 @@
     <x:String x:Key="ico:DuotoneicofontLocation">&#x13b56;</x:String>
     <x:String x:Key="ico:Icon82">&#x13b57;</x:String>
     <x:String x:Key="ico:DuotoneicofontLock">&#x13b58;</x:String>
+    <x:String x:Key="ico:Lock">&#x13b59;</x:String>
     <x:String x:Key="ico:DuotoneicofontLogs">&#x13bd5;</x:String>
     <x:String x:Key="ico:Icon83">&#x13bd6;</x:String>
     <x:String x:Key="ico:DuotoneicofontLoop">&#x13b5a;</x:String>
@@ -2394,7 +2395,7 @@
     <x:String x:Key="ico:DuotoneicofontToggleOn">&#x13cfa;</x:String>
     <x:String x:Key="ico:Icon138">&#x13cfb;</x:String>
     <x:String x:Key="ico:DuotoneicofontUnlock">&#x13bd2;</x:String>
-    <x:String x:Key="ico:Icon139">&#x13bd3;</x:String>
+    <x:String x:Key="ico:Unlock">&#x13bd3;</x:String>
     <x:String x:Key="ico:DuotoneicofontUnpublish">&#x13cfe;</x:String>
     <x:String x:Key="ico:Icon140">&#x13cff;</x:String>
     <x:String x:Key="ico:DuotoneicofontUserNotes">&#x13bd7;</x:String>

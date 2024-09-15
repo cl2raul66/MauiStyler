@@ -404,9 +404,28 @@
                                             Style="{StaticResource OnlyIconButon}"
                                             Text="{StaticResource ico:UiCheck}" />
                                     </Grid>
-                                    <HorizontalStackLayout Grid.Row="2" Spacing="0">
-                                        <CheckBox Margin="0" IsChecked="{Binding IsDefaultColor}" />
-                                        <Label Text="Mantener predeterminado" VerticalOptions="Center" />
+                                    <HorizontalStackLayout Grid.Row="2" Spacing="4">
+                                        <Button Command="{Binding SetStateForIsDefaultColorCommand}" Style="{StaticResource OnlyIconButon}">
+                                            <Button.Triggers>
+                                                <DataTrigger
+                                                    Binding="{Binding IsDefaultColor}"
+                                                    TargetType="Button"
+                                                    Value="True">
+                                                    <Setter Property="Text" Value="{StaticResource ico:UiLock}" />
+                                                    <Setter Property="BackgroundColor" Value="{StaticResource AccentCL}" />
+                                                    <Setter Property="ToolTipProperties.Text" Value="Concervar referencia del color predeterminado" />
+                                                </DataTrigger>
+                                                <DataTrigger
+                                                    Binding="{Binding IsDefaultColor}"
+                                                    TargetType="Button"
+                                                    Value="False">
+                                                    <Setter Property="Text" Value="{StaticResource ico:UiUnlock}" />
+                                                    <Setter Property="BackgroundColor" Value="{StaticResource PrimaryCL}" />
+                                                    <Setter Property="ToolTipProperties.Text" Value="Quiar bloqueo de referencia del color predeterminado" />
+                                                </DataTrigger>
+                                            </Button.Triggers>
+                                        </Button>
+                                        <Button Style="{StaticResource OnlyIconButon}" Text="{StaticResource ico:Stamp}" />
                                     </HorizontalStackLayout>
                                 </VerticalStackLayout>
                                 <!--#endregion-->
