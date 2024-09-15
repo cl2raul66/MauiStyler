@@ -329,6 +329,12 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
     }
 
     [RelayCommand]
+    void CloneCurrentColor()
+    {
+        NewColorSelected = CurrentColor;
+    }
+
+    [RelayCommand]
     void ApplyChanges()
     {
         if (CurrentTemplate is null)

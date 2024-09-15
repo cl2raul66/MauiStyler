@@ -2196,7 +2196,7 @@
     <x:String x:Key="ico:DuotoneicofontDownload">&#x13b08;</x:String>
     <x:String x:Key="ico:Icon44">&#x13b09;</x:String>
     <x:String x:Key="ico:DuotoneicofontDuplicateAlt">&#x13d0d;</x:String>
-    <x:String x:Key="ico:Icon45">&#x13d0e;</x:String>
+    <x:String x:Key="ico:DuplicateAlt">&#x13d0e;</x:String>
     <x:String x:Key="ico:DuotoneicofontDuplicate">&#x13d0f;</x:String>
     <x:String x:Key="ico:Icon46">&#x13d10;</x:String>
     <x:String x:Key="ico:DuotoneicofontEnvelopeBadge">&#x13b0a;</x:String>

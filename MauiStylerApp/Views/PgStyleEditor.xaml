@@ -412,8 +412,8 @@
                                                     TargetType="Button"
                                                     Value="True">
                                                     <Setter Property="Text" Value="{StaticResource ico:UiLock}" />
-                                                    <Setter Property="BackgroundColor" Value="{StaticResource AccentCL}" />
-                                                    <Setter Property="ToolTipProperties.Text" Value="Concervar referencia del color predeterminado" />
+                                                    <Setter Property="Opacity" Value="0.8" />
+                                                    <Setter Property="ToolTipProperties.Text" Value="Concervar referencia del color predeterminado." />
                                                 </DataTrigger>
                                                 <DataTrigger
                                                     Binding="{Binding IsDefaultColor}"
@@ -421,11 +421,15 @@
                                                     Value="False">
                                                     <Setter Property="Text" Value="{StaticResource ico:UiUnlock}" />
                                                     <Setter Property="BackgroundColor" Value="{StaticResource PrimaryCL}" />
-                                                    <Setter Property="ToolTipProperties.Text" Value="Quiar bloqueo de referencia del color predeterminado" />
+                                                    <Setter Property="ToolTipProperties.Text" Value="Quiar bloqueo de referencia del color predeterminado." />
                                                 </DataTrigger>
                                             </Button.Triggers>
                                         </Button>
-                                        <Button Style="{StaticResource OnlyIconButon}" Text="{StaticResource ico:Stamp}" />
+                                        <Button
+                                            Command="{Binding CloneCurrentColorCommand}"
+                                            Style="{StaticResource OnlyIconButon}"
+                                            Text="{StaticResource ico:PenaltyCard}"
+                                            ToolTipProperties.Text="Duplicar color anterior en nuevo." />
                                     </HorizontalStackLayout>
                                 </VerticalStackLayout>
                                 <!--#endregion-->
@@ -577,7 +581,7 @@
                         <Button
                             Command="{Binding SetEnableDisableDarkThemeCommand}"
                             Style="{StaticResource OnlyIconButon}"
-                            Text="{StaticResource ico:DuotoneicofontDarkMode}"
+                            Text="{StaticResource ico:Moon}"
                             ToolTipProperties.Text="Usar tema de colores oscuro.">
                             <Button.Triggers>
                                 <DataTrigger
