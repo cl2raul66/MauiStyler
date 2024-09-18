@@ -1,0 +1,32 @@
+{
+  "TargetTypes": [
+    "ActivityIndicator",
+    "IndicatorView",
+    "Border",
+    "Button",
+    "CheckBox",
+    "DatePicker",
+    "Editor",
+    "Entry",
+    "Frame",
+    "ImageButton",
+    "Label",
+    "Span",
+    "ListView",
+    "Picker",
+    "ProgressBar",
+    "RadioButton",
+    "RefreshView",
+    "SearchBar",
+    "SearchHandler",
+    "Shadow",
+    "Slider",
+    "SwipeItem",
+    "Switch",
+    "TimePicker",
+    "Page",
+    "Shell",
+    "NavigationPage",
+    "TabbedPage"
+  ]
+}

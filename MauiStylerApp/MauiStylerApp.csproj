@@ -51,6 +51,9 @@
     <!--<MauiLanguages Include="Resources\Languages\**" />-->
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Resources\Raw\targettypes.json" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="CommunityToolkit.Maui" Version="9.0.3" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
     <PackageReference Include="LiteDB" Version="5.0.21" />

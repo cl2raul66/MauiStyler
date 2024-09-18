@@ -1,4 +1,6 @@
-﻿using CommunityToolkit.Maui.Core.Extensions;
+﻿// Ignore Spelling: styleable
+
+using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -16,12 +18,16 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
 {
     readonly IStyleTemplateService styleTemplateServ;
     readonly IDocumentService documentServ;
+    readonly IStyleableComponentsService styleableComponentsServ;
+    readonly ITargetTypeService targetTypeServ;
 
-    public PgStyleEditorViewModel(IStyleTemplateService styleTemplateService, IDocumentService documentService, IColorsPalettesService colorsPalettesService)
+    public PgStyleEditorViewModel(IStyleTemplateService styleTemplateService, IDocumentService documentService, IColorsPalettesService colorsPalettesService, IStyleableComponentsService styleableComponentsService, ITargetTypeService targetTypeService)
     {
         styleTemplateServ = styleTemplateService;
         documentServ = documentService;
         colorsPalettesServ = colorsPalettesService;
+        styleableComponentsServ = styleableComponentsService;
+        targetTypeServ = targetTypeService;
     }
 
     [ObservableProperty]
@@ -32,9 +38,6 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
 
     [ObservableProperty]
     string? isEdit;
-
-    [ObservableProperty]
-    ObservableCollection<string>? getAllViews;
 
     [ObservableProperty]
     string? title = "Nuevo tema";
@@ -54,6 +57,14 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
         await Shell.Current.GoToAsync("..", true);
     }
 
+    #region ESTILOS
+    [ObservableProperty]
+    ObservableCollection<string>? getControls;
+
+    [ObservableProperty]
+    string? selectedControl;
+
+    #endregion
     #region COLORES
     [ObservableProperty]
     ObservableCollection<ColorStyleGroup>? defaultColorStyle;
@@ -341,13 +352,13 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
         {
             if (SelectedDarkColorStyle is null)
             {
-                List<ColorStyleGroup> copy = [..DefaultColorStyle!];
+                List<ColorStyleGroup> copy = [.. DefaultColorStyle!];
                 var group = copy!.FirstOrDefault(x => x.Key == SelectedDefaultColorStyle!.Tag);
                 if (group is null) return;
                 var element = group.FirstOrDefault(x => x.Name == SelectedDefaultColorStyle!.Name);
                 if (element is null) return;
                 element.Value = NewColorSelected;
-                DefaultColorStyle = [..copy];
+                DefaultColorStyle = [.. copy];
             }
             else
             {
@@ -508,18 +519,14 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
     #region EXTRA
     public async void InitializerPropertyAsync()
     {
-        var assembly = typeof(View).Assembly;
-        var types = await Task.Run(() => assembly.GetTypes()
-            .Where(t => t.IsSubclassOf(typeof(View)) && t.Namespace == "Microsoft.Maui.Controls")
-            .Select(t => t.Name));
-
-        GetAllViews = [.. types];
+        GetControls = [.. targetTypeServ.GetTargetTypeNames()];
 
         Palettes = [.. colorsPalettesServ.GetAll()];
         if (Palettes.Count > 0)
         {
             SelectedPaletteItem = Palettes[0];
         }
+        await Task.CompletedTask;
     }
 
     void LoadColorStylesObservableCollections()

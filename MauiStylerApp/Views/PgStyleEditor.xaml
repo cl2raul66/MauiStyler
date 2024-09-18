@@ -191,7 +191,58 @@
         </Frame>
         <!--#endregion-->
         <!--#region ESTILOS-->
-        <Grid Grid.Row="2" IsVisible="{Binding IsVisibleStyle}" />
+        <Grid
+            Grid.Row="2"
+            Margin="8"
+            IsVisible="{Binding IsVisibleStyle}"
+            RowDefinitions="*,auto">
+            <Grid ColumnDefinitions="auto,*" ColumnSpacing="8">
+                <Grid RowDefinitions="auto,*" RowSpacing="8">
+                    <Label Text="Sin estilizar:" TextTransform="Uppercase" />
+                    <ScrollView Grid.Row="1">
+                        <CollectionView
+                            ItemsSource="{Binding GetControls}"
+                            SelectedItem="{Binding SelectedControl}"
+                            SelectionMode="Single">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BackgroundColor="{StaticResource PrimaryCL}" Style="{StaticResource colorItemBorder}">
+                                        <Grid ColumnDefinitions="*,auto" ColumnSpacing="4">
+                                            <Label
+                                                Padding="4,2"
+                                                FontFamily="iosevkaRegular"
+                                                FontSize="16"
+                                                HorizontalOptions="Start"
+                                                Text="{Binding .}"
+                                                TextColor="{StaticResource ForegroundCL}"
+                                                TextTransform="Uppercase"
+                                                VerticalOptions="Center" />
+                                            <Border
+                                                Grid.Column="1"
+                                                BackgroundColor="{StaticResource BackgroundCL}"
+                                                HeightRequest="20"
+                                                Stroke="{StaticResource Gray500CL}"
+                                                StrokeShape="RoundRectangle 2"
+                                                StrokeThickness="1"
+                                                WidthRequest="20">
+                                                <Label
+                                                    x:Name="selectedCheckBox"
+                                                    FontFamily="icofont"
+                                                    FontSize="18"
+                                                    HorizontalOptions="Center"
+                                                    Text="{StaticResource ico:Check}"
+                                                    TextColor="{StaticResource ForegroundCL}"
+                                                    VerticalOptions="Center" />
+                                            </Border>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </ScrollView>
+                </Grid>
+            </Grid>
+        </Grid>
         <!--#endregion-->
         <!--#region COLORES-->
         <Grid
@@ -257,6 +308,10 @@
                 <!--#region HERRAMIENTAS-->
                 <ScrollView Grid.Column="1">
                     <FlexLayout AlignItems="Start">
+                        <!--<StructuredItemsView/>
+                        <SelectableItemsView/>
+                        <GroupableItemsView/>
+                        <ReorderableItemsView/>-->
                         <!--#region MODIFICAR COLOR SELECCIONADO-->
                         <Frame Margin="0,0,8,0">
                             <Frame.IsEnabled>
