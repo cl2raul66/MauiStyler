@@ -88,6 +88,9 @@
     <MauiXaml Update="Resources\Localization\Language.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
+    <MauiXaml Update="Views\PgLayouts.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
     <MauiXaml Update="Views\PgMain.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>

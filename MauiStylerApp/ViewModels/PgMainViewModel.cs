@@ -7,9 +7,9 @@ namespace MauiStylerApp.ViewModels;
 public partial class PgMainViewModel : ObservableObject
 {
     [RelayCommand]
-    async Task GoToSetting()
+    async Task GoToLayouts()
     {
-        await Shell.Current.GoToAsync(nameof(PgSettings), true);
+        await Shell.Current.GoToAsync(nameof(PgLayouts), true);
     }
 
     [RelayCommand]
@@ -23,7 +23,14 @@ public partial class PgMainViewModel : ObservableObject
     {
         await Shell.Current.GoToAsync($"{nameof(PgThemes)}/{nameof(PgStyleEditor)}", true);
     }
+
+    [RelayCommand]
+    async Task GoToSetting()
+    {
+        await Shell.Current.GoToAsync(nameof(PgSettings), true);
+    }
+
     #region EXTRA
-    
+
     #endregion
 }

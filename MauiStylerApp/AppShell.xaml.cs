@@ -12,5 +12,6 @@ public partial class AppShell : Shell
         Routing.RegisterRoute(nameof(PgThemes), typeof(PgThemes));
         Routing.RegisterRoute(nameof(PgStyleEditor), typeof(PgStyleEditor));
         Routing.RegisterRoute(nameof(PgEditColor), typeof(PgEditColor));
+        Routing.RegisterRoute(nameof(PgLayouts), typeof(PgLayouts));
     }
 }

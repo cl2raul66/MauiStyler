@@ -34,6 +34,7 @@ public static class MauiProgram
         builder.Services.AddTransient<PgThemes, PgThemesViewModel>();
         builder.Services.AddTransient<PgStyleEditor, PgStyleEditorViewModel>();
         builder.Services.AddTransient<PgEditColor, PgEditColorViewModel>();
+        builder.Services.AddTransient<PgLayouts, PgLayoutsViewModel>();
 
 #if DEBUG
 		builder.Logging.AddDebug();

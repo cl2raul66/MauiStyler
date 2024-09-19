@@ -5,8 +5,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <x:String x:Key="lang:PgMain_LbTitle">Main</x:String>
-    <x:String x:Key="lang:PgMain_BtnNavModels">Models</x:String>
-    <x:String x:Key="lang:PgMain_TtBtnNavModels">Goes to the models page.</x:String>
+    <x:String x:Key="lang:PgMain_BtnNavModels">Layouts</x:String>
+    <x:String x:Key="lang:PgMain_TtBtnNavModels">Goes to the layouts page.</x:String>
     <x:String x:Key="lang:PgMain_BtnNavThemes">Themes</x:String>
     <x:String x:Key="lang:PgMain_TtBtnNavThemes">Goes to the themes page.</x:String>
     <x:String x:Key="lang:PgMain_TtBtnSetting">Goes to the settings page.</x:String>
@@ -16,8 +16,8 @@
     <x:String x:Key="lang:PgMain_TtBtnEditProject">Edit the selected project.</x:String>
     <x:String x:Key="lang:PgMain_TtBtnDeletedProject">Delete the selected project.</x:String>
     <x:String x:Key="lang:PgMain_TtBtnGeneratedProjectMaui">Create .NET MAUI project based on the selected project.</x:String>
-    <x:String x:Key="lang:PgMain_BtnNewModel">New model</x:String>
-    <x:String x:Key="lang:PgMain_TtBtnNewModel">Create new model.</x:String>
+    <x:String x:Key="lang:PgMain_BtnNewModel">New layout</x:String>
+    <x:String x:Key="lang:PgMain_TtBtnNewModel">Create new layout.</x:String>
     <x:String x:Key="lang:PgMain_BtnNewTheme">New theme</x:String>
     <x:String x:Key="lang:PgMain_TtBtnNewTheme">Create new theme.</x:String>
 
