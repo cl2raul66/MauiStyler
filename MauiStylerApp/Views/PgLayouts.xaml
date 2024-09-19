@@ -97,11 +97,12 @@
                 <Button
                     Command="{Binding GoToMainCommand}"
                     Style="{StaticResource OnlyIconButon}"
-                    Text="{StaticResource ico:UiHome}" />
+                    Text="{StaticResource ico:UiHome}"
+                    ToolTipProperties.Text="{StaticResource lang:PgLayouts_TtBtnGoToMain}" />
                 <Label
                     FontAttributes="Bold"
                     FontSize="18"
-                    Text="Diseños"
+                    Text="{StaticResource lang:PgLayouts_LbTitle}"
                     TextTransform="Uppercase"
                     VerticalOptions="Center" />
             </HorizontalStackLayout>
@@ -109,28 +110,28 @@
                 <Button
                     Style="{StaticResource OnlyIconButon}"
                     Text="{StaticResource ico:UiAdd}"
-                    ToolTipProperties.Text="{StaticResource lang:PgMain_BtnNewTheme}" />
+                    ToolTipProperties.Text="{StaticResource lang:PgLayouts_TtBtnNewLayout}" />
                 <Button
                     Style="{StaticResource OnlyIconButon}"
                     Text="{StaticResource ico:FileAlt}"
-                    ToolTipProperties.Text="Crea estilo a partir de la plantilla seleccionada." />
+                    ToolTipProperties.Text="{StaticResource lang:PgLayouts_TtBtnNewLayoutFromAnother}" />
                 <Button
                     Style="{StaticResource OnlyIconButon}"
                     Text="{StaticResource ico:UiEdit}"
-                    ToolTipProperties.Text="Modifica el estilo de la plantilla seleccionada." />
+                    ToolTipProperties.Text="{StaticResource lang:PgLayouts_TtBtnEditLayout}" />
                 <Button
                     Style="{StaticResource OnlyIconButon}"
                     Text="{StaticResource ico:UiDelete}"
-                    ToolTipProperties.Text="Elimina la plantilla seleccionada." />
+                    ToolTipProperties.Text="{StaticResource lang:PgLayouts_TtBtnDeletedLayout}" />
                 <BoxView Style="{StaticResource HorizontalElementSeparator}" />
                 <Button
                     Style="{StaticResource OnlyIconButon}"
                     Text="{StaticResource ico:ShareAlt}"
-                    ToolTipProperties.Text="Exporta la plantilla a un directorio." />
+                    ToolTipProperties.Text="{StaticResource lang:PgLayouts_TtBtnExportLayout}" />
                 <Button
                     Style="{StaticResource OnlyIconButon}"
                     Text="{StaticResource ico:Save}"
-                    ToolTipProperties.Text="Aplica la plantilla seleccionada a un proyecto." />
+                    ToolTipProperties.Text="{StaticResource lang:PgLayouts_TtBtnApplyLayoutToExistingProject}" />
             </HorizontalStackLayout>
         </Grid>
         <!--#endregion-->

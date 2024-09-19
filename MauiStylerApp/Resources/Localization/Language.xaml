@@ -12,13 +12,22 @@
     <x:String x:Key="lang:PgMain_TtBtnSetting">Va hacia la pagina de ajustes.</x:String>
     <x:String x:Key="lang:PgMain_LbTitle_Content">Proyectos</x:String>
     <x:String x:Key="lang:PgMain_TtBtnNewProject">Crea nuevo proyecto.</x:String>
-    <x:String x:Key="lang:PgMain_TtBtnNewProjectFromAnother">Crea un proyecto a partir del proyecto seleccionado.</x:String>
+    <x:String x:Key="lang:PgMain_TtBtnNewProjectFromAnother">Crea un proyecto a partir del elemento seleccionado.</x:String>
     <x:String x:Key="lang:PgMain_TtBtnEditProject">Modifica el proyecto seleccionado.</x:String>
-    <x:String x:Key="lang:PgMain_TtBtnDeletedProject">Elimina proyecto seleccionado.</x:String>
-    <x:String x:Key="lang:PgMain_TtBtnGeneratedProjectMaui">Crea proyecto .NET MAUI. basado en el proyecto seleccionado.</x:String>
+    <x:String x:Key="lang:PgMain_TtBtnDeletedProject">Elimina el proyecto seleccionado.</x:String>
+    <x:String x:Key="lang:PgMain_TtBtnGeneratedProjectMaui">Crea proyecto .NET MAUI. basado en el elemento seleccionado.</x:String>
     <x:String x:Key="lang:PgMain_BtnNewModel">Nuevo diseño</x:String>
     <x:String x:Key="lang:PgMain_TtBtnNewModel">Crea nueva diseño.</x:String>
     <x:String x:Key="lang:PgMain_BtnNewTheme">Nuevo tema</x:String>
     <x:String x:Key="lang:PgMain_TtBtnNewTheme">Crea nuevo tema.</x:String>
+
+    <x:String x:Key="lang:PgLayouts_TtBtnGoToMain">Ir a la pagina principal.</x:String>
+    <x:String x:Key="lang:PgLayouts_LbTitle">Diseños</x:String>
+    <x:String x:Key="lang:PgLayouts_TtBtnNewLayout">Crea nuevo diseño.</x:String>
+    <x:String x:Key="lang:PgLayouts_TtBtnNewLayoutFromAnother">Crea un diseño a partir del elemento seleccionado.</x:String>
+    <x:String x:Key="lang:PgLayouts_TtBtnEditLayout">Modifica el diseño del elemento seleccionado.</x:String>
+    <x:String x:Key="lang:PgLayouts_TtBtnDeletedLayout">Elimina el elemento seleccionado.</x:String>
+    <x:String x:Key="lang:PgLayouts_TtBtnExportLayout">Exporta el diseño seleccionado a un directorio.</x:String>
+    <x:String x:Key="lang:PgLayouts_TtBtnApplyLayoutToExistingProject">Aplica el diseño seleccionada a un proyecto .NET MAUI existente.</x:String>
 
 </ResourceDictionary>

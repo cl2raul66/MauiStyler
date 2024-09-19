@@ -5,20 +5,29 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <x:String x:Key="lang:PgMain_LbTitle">Main</x:String>
-    <x:String x:Key="lang:PgMain_BtnNavModels">Layouts</x:String>
-    <x:String x:Key="lang:PgMain_TtBtnNavModels">Goes to the layouts page.</x:String>
+    <x:String x:Key="lang:PgMain_BtnNavModels">Designs</x:String>
+    <x:String x:Key="lang:PgMain_TtBtnNavModels">Goes to the design page.</x:String>
     <x:String x:Key="lang:PgMain_BtnNavThemes">Themes</x:String>
     <x:String x:Key="lang:PgMain_TtBtnNavThemes">Goes to the themes page.</x:String>
     <x:String x:Key="lang:PgMain_TtBtnSetting">Goes to the settings page.</x:String>
     <x:String x:Key="lang:PgMain_LbTitle_Content">Projects</x:String>
     <x:String x:Key="lang:PgMain_TtBtnNewProject">Create new project.</x:String>
-    <x:String x:Key="lang:PgMain_TtBtnNewProjectFromAnother">Create style from the selected project.</x:String>
+    <x:String x:Key="lang:PgMain_TtBtnNewProjectFromAnother">Create a project from the selected item.</x:String>
     <x:String x:Key="lang:PgMain_TtBtnEditProject">Edit the selected project.</x:String>
     <x:String x:Key="lang:PgMain_TtBtnDeletedProject">Delete the selected project.</x:String>
-    <x:String x:Key="lang:PgMain_TtBtnGeneratedProjectMaui">Create .NET MAUI project based on the selected project.</x:String>
+    <x:String x:Key="lang:PgMain_TtBtnGeneratedProjectMaui">Create .NET MAUI project based on the selected item.</x:String>
     <x:String x:Key="lang:PgMain_BtnNewModel">New layout</x:String>
     <x:String x:Key="lang:PgMain_TtBtnNewModel">Create new layout.</x:String>
     <x:String x:Key="lang:PgMain_BtnNewTheme">New theme</x:String>
     <x:String x:Key="lang:PgMain_TtBtnNewTheme">Create new theme.</x:String>
+
+    <x:String x:Key="lang:PgLayouts_TtBtnGoToMain">Go to the main page.</x:String>
+    <x:String x:Key="lang:PgLayouts_LbTitle">Layouts</x:String>
+    <x:String x:Key="lang:PgLayouts_TtBtnNewLayout">Create new layout.</x:String>
+    <x:String x:Key="lang:PgLayouts_TtBtnNewLayoutFromAnother">Create a layout from the selected item.</x:String>
+    <x:String x:Key="lang:PgLayouts_TtBtnEditLayout">Edit the layout of the selected item.</x:String>
+    <x:String x:Key="lang:PgLayouts_TtBtnDeletedLayout">Delete the selected item.</x:String>
+    <x:String x:Key="lang:PgLayouts_TtBtnExportLayout">Export the selected layout to a directory.</x:String>
+    <x:String x:Key="lang:PgLayouts_TtBtnApplyLayoutToExistingProject">Apply the selected layout to an existing .NET MAUI project.</x:String>
 
 </ResourceDictionary>
