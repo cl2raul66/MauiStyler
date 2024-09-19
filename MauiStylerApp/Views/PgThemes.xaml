@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="MauiStylerApp.Views.PgMain"
+    x:Class="MauiStylerApp.Views.PgThemes"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:ctk="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:models="clr-namespace:MauiStylerApp.Models"
     xmlns:vm="clr-namespace:MauiStylerApp.ViewModels"
-    Title="Main"
-    x:DataType="vm:PgMainViewModel"
+    Title="Themes"
+    x:DataType="vm:PgThemesViewModel"
     Shell.NavBarIsVisible="False">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior IsVisible="False" />
+    </Shell.BackButtonBehavior>
     <ContentPage.Resources>
         <ResourceDictionary>
             <DataTemplate x:Key="styleTemplateTemplate" x:DataType="models:TemplateItem">
@@ -90,106 +93,67 @@
             Padding="8,8,8,0"
             ColumnDefinitions="*,auto"
             ColumnSpacing="8">
-            <Label
-                FontAttributes="Bold"
-                FontSize="18"
-                Text="{StaticResource lang:PgMain_LbTitle}"
-                TextTransform="Uppercase"
-                VerticalOptions="Center" />
+            <HorizontalStackLayout Spacing="8">
+                <Button
+                    Command="{Binding GoToMainCommand}"
+                    Style="{StaticResource OnlyIconButon}"
+                    Text="{StaticResource ico:UiHome}" />
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="18"
+                    Text="Temas"
+                    TextTransform="Uppercase"
+                    VerticalOptions="Center" />
+            </HorizontalStackLayout>
             <HorizontalStackLayout Grid.Column="1" Spacing="8">
                 <Button
-                    Style="{StaticResource OnlyTextButon}"
-                    Text="{StaticResource lang:PgMain_BtnNavModels}"
-                    ToolTipProperties.Text="{StaticResource lang:PgMain_TtBtnNavModels}"
-                    WidthRequest="100" />
+                    Command="{Binding GoToNewTemplateCommand}"
+                    Style="{StaticResource OnlyIconButon}"
+                    Text="{StaticResource ico:UiAdd}"
+                    ToolTipProperties.Text="{StaticResource lang:PgMain_BtnNewTheme}" />
                 <Button
-                    Command="{Binding GoToThemesCommand}"
-                    Style="{StaticResource OnlyTextButon}"
-                    Text="{StaticResource lang:PgMain_BtnNavThemes}"
-                    ToolTipProperties.Text="{StaticResource lang:PgMain_TtBtnNavThemes}"
-                    WidthRequest="100" />
+                    Command="{Binding GoToNewTemplateBasedSelectedCommand}"
+                    IsEnabled="{Binding SelectedTemplate, Converter={ctk:IsNotNullConverter}}"
+                    Style="{StaticResource OnlyIconButon}"
+                    Text="{StaticResource ico:FileAlt}"
+                    ToolTipProperties.Text="Crea estilo a partir de la plantilla seleccionada." />
+                <Button
+                    Command="{Binding GoToEditTemplateCommand}"
+                    IsEnabled="{Binding IsEdit}"
+                    Style="{StaticResource OnlyIconButon}"
+                    Text="{StaticResource ico:UiEdit}"
+                    ToolTipProperties.Text="Modifica el estilo de la plantilla seleccionada." />
+                <Button
+                    IsEnabled="False"
+                    Style="{StaticResource OnlyIconButon}"
+                    Text="{StaticResource ico:UiDelete}"
+                    ToolTipProperties.Text="Elimina la plantilla seleccionada." />
                 <BoxView Style="{StaticResource HorizontalElementSeparator}" />
                 <Button
-                    Command="{Binding GoToSettingCommand}"
+                    Command="{Binding ExportCommand}"
+                    IsEnabled="{Binding SelectedTemplate, Converter={ctk:IsNotNullConverter}}"
                     Style="{StaticResource OnlyIconButon}"
-                    Text="{StaticResource ico:UiSettings}"
-                    ToolTipProperties.Text="{StaticResource lang:PgMain_TtBtnSetting}" />
+                    Text="{StaticResource ico:ShareAlt}"
+                    ToolTipProperties.Text="Exporta la plantilla a un directorio." />
+                <Button
+                    IsEnabled="False"
+                    IsVisible="{OnPlatform Android='False',
+                                           Default='True'}"
+                    Style="{StaticResource OnlyIconButon}"
+                    Text="{StaticResource ico:Save}"
+                    ToolTipProperties.Text="Aplica la plantilla seleccionada a un proyecto." />
             </HorizontalStackLayout>
         </Grid>
         <!--#endregion-->
-        <!--#region CONTENIDO-->
-        <Grid
-            Grid.Row="1"
-            RowDefinitions="auto,*,auto"
-            RowSpacing="0">
-            <Frame Margin="8">
-                <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
-                    <Label
-                        FontAttributes="Bold"
-                        FontSize="16"
-                        Text="{StaticResource lang:PgMain_LbTitle_Content}"
-                        VerticalOptions="Center" />
-                    <HorizontalStackLayout Grid.Column="1" Spacing="8">
-                        <Button
-                            Style="{StaticResource OnlyIconButon}"
-                            Text="{StaticResource ico:UiAdd}"
-                            ToolTipProperties.Text="{StaticResource lang:PgMain_TtBtnNewProject}" />
-                        <Button
-                            Style="{StaticResource OnlyIconButon}"
-                            Text="{StaticResource ico:FileAlt}"
-                            ToolTipProperties.Text="{StaticResource lang:PgMain_TtBtnNewProjectFromAnother}" />
-                        <Button
-                            Style="{StaticResource OnlyIconButon}"
-                            Text="{StaticResource ico:UiEdit}"
-                            ToolTipProperties.Text="{StaticResource lang:PgMain_TtBtnEditProject}" />
-                        <Button
-                            Style="{StaticResource OnlyIconButon}"
-                            Text="{StaticResource ico:UiDelete}"
-                            ToolTipProperties.Text="{StaticResource lang:PgMain_TtBtnDeletedProject}" />
-                        <BoxView Style="{StaticResource HorizontalElementSeparator}" />
-                        <Button
-                            Style="{StaticResource OnlyIconButon}"
-                            Text="{StaticResource ico:Industries5}"
-                            ToolTipProperties.Text="{StaticResource lang:PgMain_TtBtnGeneratedProjectMaui}" />
-                    </HorizontalStackLayout>
-                </Grid>
-            </Frame>
-            <ScrollView Grid.Row="1">
-                <CollectionView
-                    ItemTemplate="{StaticResource styleTemplateTemplate}"
-                    ItemsLayout="{StaticResource styleTemplateLayout}"
-                    SelectionChanged="CollectionView_SelectionChanged"
-                    SelectionMode="Single" />
-            </ScrollView>
-            <Frame Grid.Row="2" Margin="8">
-                <Grid
-                    ColumnSpacing="8"
-                    RowDefinitions="auto,auto"
-                    RowSpacing="8">
-                    <Label
-                        FontAttributes="Bold"
-                        FontSize="16"
-                        Text="Accesos rapidos:"
-                        VerticalOptions="Center" />
-                    <FlexLayout Grid.Row="1">
-                        <Button
-                            Margin="0,0,4,0"
-                            Style="{StaticResource OnlyTextButon}"
-                            Text="{StaticResource lang:PgMain_BtnNewModel}"
-                            ToolTipProperties.Text="{StaticResource lang:PgMain_TtBtnNewModel}"
-                            WidthRequest="150" />
-                        <Button
-                            Margin="0,0,4,0"
-                            Command="{Binding GoToNewThemesCommand}"
-                            Style="{StaticResource OnlyTextButon}"
-                            Text="{StaticResource lang:PgMain_BtnNewTheme}"
-                            ToolTipProperties.Text="{StaticResource lang:PgMain_TtBtnNewTheme}"
-                            WidthRequest="150" />
-                    </FlexLayout>
-                </Grid>
-            </Frame>
-        </Grid>
-        <!--#endregion-->
+        <ScrollView Grid.Row="1">
+            <CollectionView
+                ItemTemplate="{StaticResource styleTemplateTemplate}"
+                ItemsLayout="{StaticResource styleTemplateLayout}"
+                ItemsSource="{Binding StyleTemplates}"
+                SelectedItem="{Binding SelectedTemplate}"
+                SelectionChanged="CollectionView_SelectionChanged"
+                SelectionMode="Single" />
+        </ScrollView>
         <!--#region PIE-->
         <Grid Grid.Row="2" Margin="8">
             <Label

@@ -4,7 +4,21 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <x:String x:Key="lang:PgMain_Title">Principal</x:String>
-    <x:String x:Key="lang:PgMain_BtnNewTheme">Crea nuevo tema.</x:String>
+    <x:String x:Key="lang:PgMain_LbTitle">Principal</x:String>
+    <x:String x:Key="lang:PgMain_BtnNavModels">Maquetas</x:String>
+    <x:String x:Key="lang:PgMain_TtBtnNavModels">Va hacia la pagina de maquetas.</x:String>
+    <x:String x:Key="lang:PgMain_BtnNavThemes">Temas</x:String>
+    <x:String x:Key="lang:PgMain_TtBtnNavThemes">Va hacia la pagina de temas.</x:String>
+    <x:String x:Key="lang:PgMain_TtBtnSetting">Va hacia la pagina de ajustes.</x:String>
+    <x:String x:Key="lang:PgMain_LbTitle_Content">Proyectos</x:String>
+    <x:String x:Key="lang:PgMain_TtBtnNewProject">Crea nuevo proyecto.</x:String>
+    <x:String x:Key="lang:PgMain_TtBtnNewProjectFromAnother">Crea estilo a partir del proyecto seleccionado.</x:String>
+    <x:String x:Key="lang:PgMain_TtBtnEditProject">Modifica el proyecto seleccionado.</x:String>
+    <x:String x:Key="lang:PgMain_TtBtnDeletedProject">Elimina proyecto seleccionado.</x:String>
+    <x:String x:Key="lang:PgMain_TtBtnGeneratedProjectMaui">Crea proyecto .NET MAUI. basado en el proyecto seleccionado.</x:String>
+    <x:String x:Key="lang:PgMain_BtnNewModel">Nueva maqueta</x:String>
+    <x:String x:Key="lang:PgMain_TtBtnNewModel">Crea nueva maqueta.</x:String>
+    <x:String x:Key="lang:PgMain_BtnNewTheme">Nuevo tema</x:String>
+    <x:String x:Key="lang:PgMain_TtBtnNewTheme">Crea nuevo tema.</x:String>
 
 </ResourceDictionary>

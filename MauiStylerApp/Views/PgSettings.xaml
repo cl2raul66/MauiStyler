@@ -23,7 +23,7 @@
                 <Button
                     Command="{Binding GoToBackCommand}"
                     Style="{StaticResource OnlyIconButon}"
-                    Text="{StaticResource ico:ArrowLeft}" />
+                    Text="{StaticResource ico:UiHome}" />
                 <Label
                     FontAttributes="Bold"
                     FontSize="18"

@@ -74,6 +74,9 @@
     <Compile Update="Resources\Localization\language.xaml.cs">
       <DependentUpon>Language.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\PgThemes.xaml.cs">
+      <DependentUpon>PgThemes.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\StyleEditor\PgEditColor.xaml.cs">
       <DependentUpon>PgEditColor.xaml</DependentUpon>
     </Compile>
@@ -89,6 +92,9 @@
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
     <MauiXaml Update="Views\PgSettings.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+    <MauiXaml Update="Views\PgThemes.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
     <MauiXaml Update="Views\StyleEditor\PgEditColor.xaml">

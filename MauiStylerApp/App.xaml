@@ -40,6 +40,11 @@
                 <Setter Property="Padding" Value="8" />
                 <Setter Property="FontFamily" Value="icofont" />
             </Style>
+            <Style x:Key="OnlyTextButon" TargetType="Button">
+                <Setter Property="Padding" Value="10,0" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="TextTransform" Value="Uppercase" />
+            </Style>
             <Style x:Key="HorizontalElementSeparator" TargetType="BoxView">
                 <Setter Property="BackgroundColor" Value="{StaticResource Gray500CL}" />
                 <Setter Property="CornerRadius" Value="1" />
