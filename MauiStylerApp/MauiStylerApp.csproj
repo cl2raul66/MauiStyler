@@ -94,6 +94,9 @@
     <MauiXaml Update="Views\PgMain.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
+    <MauiXaml Update="Views\Layout\PgNewEditLayouts.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
     <MauiXaml Update="Views\PgSettings.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>

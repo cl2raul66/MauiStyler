@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MauiStylerApp.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,17 +8,11 @@ using System.Threading.Tasks;
 
 namespace MauiStylerApp.ViewModels;
 
-public partial class PgLayoutsViewModel : ObservableRecipient
+public partial class PgNewEditLayoutsViewModel : ObservableValidator
 {
     [RelayCommand]
-    async Task GoToMain()
+    async Task Cancel()
     {
         await Shell.Current.GoToAsync("..", true);
-    }
-
-    [RelayCommand]
-    async Task GoToNewLayout()
-    {
-        await Shell.Current.GoToAsync(nameof(PgNewEditLayouts), true);
     }
 }

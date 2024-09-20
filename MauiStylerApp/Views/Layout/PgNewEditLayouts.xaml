@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MauiStylerApp.Views.PgNewEditLayouts"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:ctk="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:model="clr-namespace:MauiStylerApp.Models"
+    xmlns:vm="clr-namespace:MauiStylerApp.ViewModels"
+    Title="NewEditLayouts"
+    x:DataType="vm:PgNewEditLayoutsViewModel"
+    Shell.NavBarIsVisible="False">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior IsVisible="False" />
+    </Shell.BackButtonBehavior>
+
+    <Grid RowDefinitions="auto,auto,*">
+        <!--#region ENCABEZADO-->
+        <Grid
+            Padding="8"
+            ColumnDefinitions="*,auto"
+            ColumnSpacing="8">
+            <Label
+                FontAttributes="Bold"
+                FontSize="18"
+                Text="Nuevo diseño"
+                TextTransform="Uppercase"
+                VerticalOptions="Center" />
+            <HorizontalStackLayout Grid.Column="1" Spacing="8">
+                <Button
+                    BackgroundColor="{StaticResource AccentCL}"
+                    Text="Guardar"
+                    ToolTipProperties.Text="Guarda el diseño como plantilla." />
+                <Button
+                    Command="{Binding CancelCommand}"
+                    Text="Cancelar"
+                    ToolTipProperties.Text="Cierra sin guardar cambios." />
+            </HorizontalStackLayout>
+        </Grid>
+        <!--#endregion-->
+        <!--#region contenido-->
+        <Frame Grid.Row="1" Margin="8,0">
+            <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
+                <ScrollView>
+                    <CollectionView />
+                </ScrollView>
+                <HorizontalStackLayout Grid.Column="1" Spacing="8">
+                    <Button
+                        Style="{StaticResource OnlyIconButon}"
+                        Text="{StaticResource ico:UiAdd}"
+                        ToolTipProperties.Text="Nueva vista." />
+                    <Button
+                        Style="{StaticResource OnlyIconButon}"
+                        Text="{StaticResource ico:Stamp}"
+                        ToolTipProperties.Text="Clonar vista seleccionada." />
+                    <Button
+                        Style="{StaticResource OnlyIconButon}"
+                        Text="{StaticResource ico:UiDelete}"
+                        ToolTipProperties.Text="Eliminar vista seleccionada." />
+                </HorizontalStackLayout>
+            </Grid>
+        </Frame>
+        <Grid
+            Grid.Row="2"
+            Margin="8"
+            ColumnDefinitions="*,350"
+            ColumnSpacing="8">
+            <Frame>
+                <Grid RowDefinitions="auto,*" RowSpacing="8">
+                    <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
+                        <Label FontSize="14" Text="Vista" />
+                        <HorizontalStackLayout Grid.Column="1" Spacing="4">
+                            <Button
+                                Style="{StaticResource OnlyIconButon}"
+                                Text="{StaticResource ico:WindowsLumia}"
+                                ToolTipProperties.Text="Vista movil" />
+                            <Button
+                                Style="{StaticResource OnlyIconButon}"
+                                Text="{StaticResource ico:SurfaceTablet}"
+                                ToolTipProperties.Text="Vista escritorio" />
+                        </HorizontalStackLayout>
+                    </Grid>
+                    <BoxView Grid.Row="1" />
+                </Grid>
+            </Frame>
+            
+            <Frame Grid.Column="1">
+                <Label Text="Propiedades y herramientas" />
+            </Frame>
+        </Grid>
+        <!--#endregion-->
+    </Grid>
+
+</ContentPage>

@@ -108,6 +108,7 @@
             </HorizontalStackLayout>
             <HorizontalStackLayout Grid.Column="1" Spacing="8">
                 <Button
+                    Command="{Binding GoToNewLayoutCommand}"
                     Style="{StaticResource OnlyIconButon}"
                     Text="{StaticResource ico:UiAdd}"
                     ToolTipProperties.Text="{StaticResource lang:PgLayouts_TtBtnNewLayout}" />

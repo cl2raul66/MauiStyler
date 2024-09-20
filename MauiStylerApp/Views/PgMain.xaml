@@ -175,6 +175,7 @@
                     <FlexLayout Grid.Row="1">
                         <Button
                             Margin="0,0,4,0"
+                            Command="{Binding GoToNewLayoutCommand}"
                             Style="{StaticResource OnlyTextButon}"
                             Text="{StaticResource lang:PgMain_BtnNewModel}"
                             ToolTipProperties.Text="{StaticResource lang:PgMain_TtBtnNewModel}"

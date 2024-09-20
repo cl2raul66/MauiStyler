@@ -19,6 +19,12 @@ public partial class PgMainViewModel : ObservableObject
     }
 
     [RelayCommand]
+    async Task GoToNewLayout()
+    {
+        await Shell.Current.GoToAsync($"{nameof(PgLayouts)}/{nameof(PgNewEditLayouts)}", true);
+    }
+
+    [RelayCommand]
     async Task GoToNewThemes()
     {
         await Shell.Current.GoToAsync($"{nameof(PgThemes)}/{nameof(PgStyleEditor)}", true);
