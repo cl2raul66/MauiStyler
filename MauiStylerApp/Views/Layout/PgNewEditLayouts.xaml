@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:ctk="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:model="clr-namespace:MauiStylerApp.Models"
+    xmlns:tools="clr-namespace:MauiStylerApp.Tools"
     xmlns:vm="clr-namespace:MauiStylerApp.ViewModels"
     Title="NewEditLayouts"
     x:DataType="vm:PgNewEditLayoutsViewModel"
@@ -70,19 +71,38 @@
                         <Label FontSize="14" Text="Vista" />
                         <HorizontalStackLayout Grid.Column="1" Spacing="4">
                             <Button
+                                Command="{Binding SetPortraitViewCommand}"
+                                IsEnabled="{Binding IsLandscapeView}"
                                 Style="{StaticResource OnlyIconButon}"
                                 Text="{StaticResource ico:WindowsLumia}"
                                 ToolTipProperties.Text="Vista movil" />
                             <Button
+                                Command="{Binding SetLandscapeViewCommand}"
+                                IsEnabled="{Binding IsLandscapeView, Converter={ctk:InvertedBoolConverter}}"
                                 Style="{StaticResource OnlyIconButon}"
                                 Text="{StaticResource ico:SurfaceTablet}"
                                 ToolTipProperties.Text="Vista escritorio" />
                         </HorizontalStackLayout>
                     </Grid>
-                    <BoxView Grid.Row="1" />
+                    <ScrollView Grid.Row="1">
+                        <!--<GraphicsView
+                            HeightRequest="{Binding HeightGraphicsView}"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            WidthRequest="{Binding WidthGraphicsView}">
+                            <GraphicsView.Drawable>
+                                <drawable:GdContentPage Name="ContentPage1" GdItems="{Binding GvDrawables}" />
+                            </GraphicsView.Drawable>
+                        </GraphicsView>-->
+                        <tools:GdContentPage
+                            GdItems="{Binding GvDrawables}"
+                            HeightRequest="{Binding HeightGraphicsView}"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            WidthRequest="{Binding WidthGraphicsView}" />
+                    </ScrollView>
                 </Grid>
             </Frame>
-            
             <Frame Grid.Column="1">
                 <Label Text="Propiedades y herramientas" />
             </Frame>

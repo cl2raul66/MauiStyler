@@ -112,5 +112,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Tools\Extensions\" />
+    <Folder Include="Tools\CustomControls\" />
   </ItemGroup>
 </Project>
