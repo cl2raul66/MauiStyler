@@ -44,7 +44,7 @@
                 <ScrollView>
                     <CollectionView />
                 </ScrollView>
-                <HorizontalStackLayout Grid.Column="1" Spacing="8">
+                <HorizontalStackLayout Grid.Column="1" Spacing="4">
                     <Button
                         Style="{StaticResource OnlyIconButon}"
                         Text="{StaticResource ico:UiAdd}"
@@ -63,12 +63,15 @@
         <Grid
             Grid.Row="2"
             Margin="8"
-            ColumnDefinitions="*,350"
+            ColumnDefinitions="*,250,250"
             ColumnSpacing="8">
             <Frame>
                 <Grid RowDefinitions="auto,*" RowSpacing="8">
                     <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
-                        <Label FontSize="14" Text="Vista" />
+                        <Label
+                            FontSize="14"
+                            Text="Vista"
+                            VerticalOptions="Center" />
                         <HorizontalStackLayout Grid.Column="1" Spacing="4">
                             <Button
                                 Command="{Binding SetPortraitViewCommand}"
@@ -85,26 +88,40 @@
                         </HorizontalStackLayout>
                     </Grid>
                     <ScrollView Grid.Row="1">
-                        <!--<GraphicsView
-                            HeightRequest="{Binding HeightGraphicsView}"
-                            HorizontalOptions="Center"
-                            VerticalOptions="Center"
-                            WidthRequest="{Binding WidthGraphicsView}">
-                            <GraphicsView.Drawable>
-                                <drawable:GdContentPage Name="ContentPage1" GdItems="{Binding GvDrawables}" />
-                            </GraphicsView.Drawable>
-                        </GraphicsView>-->
                         <tools:GdContentPage
                             GdItems="{Binding GvDrawables}"
                             HeightRequest="{Binding HeightGraphicsView}"
                             HorizontalOptions="Center"
-                            VerticalOptions="Center"
+                            VerticalOptions="Start"
                             WidthRequest="{Binding WidthGraphicsView}" />
                     </ScrollView>
                 </Grid>
             </Frame>
             <Frame Grid.Column="1">
-                <Label Text="Propiedades y herramientas" />
+                <Grid RowDefinitions="auto,*" RowSpacing="8">
+                    <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
+                        <Label
+                            FontSize="14"
+                            Text="Propiedades"
+                            VerticalOptions="Center" />
+                        <HorizontalStackLayout Grid.Column="1" Spacing="4">
+                            <Button
+                                Style="{StaticResource OnlyIconButon}"
+                                Text="{StaticResource ico:Refresh}"
+                                ToolTipProperties.Text="Restaura todas las propiedades." />
+                        </HorizontalStackLayout>
+                    </Grid>
+                </Grid>
+            </Frame>
+            <Frame Grid.Column="2">
+                <Grid RowDefinitions="auto,*" RowSpacing="8">
+                    <Grid ColumnDefinitions="*,auto" ColumnSpacing="8">
+                        <Label
+                            FontSize="14"
+                            Text="Herramientas"
+                            VerticalOptions="Center" />
+                    </Grid>
+                </Grid>
             </Frame>
         </Grid>
         <!--#endregion-->

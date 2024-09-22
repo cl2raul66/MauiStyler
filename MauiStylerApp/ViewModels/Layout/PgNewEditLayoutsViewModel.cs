@@ -26,8 +26,8 @@ public partial class PgNewEditLayoutsViewModel : ObservableValidator
     }
 
     #region VISUALIZACIÓN
-    public float WidthGraphicsView => IsLandscapeView ? 600 : 667;
-    public float HeightGraphicsView => IsLandscapeView ? 1024 : 375;
+    public float WidthGraphicsView => IsLandscapeView ? 1024 : 375;
+    public float HeightGraphicsView => IsLandscapeView ? 600 : 667;
 
     [ObservableProperty]
     ObservableCollection<GdItem>? gvDrawables;

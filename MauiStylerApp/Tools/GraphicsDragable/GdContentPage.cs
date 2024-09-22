@@ -42,7 +42,10 @@ public class GdContentPage : GraphicsView
     {
         var point = e.Touches[0];
         var selectedItem = FindRectangleAt(point, [..GdItems]);
-        WeakReferenceMessenger.Default.Send(new GdItemSelectedMessage(selectedItem));
+        if (selectedItem is not null)
+        {
+            WeakReferenceMessenger.Default.Send(new GdItemSelectedMessage(selectedItem));
+        }
         Invalidate();
     }
 
