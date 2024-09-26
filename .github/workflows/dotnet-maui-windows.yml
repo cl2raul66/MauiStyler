@@ -1,7 +1,4 @@
-# This workflow will build a .NET project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
-
-name: Build .NET MAUI for Windows
+name: Build and Release .NET MAUI for Windows
 
 on:
   push:
@@ -10,10 +7,8 @@ on:
     branches: [ "master" ]
 
 jobs:
-  Publish:
-
+  build:
     runs-on: windows-latest
-
     steps:
     - uses: actions/checkout@v4
     - name: Setup .NET
@@ -30,12 +25,29 @@ jobs:
         certutil -decode cert.pfx.asc cert.pfx
     - name: Add Cert to Store
       run: certutil -user -q -p ${{ secrets.WINDOWS_PFX_PASSWORD }} -importpfx cert.pfx NoRoot
-    - name: Publish
+    - name: Build and Publish
       run: dotnet publish MauiStylerApp/MauiStylerApp.csproj -c Release -f:net8.0-windows10.0.19041.0 /p:GenerateAppxPackageOnBuild=true /p:AppxPackageSigningEnabled=true /p:PackageCertificateThumbprint="${{ secrets.WINDOWS_PFX_THUMBPRINT }}"
-    - name: Upload Build Artifacts
-      uses: actions/upload-artifact@v4.4.0
+    - name: Get Version
+      id: get_version
+      run: |
+        $version = (Get-ChildItem -Path .\MauiStylerApp\bin\Release\net8.0-windows10.0.19041.0\win10-x64\AppPackages\ -Directory).Name -replace 'MauiStylerApp_(\d+\.\d+\.\d+\.\d+)_Test', '$1'
+        echo "VERSION=$version" >> $env:GITHUB_OUTPUT
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        path: .\**\AppPackages\**\*.*
-        compression-level: 6
-        retention-days: 90
-        
+        tag_name: v${{ steps.get_version.outputs.VERSION }}
+        release_name: Release ${{ steps.get_version.outputs.VERSION }}
+        draft: false
+        prerelease: false
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: .\MauiStylerApp\bin\Release\net8.0-windows10.0.19041.0\win10-x64\AppPackages\MauiStylerApp_${{ steps.get_version.outputs.VERSION }}_Test\MauiStylerApp_${{ steps.get_version.outputs.VERSION }}_x64.msix
+        asset_name: MauiStylerApp_${{ steps.get_version.outputs.VERSION }}_Windows_x64.msix
+        asset_content_type: application/octet-stream
