@@ -52,6 +52,36 @@ public partial class PgNewEditLayoutsViewModel : ObservableValidator
         IsLandscapeView = true;
     }
 
+    [RelayCommand]
+    void AddControl()
+    {
+        var newRect = new GdItem
+        {
+            Bounds = new RectF(0.25f, 0.25f, 0.5f, 0.5f),
+            BorderColor = GetRandomColor(),
+            FillColor = GetRandomColor()
+        };
+
+        if (SelectedGvDrawable is not null)
+        {
+            SelectedGvDrawable.Children.Add(newRect);
+            newRect.Parent = SelectedGvDrawable;
+        }
+        else
+        {
+            GvDrawables!.Add(newRect);
+        }
+    }
+
+    Color GetRandomColor()
+    {
+        Random rand = new();
+        int r = rand.Next(256);
+        int g = rand.Next(256);
+        int b = rand.Next(256);
+        return Color.FromRgba(r, g, b, 255);
+    }
+
     void InitializeGvDrawables()
     {
         var first = new GdItem
