@@ -6,36 +6,13 @@ on:
   pull_request:
     branches: [ "master" ]
 
+permissions:
+  contents: write
+  packages: write
+
 jobs:
-  fetch_previous_release:
-    runs-on: ubuntu-latest
-    outputs:
-      previous_tag: ${{ steps.fetch_previous_release_info.outputs.PREVIOUS_TAG }}
-      previous_name: ${{ steps.fetch_previous_release_info.outputs.PREVIOUS_NAME }}
-    steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
-
-    - name: Fetch Previous Release Information
-      id: fetch_previous_release_info
-      env:
-        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-      run: |
-        response=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
-          "https://api.github.com/repos/${{ github.repository }}/releases/latest")
-        previousRelease=$(echo "$response" | jq -r '.tag_name')
-        if [ "$previousRelease" == "null" ]; then
-          echo "PREVIOUS_TAG=0.0.0.0" >> $GITHUB_OUTPUT
-          echo "PREVIOUS_NAME=Initial Release" >> $GITHUB_OUTPUT
-        else
-          echo "PREVIOUS_TAG=$previousRelease" >> $GITHUB_OUTPUT
-          previousName=$(echo "$response" | jq -r '.name')
-          echo "PREVIOUS_NAME=$previousName" >> $GITHUB_OUTPUT
-        fi
-
-  build_and_publish:
+  build_and_release:
     runs-on: windows-latest
-    needs: fetch_previous_release
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
@@ -66,10 +43,25 @@ jobs:
         /p:AppxPackageSigningEnabled=true `
         /p:PackageCertificateThumbprint="${{ secrets.WINDOWS_PFX_THUMBPRINT }}"
 
+    - name: Fetch Previous Release Information
+      id: fetch_previous_release_info
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        $response = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/releases/latest" -Headers @{Authorization = "token $env:GITHUB_TOKEN"}
+        $previousRelease = $response.tag_name
+        if ($null -eq $previousRelease) {
+          echo "PREVIOUS_TAG=0.0.0.0" >> $env:GITHUB_OUTPUT
+          echo "PREVIOUS_NAME=Initial Release" >> $env:GITHUB_OUTPUT
+        } else {
+          echo "PREVIOUS_TAG=$previousRelease" >> $env:GITHUB_OUTPUT
+          echo "PREVIOUS_NAME=$($response.name)" >> $env:GITHUB_OUTPUT
+        }
+
     - name: Determine New Version
       id: determine_new_version
       run: |
-        $previousVersion = "${{ needs.fetch_previous_release.outputs.previous_tag }}"
+        $previousVersion = "${{ steps.fetch_previous_release_info.outputs.PREVIOUS_TAG }}"
         if ($previousVersion -eq "0.0.0.0") {
           $newVersion = "0.0.0.1"
         } else {
@@ -80,33 +72,24 @@ jobs:
         echo "VERSION=$newVersion" >> $env:GITHUB_OUTPUT
 
     - name: Create GitHub Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      uses: softprops/action-gh-release@v1
       with:
         tag_name: v${{ steps.determine_new_version.outputs.VERSION }}
-        release_name: Release ${{ steps.determine_new_version.outputs.VERSION }}
+        name: Release ${{ steps.determine_new_version.outputs.VERSION }}
         body: |
           Changes in this Release
           - [Add your release notes here]
-          Previous Release: ${{ needs.fetch_previous_release.outputs.previous_name != 'Initial Release' && needs.fetch_previous_release.outputs.previous_name || 'No previous release found' }}
+          Previous Release: ${{ steps.fetch_previous_release_info.outputs.PREVIOUS_NAME != 'Initial Release' && steps.fetch_previous_release_info.outputs.PREVIOUS_NAME || 'No previous release found' }}
         draft: false
         prerelease: false
-
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
+        files: |
+          .\MauiStylerApp\bin\Release\net8.0-windows10.0.19041.0\win10-x64\AppPackages\MauiStylerApp_${{ steps.determine_new_version.outputs.VERSION }}_Test\MauiStylerApp_${{ steps.determine_new_version.outputs.VERSION }}_x64.msix
       env:
-        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: .\MauiStylerApp\bin\Release\net8.0-windows10.0.19041.0\win10-x64\AppPackages\MauiStylerApp_${{ steps.determine_new_version.outputs.VERSION }}_Test\MauiStylerApp_${{ steps.determine_new_version.outputs.VERSION }}_x64.msix
-        asset_name: MauiStylerApp_${{ steps.determine_new_version.outputs.VERSION }}_Windows_x64.msix
-        asset_content_type: application/octet-stream
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Delete Old Releases
       env:
-        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         $releases = gh api repos/{owner}/{repo}/releases | ConvertFrom-Json | Sort-Object -Property published_at -Descending
         if ($releases.Count -gt 2) {
