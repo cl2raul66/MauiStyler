@@ -11,122 +11,111 @@ permissions:
   packages: write
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  build_and_release:
+    runs-on: windows-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Release
-        uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/')
+    - name: Checkout Repository
+      uses: actions/checkout@v4
 
-  # build_and_release:
-  #   runs-on: windows-latest
-  #   steps:
-  #   - name: Checkout Repository
-  #     uses: actions/checkout@v4
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
 
-  #   - name: Setup .NET SDK
-  #     uses: actions/setup-dotnet@v4
-  #     with:
-  #       dotnet-version: 8.0.x
+    - name: Restore Dependencies
+      run: dotnet restore
 
-  #   - name: Restore Dependencies
-  #     run: dotnet restore
+    - name: Install .NET MAUI Workload
+      run: dotnet workload install maui
 
-  #   - name: Install .NET MAUI Workload
-  #     run: dotnet workload install maui
+    - name: Decrypt PFX File
+      run: |
+        echo "${{ secrets.WINDOWS_PFX_FILE }}" > cert.pfx.asc
+        certutil -decode cert.pfx.asc cert.pfx
 
-  #   - name: Decrypt PFX File
-  #     run: |
-  #       echo "${{ secrets.WINDOWS_PFX_FILE }}" > cert.pfx.asc
-  #       certutil -decode cert.pfx.asc cert.pfx
+    - name: Add Certificate to Store
+      run: certutil -user -q -p "${{ secrets.WINDOWS_PFX_PASSWORD }}" -importpfx cert.pfx NoRoot
 
-  #   - name: Add Certificate to Store
-  #     run: certutil -user -q -p "${{ secrets.WINDOWS_PFX_PASSWORD }}" -importpfx cert.pfx NoRoot
+    - name: Build and Publish Application
+      run: |
+        dotnet publish MauiStylerApp/MauiStylerApp.csproj -c Release -f:net8.0-windows10.0.19041.0 `
+        /p:GenerateAppxPackageOnBuild=true `
+        /p:AppxPackageSigningEnabled=true `
+        /p:PackageCertificateThumbprint="${{ secrets.WINDOWS_PFX_THUMBPRINT }}"
 
-  #   - name: Build and Publish Application
-  #     run: |
-  #       dotnet publish MauiStylerApp/MauiStylerApp.csproj -c Release -f:net8.0-windows10.0.19041.0 `
-  #       /p:GenerateAppxPackageOnBuild=true `
-  #       /p:AppxPackageSigningEnabled=true `
-  #       /p:PackageCertificateThumbprint="${{ secrets.WINDOWS_PFX_THUMBPRINT }}"    
+    - name: Verify MSIX File
+      run: |
+        $msixPath = "D:\a\MauiStyler\MauiStyler\MauiStylerApp\bin\Release\net8.0-windows10.0.19041.0\win10-x64\AppPackages\MauiStylerApp_1.0.0.1_Test\MauiStylerApp_1.0.0.1_x64.msix"
+        if (Test-Path $msixPath) {
+          Write-Host "MSIX file found: $msixPath"
+        } else {
+          Write-Host "MSIX file not found at expected path: $msixPath"
+          Write-Host "Contents of the directory:"
+          Get-ChildItem -Path "D:\a\MauiStyler\MauiStyler\MauiStylerApp\bin\Release\net8.0-windows10.0.19041.0\win10-x64\AppPackages" -Recurse
+          exit 1
+        }
+      shell: pwsh
 
-  #   - name: Verify MSIX File
-  #     run: |
-  #       $msixPath = "D:\a\MauiStyler\MauiStyler\MauiStylerApp\bin\Release\net8.0-windows10.0.19041.0\win10-x64\AppPackages\MauiStylerApp_1.0.0.1_Test\MauiStylerApp_1.0.0.1_x64.msix"
-  #       if (Test-Path $msixPath) {
-  #         Write-Host "MSIX file found: $msixPath"
-  #       } else {
-  #         Write-Host "MSIX file not found at expected path: $msixPath"
-  #         Write-Host "Contents of the directory:"
-  #         Get-ChildItem -Path "D:\a\MauiStyler\MauiStyler\MauiStylerApp\bin\Release\net8.0-windows10.0.19041.0\win10-x64\AppPackages" -Recurse
-  #         exit 1
-  #       }
-  #     shell: pwsh
+    - name: Fetch Previous Release Information
+      id: fetch_previous_release_info
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        try {
+          $response = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/releases/latest" -Headers @{Authorization = "token $env:GITHUB_TOKEN"} -ErrorAction Stop
+          $previousRelease = $response.tag_name
+          echo "PREVIOUS_TAG=$previousRelease" >> $env:GITHUB_OUTPUT
+          echo "PREVIOUS_NAME=$($response.name)" >> $env:GITHUB_OUTPUT
+        }
+        catch {
+          if ($_.Exception.Response.StatusCode -eq 404) {
+            echo "PREVIOUS_TAG=0.0.0.0" >> $env:GITHUB_OUTPUT
+            echo "PREVIOUS_NAME=Initial Release" >> $env:GITHUB_OUTPUT
+          }
+          else {
+            throw $_
+          }
+        }
+      shell: pwsh
 
-  #   - name: Fetch Previous Release Information
-  #     id: fetch_previous_release_info
-  #     env:
-  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #     run: |
-  #       try {
-  #         $response = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/releases/latest" -Headers @{Authorization = "token $env:GITHUB_TOKEN"} -ErrorAction Stop
-  #         $previousRelease = $response.tag_name
-  #         echo "PREVIOUS_TAG=$previousRelease" >> $env:GITHUB_OUTPUT
-  #         echo "PREVIOUS_NAME=$($response.name)" >> $env:GITHUB_OUTPUT
-  #       }
-  #       catch {
-  #         if ($_.Exception.Response.StatusCode -eq 404) {
-  #           echo "PREVIOUS_TAG=0.0.0.0" >> $env:GITHUB_OUTPUT
-  #           echo "PREVIOUS_NAME=Initial Release" >> $env:GITHUB_OUTPUT
-  #         }
-  #         else {
-  #           throw $_
-  #         }
-  #       }
-  #     shell: pwsh
+    - name: Determine New Version
+      id: determine_new_version
+      run: |
+        $previousVersion = "${{ steps.fetch_previous_release_info.outputs.PREVIOUS_TAG }}"
+        if ($previousVersion -eq "0.0.0.0") {
+          $newVersion = "0.0.0.1"
+        } else {
+          $versionParts = $previousVersion.Split('.')
+          $versionParts[3] = [int]$versionParts[3] + 1
+          $newVersion = "$($versionParts[0]).$($versionParts[1]).$($versionParts[2]).$($versionParts[3])"
+        }
+        echo "VERSION=$newVersion" >> $env:GITHUB_OUTPUT
 
-  #   - name: Determine New Version
-  #     id: determine_new_version
-  #     run: |
-  #       $previousVersion = "${{ steps.fetch_previous_release_info.outputs.PREVIOUS_TAG }}"
-  #       if ($previousVersion -eq "0.0.0.0") {
-  #         $newVersion = "0.0.0.1"
-  #       } else {
-  #         $versionParts = $previousVersion.Split('.')
-  #         $versionParts[3] = [int]$versionParts[3] + 1
-  #         $newVersion = "$($versionParts[0]).$($versionParts[1]).$($versionParts[2]).$($versionParts[3])"
-  #       }
-  #       echo "VERSION=$newVersion" >> $env:GITHUB_OUTPUT
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: v${{ steps.determine_new_version.outputs.VERSION }}
+        name: Release ${{ steps.determine_new_version.outputs.VERSION }}
+        draft: false
+        prerelease: false
+        generate_release_notes: false
+        files: |
+          D:/a/MauiStyler/MauiStyler/MauiStylerApp/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/MauiStylerApp_1.0.0.1_Test/MauiStylerApp_1.0.0.1_x64.msix
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  #   - name: Create GitHub Release
-  #     uses: softprops/action-gh-release@v2
-  #     with:
-  #       tag_name: v${{ steps.determine_new_version.outputs.VERSION }}
-  #       name: Release ${{ steps.determine_new_version.outputs.VERSION }}
-  #       body: |
-  #         Previous Release: ${{ steps.fetch_previous_release_info.outputs.PREVIOUS_NAME != 'Initial Release' && steps.fetch_previous_release_info.outputs.PREVIOUS_NAME || 'No previous release found' }}
-  #       draft: false
-  #       prerelease: false
-  #       generate_release_notes: false
-  #       files: |
-  #         D:\a\MauiStyler\MauiStyler\MauiStylerApp\bin\Release\net8.0-windows10.0.19041.0\win10-x64\AppPackages\MauiStylerApp_1.0.0.1_Test\MauiStylerApp_1.0.0.1_x64.msix
-  #     env:
-  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  #   - name: Delete Old Releases
-  #     if: success() && steps.determine_new_version.outputs.VERSION != '0.0.0.1' && steps.determine_new_version.outputs.VERSION != '0.0.0.2'
-  #     env:
-  #       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #     run: |
-  #       $releases = gh release list --limit 999 | ConvertFrom-String -PropertyNames Tag,Title,Date | Sort-Object -Property Date -Descending
-  #       if ($releases.Count -gt 2) {
-  #         foreach ($release in $releases[2..($releases.Count-1)]) {
-  #           gh release delete $release.Tag --yes
-  #           Write-Host "Deleted release: $($release.Tag)"
-  #         }
-  #       } else {
-  #         Write-Host "No old releases to delete."
-  #       }
-  #     shell: pwsh
+    - name: Delete Old Releases
+      if: success() && steps.determine_new_version.outputs.VERSION != '0.0.0.1' && steps.determine_new_version.outputs.VERSION != '0.0.0.2'
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        $releases = gh release list --limit 999 | ConvertFrom-String -PropertyNames Tag,Title,Date | Sort-Object -Property Date -Descending
+        if ($releases.Count -gt 2) {
+          foreach ($release in $releases[2..($releases.Count-1)]) {
+            gh release delete $release.Tag --yes
+            Write-Host "Deleted release: $($release.Tag)"
+          }
+        } else {
+          Write-Host "No old releases to delete."
+        }
+      shell: pwsh
