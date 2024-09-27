@@ -95,14 +95,17 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Delete Old Releases
+      if: success() && steps.determine_new_version.outputs.VERSION != '0.0.0.1' && steps.determine_new_version.outputs.VERSION != '0.0.0.2'
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        $releases = gh api repos/{owner}/{repo}/releases | ConvertFrom-Json | Sort-Object -Property published_at -Descending
+        $releases = gh release list --limit 999 | ConvertFrom-String -PropertyNames Tag,Title,Date | Sort-Object -Property Date -Descending
         if ($releases.Count -gt 2) {
-          foreach ($release in $releases[2..$releases.Count]) {
-            gh api repos/{owner}/{repo}/releases/$($release.id) -X DELETE
-            Write-Host "Deleted release: $($release.name)"
+          foreach ($release in $releases[2..($releases.Count-1)]) {
+            gh release delete $release.Tag --yes
+            Write-Host "Deleted release: $($release.Tag)"
           }
+        } else {
+          Write-Host "No old releases to delete."
         }
       shell: pwsh
