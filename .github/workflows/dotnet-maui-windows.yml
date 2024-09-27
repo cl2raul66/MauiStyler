@@ -91,6 +91,11 @@ jobs:
         }
         echo "VERSION=$newVersion" >> $env:GITHUB_OUTPUT
 
+    - name: Compress App Package
+      run: |
+        Compress-Archive -Path "D:\a\MauiStyler\MauiStyler\MauiStylerApp\bin\Release\net8.0-windows10.0.19041.0\win10-x64\AppPackages\*" -DestinationPath "D:\a\MauiStyler\MauiStyler\MauiStylerApp\bin\Release\net8.0-windows10.0.19041.0\win10-x64\AppPackages\MauiStylerApp_${{ steps.determine_new_version.outputs.VERSION }}_Win_x64.zip"
+      shell: pwsh
+
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
       with:
@@ -100,7 +105,7 @@ jobs:
         prerelease: false
         generate_release_notes: false
         files: |
-          D:/a/MauiStyler/MauiStyler/MauiStylerApp/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/MauiStylerApp_1.0.0.1_Test/MauiStylerApp_1.0.0.1_x64.msix
+          D:/a/MauiStyler/MauiStyler/MauiStylerApp/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/MauiStylerApp_${{ steps.determine_new_version.outputs.VERSION }}_Win_x64.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
