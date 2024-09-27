@@ -31,7 +31,7 @@ jobs:
       id: get_version
       run: |
         $version = (Get-ChildItem -Path .\MauiStylerApp\bin\Release\net8.0-windows10.0.19041.0\win10-x64\AppPackages\ -Directory).Name -replace 'MauiStylerApp_(\d+\.\d+\.\d+\.\d+)_Test', '$1'
-        echo "VERSION=$version" >> $env:GITHUB_OUTPUT
+        echo "VERSION=$version" >> $env:VERSION_OUTPUT
     - name: Get Previous Release
       id: get_previous_release
       env:
@@ -39,8 +39,8 @@ jobs:
       run: |
         $previousRelease = gh release list --limit 1 --json tagName,name | ConvertFrom-Json
         if ($previousRelease) {
-          echo "PREVIOUS_TAG=$($previousRelease.tagName)" >> $env:GITHUB_OUTPUT
-          echo "PREVIOUS_NAME=$($previousRelease.name)" >> $env:GITHUB_OUTPUT
+          echo "PREVIOUS_TAG=$($previousRelease.tagName)" >> $env:VERSION_OUTPUT
+          echo "PREVIOUS_NAME=$($previousRelease.name)" >> $env:VERSION_OUTPUT
         }
       shell: pwsh
     - name: Create Release
