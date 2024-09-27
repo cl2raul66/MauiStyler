@@ -7,72 +7,109 @@ on:
     branches: [ "master" ]
 
 jobs:
-  get_version:
+  fetch_previous_release:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
+    - name: Checkout Repository
       uses: actions/checkout@v4
-    - name: Get Previous Release
-      id: get_previous_release
-      env:
-        GH_TOKEN: ${{ secrets.GH_TOKEN }}
-      run: |
-        previousRelease=$(gh release list --limit 1 --json tagName,name | jq -r '.[0].tagName')
-        echo "PREVIOUS_TAG=$previousRelease" >> $GITHUB_ENV
-        echo "PREVIOUS_NAME=$(gh release view $previousRelease --json name -q '.name')" >> $GITHUB_ENV
+      # Clona el repositorio en el entorno de ejecución.
 
-  build:
+    - name: Fetch Previous Release Information
+      id: fetch_previous_release_info
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        response=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+          https://api.github.com/repos/${{ github.repository }}/releases/latest)
+        previousRelease=$(echo $response | jq -r '.tag_name')
+        if [ "$previousRelease" == "null" ]; then
+          echo "PREVIOUS_TAG=0.0.0.0" >> $GITHUB_ENV
+          echo "PREVIOUS_NAME=Initial Release" >> $GITHUB_ENV
+        else
+          echo "PREVIOUS_TAG=$previousRelease" >> $GITHUB_ENV
+          previousName=$(echo $response | jq -r '.name')
+          echo "PREVIOUS_NAME=$previousName" >> $GITHUB_ENV
+
+  build_and_publish:
     runs-on: windows-latest
-    needs: get_version
+    needs: fetch_previous_release
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup .NET
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      # Clona el repositorio en el entorno de ejecución.
+
+    - name: Setup .NET SDK
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
-    - name: Restore dependencies
+      # Configura el SDK de .NET.
+
+    - name: Restore Dependencies
       run: dotnet restore
-    - name: Install .NET MAUI workload
+      # Restaura las dependencias del proyecto.
+
+    - name: Install .NET MAUI Workload
       run: dotnet workload install maui
+      # Instala la carga de trabajo de .NET MAUI.
+
     - name: Decrypt PFX File
       run: |
         echo "${{ secrets.WINDOWS_PFX_FILE }}" > cert.pfx.asc
         certutil -decode cert.pfx.asc cert.pfx
-    - name: Add Cert to Store
+      # Descifra el archivo PFX.
+
+    - name: Add Certificate to Store
       run: certutil -user -q -p ${{ secrets.WINDOWS_PFX_PASSWORD }} -importpfx cert.pfx NoRoot
-    - name: Build and Publish
+      # Añade el certificado al almacén de certificados.
+
+    - name: Build and Publish Application
       run: dotnet publish MauiStylerApp/MauiStylerApp.csproj -c Release -f:net8.0-windows10.0.19041.0 /p:GenerateAppxPackageOnBuild=true /p:AppxPackageSigningEnabled=true /p:PackageCertificateThumbprint="${{ secrets.WINDOWS_PFX_THUMBPRINT }}"
-    - name: Get Version
-      id: get_version
+      # Construye y publica la aplicación.
+
+    - name: Determine New Version
+      id: determine_new_version
       run: |
-        $version = (Get-ChildItem -Path .\MauiStylerApp\bin\Release\net8.0-windows10.0.19041.0\win10-x64\AppPackages\ -Directory).Name -replace 'MauiStylerApp_(\d+\.\d+\.\d+\.\d+)_Test', '$1'
-        echo "VERSION=$version" >> $env:GITHUB_OUTPUT
-    - name: Create Release
+        $previousVersion = "${{ env.PREVIOUS_TAG }}"
+        if ($previousVersion -eq "0.0.0.0") {
+          $newVersion = "0.0.0.1"
+        } else {
+          $versionParts = $previousVersion.Split('.')
+          $versionParts[3] = [int]$versionParts[3] + 1
+          $newVersion = "$($versionParts[0]).$($versionParts[1]).$($versionParts[2]).$($versionParts[3])"
+        }
+        echo "VERSION=$newVersion" >> $env:GITHUB_OUTPUT
+      # Determina la nueva versión basada en la versión anterior.
+
+    - name: Create GitHub Release
       id: create_release
       uses: actions/create-release@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.VERSION_TOKEN }}
       with:
-        tag_name: v${{ steps.get_version.outputs.VERSION }}
-        release_name: Release ${{ steps.get_version.outputs.VERSION }}
+        tag_name: v${{ steps.determine_new_version.outputs.VERSION }}
+        release_name: Release ${{ steps.determine_new_version.outputs.VERSION }}
         body: |
           Changes in this Release
           - [Add your release notes here]
-          Previous Release: ${{ env.PREVIOUS_NAME }}
+          Previous Release: ${{ env.PREVIOUS_NAME != 'Initial Release' && '${{ env.PREVIOUS_NAME }}' || 'No previous release found' }}
         draft: false
         prerelease: false
+      # Crea un nuevo release en GitHub.
+
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.VERSION_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: .\MauiStylerApp\bin\Release\net8.0-windows10.0.19041.0\win10-x64\AppPackages\MauiStylerApp_${{ steps.get_version.outputs.VERSION }}_Test\MauiStylerApp_${{ steps.get_version.outputs.VERSION }}_x64.msix
-        asset_name: MauiStylerApp_${{ steps.get_version.outputs.VERSION }}_Windows_x64.msix
+        asset_path: .\MauiStylerApp\bin\Release\net8.0-windows10.0.19041.0\win10-x64\AppPackages\MauiStylerApp_${{ steps.determine_new_version.outputs.VERSION }}_Test\MauiStylerApp_${{ steps.determine_new_version.outputs.VERSION }}_x64.msix
+        asset_name: MauiStylerApp_${{ steps.determine_new_version.outputs.VERSION }}_Windows_x64.msix
         asset_content_type: application/octet-stream
-    - name: Delete old releases
+      # Sube el artefacto del release a GitHub.
+
+    - name: Delete Old Releases
       env:
-        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        GH_TOKEN: ${{ secrets.VERSION_TOKEN }}
       run: |
         $releases = gh api repos/{owner}/{repo}/releases | ConvertFrom-Json | Sort-Object -Property published_at -Descending
         if ($releases.Count -gt 2) {
@@ -82,3 +119,4 @@ jobs:
           }
         }
       shell: pwsh
+      # Elimina releases antiguos para mantener el repositorio limpio.
