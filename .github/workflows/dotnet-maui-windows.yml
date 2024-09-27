@@ -32,6 +32,17 @@ jobs:
       run: |
         $version = (Get-ChildItem -Path .\MauiStylerApp\bin\Release\net8.0-windows10.0.19041.0\win10-x64\AppPackages\ -Directory).Name -replace 'MauiStylerApp_(\d+\.\d+\.\d+\.\d+)_Test', '$1'
         echo "VERSION=$version" >> $env:GITHUB_OUTPUT
+    - name: Get Previous Release
+      id: get_previous_release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        $previousRelease = gh release list --limit 1 --json tagName,name | ConvertFrom-Json
+        if ($previousRelease) {
+          echo "PREVIOUS_TAG=$($previousRelease.tagName)" >> $env:GITHUB_OUTPUT
+          echo "PREVIOUS_NAME=$($previousRelease.name)" >> $env:GITHUB_OUTPUT
+        }
+      shell: pwsh
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
@@ -40,6 +51,11 @@ jobs:
       with:
         tag_name: v${{ steps.get_version.outputs.VERSION }}
         release_name: Release ${{ steps.get_version.outputs.VERSION }}
+        body: |
+          Changes in this Release
+          - [Add your release notes here]
+
+          Previous Release: [${{ steps.get_previous_release.outputs.PREVIOUS_NAME }}](https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_previous_release.outputs.PREVIOUS_TAG }})
         draft: false
         prerelease: false
     - name: Upload Release Asset
@@ -51,3 +67,15 @@ jobs:
         asset_path: .\MauiStylerApp\bin\Release\net8.0-windows10.0.19041.0\win10-x64\AppPackages\MauiStylerApp_${{ steps.get_version.outputs.VERSION }}_Test\MauiStylerApp_${{ steps.get_version.outputs.VERSION }}_x64.msix
         asset_name: MauiStylerApp_${{ steps.get_version.outputs.VERSION }}_Windows_x64.msix
         asset_content_type: application/octet-stream
+    - name: Delete old releases
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        $releases = gh api repos/{owner}/{repo}/releases | ConvertFrom-Json | Sort-Object -Property published_at -Descending
+        if ($releases.Count -gt 2) {
+          foreach ($release in $releases[2..$releases.Count]) {
+            gh api repos/{owner}/{repo}/releases/$($release.id) -X DELETE
+            Write-Host "Deleted release: $($release.name)"
+          }
+        }
+      shell: pwsh
