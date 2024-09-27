@@ -35,8 +35,7 @@ jobs:
         echo "Major: ${{ steps.gitversion.outputs.major }}"
         echo "Minor: ${{ steps.gitversion.outputs.minor }}"
         echo "Patch: ${{ steps.gitversion.outputs.patch }}"
-        echo "PreReleaseTag: ${{ steps.gitversion.outputs.preReleaseTag }}"
-        echo "SemVer: ${{ steps.gitversion.outputs.semVer }}"
+        echo "PreReleaseNumber: ${{ steps.gitversion.outputs.preReleaseNumber }}"
         echo "BranchName: ${{ steps.gitversion.outputs.branchName }}"
         echo "Sha: ${{ steps.gitversion.outputs.sha }}"
 
@@ -61,13 +60,18 @@ jobs:
 
     - name: Build and Publish Application
       run: |
+        # Incrementar manualmente el Major si es 0
+        MAJOR=$((steps.gitversion.outputs.major + 1))
+        VERSION="${MAJOR}.${{ steps.gitversion.outputs.minor }}.${{ steps.gitversion.outputs.preReleaseNumber }}.${{ steps.gitversion.outputs.patch }}"
+    
         dotnet publish -f net8.0-windows10.0.19041.0 -c Release `
         -p:GenerateAppxPackageOnBuild=true `
         -p:AppxPackageSigningEnabled=true `
         -p:PackageCertificateThumbprint="${{ secrets.WINDOWS_CERT_THUMBPRINT }}" `
         -p:AppxPackageDir="${{ github.workspace }}\AppPackages" `
-        -p:Version=${{ steps.gitversion.outputs.semVer }} `
-        -p:ApplicationDisplayVersion=${{ steps.gitversion.outputs.semVer }} `
+        -p:Version=${VERSION} `
+        -p:ApplicationDisplayVersion=${VERSION} `
+        -p:ApplicationVersion=${MAJOR} `
         --self-contained
 
     - name: Create GitHub Release
@@ -75,10 +79,10 @@ jobs:
       if: github.event_name == 'push' && github.ref == 'refs/heads/master'
       with:
         files: ${{ github.workspace }}\AppPackages\**\*.msix
-        tag_name: v${{ steps.gitversion.outputs.semVer }}
-        name: Release ${{ steps.gitversion.outputs.semVer }}
+        tag_name: v${{ steps.gitversion.outputs.majorMinorPatch }}
+        name: Release ${{ steps.gitversion.outputs.majorMinorPatch }}
         body: |
-          Release of version ${{ steps.gitversion.outputs.semVer }}
+          Release of version ${{ steps.gitversion.outputs.majorMinorPatch }}
           
           Changes in this release:
           ${{ github.event.head_commit.message }}
