@@ -58,20 +58,32 @@ jobs:
     - name: Add Certificate to Store
       run: certutil -user -q -p "${{ secrets.WINDOWS_PFX_PASSWORD }}" -importpfx cert.pfx NoRoot
 
+    - name: Calculate Version
+      id: calculate_version
+      run: |
+        $major = [int]${{ steps.gitversion.outputs.major }}
+        if ($major -eq 0) {
+        $major = 1
+        }
+        $minor = ${{ steps.gitversion.outputs.minor }}
+        $patch = ${{ steps.gitversion.outputs.patch }}
+        $build = ${{ steps.gitversion.outputs.commitsSinceVersionSource }}
+        $revision = ${{ steps.gitversion.outputs.preReleaseNumber }}
+          
+        $version = "$major.$minor.$patch.$build"
+          
+        echo "::set-output name=version::$version"
+
     - name: Build and Publish Application
       run: |
-        # Incrementar manualmente el Major si es 0
-        MAJOR=$((steps.gitversion.outputs.major + 1))
-        VERSION="${MAJOR}.${{ steps.gitversion.outputs.minor }}.${{ steps.gitversion.outputs.preReleaseNumber }}.${{ steps.gitversion.outputs.patch }}"
-    
         dotnet publish -f net8.0-windows10.0.19041.0 -c Release `
         -p:GenerateAppxPackageOnBuild=true `
         -p:AppxPackageSigningEnabled=true `
         -p:PackageCertificateThumbprint="${{ secrets.WINDOWS_CERT_THUMBPRINT }}" `
         -p:AppxPackageDir="${{ github.workspace }}\AppPackages" `
-        -p:Version=${VERSION} `
-        -p:ApplicationDisplayVersion=${VERSION} `
-        -p:ApplicationVersion=${MAJOR} `
+        -p:Version=${{ steps.calculate_version.outputs.version }} `
+        -p:ApplicationDisplayVersion=${{ steps.calculate_version.outputs.version }} `
+        -p:ApplicationVersion=${{ steps.gitversion.outputs.major }} `
         --self-contained
 
     - name: Create GitHub Release
@@ -79,10 +91,10 @@ jobs:
       if: github.event_name == 'push' && github.ref == 'refs/heads/master'
       with:
         files: ${{ github.workspace }}\AppPackages\**\*.msix
-        tag_name: v${{ steps.gitversion.outputs.majorMinorPatch }}
-        name: Release ${{ steps.gitversion.outputs.majorMinorPatch }}
+        tag_name: v${{ steps.calculate_version.outputs.version }}
+        name: Release ${{ steps.calculate_version.outputs.version }}
         body: |
-          Release of version ${{ steps.gitversion.outputs.majorMinorPatch }}
+          Release of version ${{ steps.calculate_version.outputs.version }}
           
           Changes in this release:
           ${{ github.event.head_commit.message }}
