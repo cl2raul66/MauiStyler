@@ -35,7 +35,7 @@ jobs:
     - name: Get Previous Release
       id: get_previous_release
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        VERSION_TOKEN: ${{ secrets.VERSION_TOKEN }}
       run: |
         $previousRelease = gh release list --limit 1 --json tagName,name | ConvertFrom-Json
         if ($previousRelease) {
@@ -47,7 +47,7 @@ jobs:
       id: create_release
       uses: actions/create-release@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        VERSION_TOKEN: ${{ secrets.VERSION_TOKEN }}
       with:
         tag_name: v${{ steps.get_version.outputs.VERSION }}
         release_name: Release ${{ steps.get_version.outputs.VERSION }}
@@ -61,7 +61,7 @@ jobs:
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        VERSION_TOKEN: ${{ secrets.VERSION_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: .\MauiStylerApp\bin\Release\net8.0-windows10.0.19041.0\win10-x64\AppPackages\MauiStylerApp_${{ steps.get_version.outputs.VERSION }}_Test\MauiStylerApp_${{ steps.get_version.outputs.VERSION }}_x64.msix
@@ -69,7 +69,7 @@ jobs:
         asset_content_type: application/octet-stream
     - name: Delete old releases
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        VERSION_TOKEN: ${{ secrets.VERSION_TOKEN }}
       run: |
         $releases = gh api repos/{owner}/{repo}/releases | ConvertFrom-Json | Sort-Object -Property published_at -Descending
         if ($releases.Count -gt 2) {
