@@ -16,11 +16,59 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v0.10.2
+      with:
+        versionSpec: '5.x'
+
+    - name: Determine Version
+      id: gitversion
+      uses: gittools/actions/gitversion/execute@v0.10.2
+      with:
+        useConfigFile: true
+
+    - name: Display GitVersion outputs
+      run: |
+        echo "Major: ${{ steps.gitversion.outputs.major }}"
+        echo "Minor: ${{ steps.gitversion.outputs.minor }}"
+        echo "Patch: ${{ steps.gitversion.outputs.patch }}"
+        echo "PreReleaseTag: ${{ steps.gitversion.outputs.preReleaseTag }}"
+        echo "PreReleaseTagWithDash: ${{ steps.gitversion.outputs.preReleaseTagWithDash }}"
+        echo "PreReleaseLabel: ${{ steps.gitversion.outputs.preReleaseLabel }}"
+        echo "PreReleaseNumber: ${{ steps.gitversion.outputs.preReleaseNumber }}"
+        echo "WeightedPreReleaseNumber: ${{ steps.gitversion.outputs.weightedPreReleaseNumber }}"
+        echo "BuildMetaData: ${{ steps.gitversion.outputs.buildMetaData }}"
+        echo "BuildMetaDataPadded: ${{ steps.gitversion.outputs.buildMetaDataPadded }}"
+        echo "FullBuildMetaData: ${{ steps.gitversion.outputs.fullBuildMetaData }}"
+        echo "MajorMinorPatch: ${{ steps.gitversion.outputs.majorMinorPatch }}"
+        echo "SemVer: ${{ steps.gitversion.outputs.semVer }}"
+        echo "LegacySemVer: ${{ steps.gitversion.outputs.legacySemVer }}"
+        echo "LegacySemVerPadded: ${{ steps.gitversion.outputs.legacySemVerPadded }}"
+        echo "AssemblySemVer: ${{ steps.gitversion.outputs.assemblySemVer }}"
+        echo "AssemblySemFileVer: ${{ steps.gitversion.outputs.assemblySemFileVer }}"
+        echo "FullSemVer: ${{ steps.gitversion.outputs.fullSemVer }}"
+        echo "InformationalVersion: ${{ steps.gitversion.outputs.informationalVersion }}"
+        echo "BranchName: ${{ steps.gitversion.outputs.branchName }}"
+        echo "EscapedBranchName: ${{ steps.gitversion.outputs.escapedBranchName }}"
+        echo "Sha: ${{ steps.gitversion.outputs.sha }}"
+        echo "ShortSha: ${{ steps.gitversion.outputs.shortSha }}"
+        echo "NuGetVersionV2: ${{ steps.gitversion.outputs.nuGetVersionV2 }}"
+        echo "NuGetVersion: ${{ steps.gitversion.outputs.nuGetVersion }}"
+        echo "NuGetPreReleaseTagV2: ${{ steps.gitversion.outputs.nuGetPreReleaseTagV2 }}"
+        echo "NuGetPreReleaseTag: ${{ steps.gitversion.outputs.nuGetPreReleaseTag }}"
+        echo "VersionSourceSha: ${{ steps.gitversion.outputs.versionSourceSha }}"
+        echo "CommitsSinceVersionSource: ${{ steps.gitversion.outputs.commitsSinceVersionSource }}"
+        echo "CommitsSinceVersionSourcePadded: ${{ steps.gitversion.outputs.commitsSinceVersionSourcePadded }}"
+        echo "UncommittedChanges: ${{ steps.gitversion.outputs.uncommittedChanges }}"
+        echo "CommitDate: ${{ steps.gitversion.outputs.commitDate }}"
 
     - name: Restore Dependencies
       run: dotnet restore
@@ -38,90 +86,28 @@ jobs:
 
     - name: Build and Publish Application
       run: |
-        dotnet publish MauiStylerApp/MauiStylerApp.csproj -c Release -f:net8.0-windows10.0.19041.0 `
-        /p:GenerateAppxPackageOnBuild=true `
-        /p:AppxPackageSigningEnabled=true `
-        /p:PackageCertificateThumbprint="${{ secrets.WINDOWS_PFX_THUMBPRINT }}"
-
-    - name: Verify MSIX File
-      run: |
-        $msixPath = "D:\a\MauiStyler\MauiStyler\MauiStylerApp\bin\Release\net8.0-windows10.0.19041.0\win10-x64\AppPackages\MauiStylerApp_1.0.0.1_Test\MauiStylerApp_1.0.0.1_x64.msix"
-        if (Test-Path $msixPath) {
-          Write-Host "MSIX file found: $msixPath"
-        } else {
-          Write-Host "MSIX file not found at expected path: $msixPath"
-          Write-Host "Contents of the directory:"
-          Get-ChildItem -Path "D:\a\MauiStyler\MauiStyler\MauiStylerApp\bin\Release\net8.0-windows10.0.19041.0\win10-x64\AppPackages" -Recurse
-          exit 1
-        }
-      shell: pwsh
-
-    - name: Fetch Previous Release Information
-      id: fetch_previous_release_info
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        try {
-          $response = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/releases/latest" -Headers @{Authorization = "token $env:GITHUB_TOKEN"} -ErrorAction Stop
-          $previousRelease = $response.tag_name
-          echo "PREVIOUS_TAG=$previousRelease" >> $env:GITHUB_OUTPUT
-          echo "PREVIOUS_NAME=$($response.name)" >> $env:GITHUB_OUTPUT
-        }
-        catch {
-          if ($_.Exception.Response.StatusCode -eq 404) {
-            echo "PREVIOUS_TAG=0.0.0.0" >> $env:GITHUB_OUTPUT
-            echo "PREVIOUS_NAME=Initial Release" >> $env:GITHUB_OUTPUT
-          }
-          else {
-            throw $_
-          }
-        }
-      shell: pwsh
-
-    - name: Determine New Version
-      id: determine_new_version
-      run: |
-        $previousVersion = "${{ steps.fetch_previous_release_info.outputs.PREVIOUS_TAG }}"
-        if ($previousVersion -eq "0.0.0.0") {
-          $newVersion = "0.0.0.1"
-        } else {
-          $versionParts = $previousVersion.Split('.')
-          $versionParts[3] = [int]$versionParts[3] + 1
-          $newVersion = "$($versionParts[0]).$($versionParts[1]).$($versionParts[2]).$($versionParts[3])"
-        }
-        echo "VERSION=$newVersion" >> $env:GITHUB_OUTPUT
-
-    - name: Compress App Package
-      run: |
-        Compress-Archive -Path "D:\a\MauiStyler\MauiStyler\MauiStylerApp\bin\Release\net8.0-windows10.0.19041.0\win10-x64\AppPackages\*" -DestinationPath "D:\a\MauiStyler\MauiStyler\MauiStylerApp\bin\Release\net8.0-windows10.0.19041.0\win10-x64\AppPackages\MauiStylerApp_${{ steps.determine_new_version.outputs.VERSION }}_Win_x64.zip"
-      shell: pwsh
+        dotnet publish -f net8.0-windows10.0.19041.0 -c Release `
+        -p:GenerateAppxPackageOnBuild=true `
+        -p:AppxPackageSigningEnabled=true `
+        -p:PackageCertificateThumbprint="${{ secrets.WINDOWS_CERT_THUMBPRINT }}" `
+        -p:AppxPackageDir="${{ github.workspace }}\AppPackages" `
+        -p:Version=${{ steps.gitversion.outputs.semVer }} `
+        -p:ApplicationDisplayVersion=${{ steps.gitversion.outputs.semVer }} `
+        --self-contained
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
+      if: github.event_name == 'push' && github.ref == 'refs/heads/master'
       with:
-        tag_name: ${{ steps.determine_new_version.outputs.VERSION }}
-        name: Release ${{ steps.determine_new_version.outputs.VERSION }}
-        body: ""
+        files: ${{ github.workspace }}\AppPackages\**\*.msix
+        tag_name: v${{ steps.gitversion.outputs.semVer }}
+        name: Release ${{ steps.gitversion.outputs.semVer }}
+        body: |
+          Release of version ${{ steps.gitversion.outputs.semVer }}
+          
+          Changes in this release:
+          ${{ github.event.head_commit.message }}
         draft: false
         prerelease: false
-        generate_release_notes: false
-        files: |
-          D:/a/MauiStyler/MauiStyler/MauiStylerApp/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/MauiStylerApp_${{ steps.determine_new_version.outputs.VERSION }}_Win_x64.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Delete Old Releases
-      if: success() && steps.determine_new_version.outputs.VERSION != '0.0.0.1' && steps.determine_new_version.outputs.VERSION != '0.0.0.2'
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        $releases = gh release list --limit 999 | ConvertFrom-String -PropertyNames Tag,Title,Date | Sort-Object -Property Date -Descending
-        if ($releases.Count -gt 2) {
-          foreach ($release in $releases[2..($releases.Count-1)]) {
-            gh release delete $release.Tag --yes
-            Write-Host "Deleted release: $($release.Tag)"
-          }
-        } else {
-          Write-Host "No old releases to delete."
-        }
-      shell: pwsh
