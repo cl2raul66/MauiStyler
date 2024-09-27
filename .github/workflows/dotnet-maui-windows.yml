@@ -63,16 +63,16 @@ jobs:
       run: |
         $major = [int]${{ steps.gitversion.outputs.major }}
         if ($major -eq 0) {
-        $major = 1
+          $major = 1
         }
         $minor = ${{ steps.gitversion.outputs.minor }}
         $patch = ${{ steps.gitversion.outputs.patch }}
         $build = ${{ steps.gitversion.outputs.commitsSinceVersionSource }}
         $revision = ${{ steps.gitversion.outputs.preReleaseNumber }}
-          
-        $version = "$major.$minor.$patch.$build"
-          
-        echo "::set-output name=version::$version"
+      
+        $version = "$major.$minor.$patch"
+      
+        echo "version=$version" >> $GITHUB_ENV
 
     - name: Build and Publish Application
       run: |
@@ -81,8 +81,8 @@ jobs:
         -p:AppxPackageSigningEnabled=true `
         -p:PackageCertificateThumbprint="${{ secrets.WINDOWS_CERT_THUMBPRINT }}" `
         -p:AppxPackageDir="${{ github.workspace }}\AppPackages" `
-        -p:Version=${{ steps.calculate_version.outputs.version }} `
-        -p:ApplicationDisplayVersion=${{ steps.calculate_version.outputs.version }} `
+        -p:Version=${{ env.version }} `
+        -p:ApplicationDisplayVersion=${{ env.version }} `
         -p:ApplicationVersion=${{ steps.gitversion.outputs.major }} `
         --self-contained
 
@@ -91,10 +91,10 @@ jobs:
       if: github.event_name == 'push' && github.ref == 'refs/heads/master'
       with:
         files: ${{ github.workspace }}\AppPackages\**\*.msix
-        tag_name: v${{ steps.calculate_version.outputs.version }}
-        name: Release ${{ steps.calculate_version.outputs.version }}
+        tag_name: v${{ env.version }}
+        name: Release ${{ env.version }}
         body: |
-          Release of version ${{ steps.calculate_version.outputs.version }}
+          Release of version ${{ env.version }}
           
           Changes in this release:
           ${{ github.event.head_commit.message }}
