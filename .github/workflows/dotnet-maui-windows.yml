@@ -65,6 +65,19 @@ jobs:
         }
       shell: pwsh
 
+    - name: Verify MSIX File
+      run: |
+        $msixPath = "./MauiStylerApp/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/MauiStylerApp_${{ steps.determine_new_version.outputs.VERSION }}_Test/MauiStylerApp_${{ steps.determine_new_version.outputs.VERSION }}_x64.msix"
+        if (Test-Path $msixPath) {
+          Write-Host "MSIX file found: $msixPath"
+        } else {
+          Write-Host "MSIX file not found at expected path: $msixPath"
+          Write-Host "Contents of the directory:"
+          Get-ChildItem -Path "./MauiStylerApp/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages" -Recurse
+          exit 1
+        }
+      shell: pwsh
+
     - name: Determine New Version
       id: determine_new_version
       run: |
@@ -84,11 +97,10 @@ jobs:
         tag_name: v${{ steps.determine_new_version.outputs.VERSION }}
         name: Release ${{ steps.determine_new_version.outputs.VERSION }}
         body: |
-          Changes in this Release
-          - [Add your release notes here]
           Previous Release: ${{ steps.fetch_previous_release_info.outputs.PREVIOUS_NAME != 'Initial Release' && steps.fetch_previous_release_info.outputs.PREVIOUS_NAME || 'No previous release found' }}
         draft: false
         prerelease: false
+        generate_release_notes: false
         files: |
           .\MauiStylerApp\bin\Release\net8.0-windows10.0.19041.0\win10-x64\AppPackages\MauiStylerApp_${{ steps.determine_new_version.outputs.VERSION }}_Test\MauiStylerApp_${{ steps.determine_new_version.outputs.VERSION }}_x64.msix
       env:
