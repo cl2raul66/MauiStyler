@@ -48,15 +48,22 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        $response = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/releases/latest" -Headers @{Authorization = "token $env:GITHUB_TOKEN"}
-        $previousRelease = $response.tag_name
-        if ($null -eq $previousRelease) {
-          echo "PREVIOUS_TAG=0.0.0.0" >> $env:GITHUB_OUTPUT
-          echo "PREVIOUS_NAME=Initial Release" >> $env:GITHUB_OUTPUT
-        } else {
+        try {
+          $response = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/releases/latest" -Headers @{Authorization = "token $env:GITHUB_TOKEN"} -ErrorAction Stop
+          $previousRelease = $response.tag_name
           echo "PREVIOUS_TAG=$previousRelease" >> $env:GITHUB_OUTPUT
           echo "PREVIOUS_NAME=$($response.name)" >> $env:GITHUB_OUTPUT
         }
+        catch {
+          if ($_.Exception.Response.StatusCode -eq 404) {
+            echo "PREVIOUS_TAG=0.0.0.0" >> $env:GITHUB_OUTPUT
+            echo "PREVIOUS_NAME=Initial Release" >> $env:GITHUB_OUTPUT
+          }
+          else {
+            throw $_
+          }
+        }
+      shell: pwsh
 
     - name: Determine New Version
       id: determine_new_version
