@@ -41,7 +41,20 @@ jobs:
         dotnet publish MauiStylerApp/MauiStylerApp.csproj -c Release -f:net8.0-windows10.0.19041.0 `
         /p:GenerateAppxPackageOnBuild=true `
         /p:AppxPackageSigningEnabled=true `
-        /p:PackageCertificateThumbprint="${{ secrets.WINDOWS_PFX_THUMBPRINT }}"
+        /p:PackageCertificateThumbprint="${{ secrets.WINDOWS_PFX_THUMBPRINT }}"    
+
+    - name: Verify MSIX File
+      run: |
+        $msixPath = "D:\a\MauiStyler\MauiStyler\MauiStylerApp\bin\Release\net8.0-windows10.0.19041.0\win10-x64\AppPackages\MauiStylerApp_1.0.0.1_Test\MauiStylerApp_1.0.0.1_x64.msix"
+        if (Test-Path $msixPath) {
+          Write-Host "MSIX file found: $msixPath"
+        } else {
+          Write-Host "MSIX file not found at expected path: $msixPath"
+          Write-Host "Contents of the directory:"
+          Get-ChildItem -Path "D:\a\MauiStyler\MauiStyler\MauiStylerApp\bin\Release\net8.0-windows10.0.19041.0\win10-x64\AppPackages" -Recurse
+          exit 1
+        }
+      shell: pwsh
 
     - name: Fetch Previous Release Information
       id: fetch_previous_release_info
@@ -62,19 +75,6 @@ jobs:
           else {
             throw $_
           }
-        }
-      shell: pwsh
-
-    - name: Verify MSIX File
-      run: |
-        $msixPath = "./MauiStylerApp/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/MauiStylerApp_${{ steps.determine_new_version.outputs.VERSION }}_Test/MauiStylerApp_${{ steps.determine_new_version.outputs.VERSION }}_x64.msix"
-        if (Test-Path $msixPath) {
-          Write-Host "MSIX file found: $msixPath"
-        } else {
-          Write-Host "MSIX file not found at expected path: $msixPath"
-          Write-Host "Contents of the directory:"
-          Get-ChildItem -Path "./MauiStylerApp/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages" -Recurse
-          exit 1
         }
       shell: pwsh
 
@@ -102,7 +102,7 @@ jobs:
         prerelease: false
         generate_release_notes: false
         files: |
-          .\MauiStylerApp\bin\Release\net8.0-windows10.0.19041.0\win10-x64\AppPackages\MauiStylerApp_${{ steps.determine_new_version.outputs.VERSION }}_Test\MauiStylerApp_${{ steps.determine_new_version.outputs.VERSION }}_x64.msix
+          D:\a\MauiStyler\MauiStyler\MauiStylerApp\bin\Release\net8.0-windows10.0.19041.0\win10-x64\AppPackages\MauiStylerApp_1.0.0.1_Test\MauiStylerApp_1.0.0.1_x64.msix
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
