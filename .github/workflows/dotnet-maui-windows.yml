@@ -84,6 +84,7 @@ jobs:
         -p:Version=${{ env.version }} `
         -p:ApplicationDisplayVersion=${{ env.version }} `
         -p:ApplicationVersion=${{ steps.gitversion.outputs.major }} `
+        -p:NuGetVersion=${{ env.version }} `
         --self-contained
 
     - name: Create GitHub Release
