@@ -1,9 +1,0 @@
-mode: ContinuousDeployment
-branches: {}
-ignore:
-  sha: []
-merge-message-formats: {}
-major-version-bump-message: '^(breaking|major):'
-minor-version-bump-message: '^(feature|feat):'
-patch-version-bump-message: '^(fix|bugfix|patch):'
-no-bump-message: '^(none|skip):'
