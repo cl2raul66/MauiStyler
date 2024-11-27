@@ -22,7 +22,7 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
     readonly IStyleableComponentsService styleableComponentsServ;
     readonly ITargetTypeService targetTypeServ;
 
-    Dictionary<string, object> VMTokens;
+    Dictionary<string, object> VMTokens = [];
 
     public PgStyleEditorViewModel(IStyleTemplateService styleTemplateService, IDocumentService documentService, IColorsPalettesService colorsPalettesService, IStyleableComponentsService styleableComponentsService, ITargetTypeService targetTypeService)
     {
@@ -64,7 +64,9 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
     [RelayCommand]
     async Task Save()
     {
-        var token = VMTokens["TokenNewTemplate"].ToString()!;
+        var token = bool.Parse(IsEdit) 
+            ? VMTokens["TokenEditTemplate"].ToString()! 
+            : string.IsNullOrEmpty(CurrentTemplateId!) ? VMTokens["TokenNewTemplate"].ToString()! : VMTokens["TokenNewTemplateBasedSelected"].ToString()!;
 
         _ = WeakReferenceMessenger.Default.Send(token, true.ToString());
 

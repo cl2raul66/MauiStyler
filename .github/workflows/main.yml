@@ -26,15 +26,15 @@ jobs:
 
       - name: Install dependencies
         run: dotnet restore
-        working-directory: ./src/MauiStylerApp
+        working-directory: ./MauiStylerApp
 
       - name: Publish Windows App
         run: dotnet publish -f net8.0-windows10.0.19041.0 -c Release 
-        working-directory: ./src/MauiStylerApp/MauiStylerApp
+        working-directory: ./MauiStylerApp/MauiStylerApp
 
       - name: Publish Android App
         run: dotnet publish -f net8.0-android -c Release 
-        working-directory: ./src/MauiStylerApp/MauiStylerApp
+        working-directory: ./MauiStylerApp/MauiStylerApp
             
       - uses: actions/upload-artifact@v4
         with:
