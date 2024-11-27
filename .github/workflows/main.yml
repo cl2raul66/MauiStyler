@@ -1,5 +1,4 @@
-name: Build .NET MAUI Windows
-
+name: Publish .NET MAUI
 on:
    push:
      branches: [ main ]
@@ -27,15 +26,15 @@ jobs:
 
       - name: Install dependencies
         run: dotnet restore
-        working-directory: ./src/MauiApp1
+        working-directory: ./src/MauiStylerApp
 
       - name: Publish Windows App
         run: dotnet publish -f net8.0-windows10.0.19041.0 -c Release 
-        working-directory: ./src/MauiApp1/MauiApp1
+        working-directory: ./src/MauiStylerApp/MauiStylerApp
 
       - name: Publish Android App
         run: dotnet publish -f net8.0-android -c Release 
-        working-directory: ./src/MauiApp1/MauiApp1
+        working-directory: ./src/MauiStylerApp/MauiStylerApp
             
       - uses: actions/upload-artifact@v4
         with:
