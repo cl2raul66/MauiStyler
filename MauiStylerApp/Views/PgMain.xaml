@@ -97,12 +97,12 @@
                 TextTransform="Uppercase"
                 VerticalOptions="Center" />
             <HorizontalStackLayout Grid.Column="1" Spacing="8">
-                <Button
+                <!--<Button
                     Command="{Binding GoToLayoutsCommand}"
                     Style="{StaticResource OnlyTextButon}"
                     Text="{StaticResource lang:PgMain_BtnNavModels}"
                     ToolTipProperties.Text="{StaticResource lang:PgMain_TtBtnNavModels}"
-                    WidthRequest="100" />
+                    WidthRequest="100" />-->
                 <Button
                     Command="{Binding GoToThemesCommand}"
                     Style="{StaticResource OnlyTextButon}"
@@ -119,7 +119,21 @@
         </Grid>
         <!--#endregion-->
         <!--#region CONTENIDO-->
-        <Grid
+        <VerticalStackLayout
+            Grid.Row="1"
+            HorizontalOptions="Center"
+            VerticalOptions="Center">
+            <Label
+                FontFamily="icofont"
+                FontSize="64"
+                HorizontalOptions="Center"
+                Text="{StaticResource ico:ArchitectureAlt}" />
+            <Label
+                FontSize="24"
+                Text="{StaticResource lang:PgMain_LbUnderConstruction}"
+                TextTransform="Uppercase" />
+        </VerticalStackLayout>
+        <!--<Grid
             Grid.Row="1"
             RowDefinitions="auto,*,auto"
             RowSpacing="0">
@@ -190,7 +204,7 @@
                     </FlexLayout>
                 </Grid>
             </Frame>
-        </Grid>
+        </Grid>-->
         <!--#endregion-->
         <!--#region PIE-->
         <Grid Grid.Row="2" Margin="8">

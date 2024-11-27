@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace MauiStylerApp.Services;
 
-public interface IColorsPalettesService
+public interface IColorsPalettesService : IDisposable
 {
     void BeginTrans();
     void Commit();
@@ -53,6 +53,8 @@ public class ColorsPalettesService : IColorsPalettesService
     public void Commit() => db.Commit();
 
     public void Rollback() => db.Rollback();
+
+    public void Dispose() => db.Dispose();
 
     public IEnumerable<ColorPalette> GetAll() => collection.FindAll();
 

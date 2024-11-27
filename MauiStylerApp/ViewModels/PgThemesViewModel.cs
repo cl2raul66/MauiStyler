@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using LiteDB;
 using MauiStylerApp.Models;
 using MauiStylerApp.Services;
@@ -14,6 +15,11 @@ public partial class PgThemesViewModel : ObservableRecipient
 {
     readonly IStyleTemplateService styleTemplateServ;
     readonly IDocumentService documentServ;
+
+    Dictionary<string, object> VMTokens = new()
+    {
+        { "TokenCancel", "901E87E2-856D-4DEB-BD16-B9102B0366AE" }
+    };
 
     public PgThemesViewModel(IStyleTemplateService styleTemplateService, IDocumentService documentService)
     {
@@ -40,16 +46,20 @@ public partial class PgThemesViewModel : ObservableRecipient
     [RelayCommand]
     async Task GoToNewTemplate()
     {
-        await Shell.Current.GoToAsync(nameof(PgStyleEditor), true);
+        IsActive = true;
+        VMTokens["TokenNewTemplate"] = "21FC9122-7466-4EC1-8E4E-0945BA952C76";
+        await Shell.Current.GoToAsync(nameof(PgStyleEditor), true, VMTokens);
     }
 
     [RelayCommand]
     async Task GoToEditTemplate()
     {
-        Dictionary<string, object> sendData = new()
+        IsActive = true;
+        VMTokens["TokenEditTemplate"] = "7FC8EDE9-B0FF-4106-9C30-C2D6A440E990";
+        Dictionary<string, object> sendData = new(VMTokens)
         {
             { "IsEdit", IsEdit.ToString() },
-            {"CurrentTemplateId", SelectedTemplate!.Id!}
+            { "CurrentTemplateId", SelectedTemplate!.Id! }
         };
         await Shell.Current.GoToAsync(nameof(PgStyleEditor), true, sendData);
     }
@@ -57,10 +67,12 @@ public partial class PgThemesViewModel : ObservableRecipient
     [RelayCommand]
     async Task GoToNewTemplateBasedSelected()
     {
-        Dictionary<string, object> sendData = new()
+        IsActive = true;
+        VMTokens["TokenNewTemplateBasedSelected"] = "DA3C5EC6-B78B-40E5-8E9B-10077DCC1B3C";
+        Dictionary<string, object> sendData = new(VMTokens)
         {
             { "IsEdit", IsEdit.ToString() },
-            {"CurrentTemplateId", SelectedTemplate!.Id!}
+            { "CurrentTemplateId", SelectedTemplate!.Id! }
         };
         await Shell.Current.GoToAsync(nameof(PgStyleEditor), true, sendData);
     }
@@ -93,6 +105,41 @@ public partial class PgThemesViewModel : ObservableRecipient
         }
     }
 
+    protected override void OnActivated()
+    {
+        base.OnActivated();
+
+        WeakReferenceMessenger.Default.Register<PgThemesViewModel, string, string>(this, VMTokens["TokenCancel"].ToString()!, (r, m) =>
+        {
+            IsActive = false;
+            if (bool.Parse(m))
+            {
+
+            }
+        });
+
+        WeakReferenceMessenger.Default.Register<PgThemesViewModel, string, string>(this, VMTokens["TokenNewTemplate"].ToString()!, (r, m) =>
+        {
+            IsActive = false;
+
+            GetStyleTemplates();
+        });
+
+        WeakReferenceMessenger.Default.Register<PgThemesViewModel, string, string>(this, VMTokens["TokenNewTemplateBasedSelected"].ToString()!, (r, m) =>
+        {
+            IsActive = false;
+
+            GetStyleTemplates();
+        });
+
+        WeakReferenceMessenger.Default.Register<PgThemesViewModel, string, string>(this, VMTokens["TokenEditTemplate"].ToString()!, (r, m) =>
+        {
+            IsActive = false;
+
+            GetStyleTemplates();
+        });
+    }
+
     #region EXTRA
     public void GetStyleTemplates()
     {
@@ -101,30 +148,30 @@ public partial class PgThemesViewModel : ObservableRecipient
             List<ColorStyle> colorsStyle =
             [
                 // PRINCIPAL
-                new() { Name = "Primary", Value = Color.Parse("#FF512BD4"), Tag="PRINCIPAL", Scheme = ColorScheme.Light },
-                new() { Name = "Secondary", Value = Color.Parse("#FF2B0B98"), Tag="PRINCIPAL", Scheme = ColorScheme.Light },
-                new() { Name = "Accent", Value = Color.Parse("#FF2D6FCC"), Tag="PRINCIPAL", Scheme = ColorScheme.Light },
-                new() { Name = "PrimaryDark", Value = Color.Parse("#FF512BD4"), Tag="PRINCIPAL", Scheme = ColorScheme.Dark },
-                new() { Name = "SecondaryDark", Value = Color.Parse("#FF2B0B98"), Tag="PRINCIPAL", Scheme = ColorScheme.Dark },
-                new() { Name = "AccentDark", Value = Color.Parse("#FF2D6FCC"), Tag="PRINCIPAL", Scheme = ColorScheme.Dark },
+                new() { Name = "PrimaryCl", Value = Color.Parse("#FF512BD4"), Tag="PRINCIPAL", Scheme = ColorScheme.Light },
+                new() { Name = "SecondaryCl", Value = Color.Parse("#FF2B0B98"), Tag="PRINCIPAL", Scheme = ColorScheme.Light },
+                new() { Name = "AccentCl", Value = Color.Parse("#FF2D6FCC"), Tag="PRINCIPAL", Scheme = ColorScheme.Light },
+                new() { Name = "PrimaryDarkCl", Value = Color.Parse("#FF512BD4"), Tag="PRINCIPAL", Scheme = ColorScheme.Dark },
+                new() { Name = "SecondaryDarkCl", Value = Color.Parse("#FF2B0B98"), Tag="PRINCIPAL", Scheme = ColorScheme.Dark },
+                new() { Name = "AccentDarkCl", Value = Color.Parse("#FF2D6FCC"), Tag="PRINCIPAL", Scheme = ColorScheme.Dark },
                 // SEMANTIC
-                new() { Name = "Error", Value = Color.Parse("#FFFF0000"), Tag="SEMANTIC", Scheme = ColorScheme.Light },
-                new() { Name = "Success", Value = Color.Parse("#FF00FF00"), Tag="SEMANTIC", Scheme = ColorScheme.Light },
-                new() { Name = "Warning", Value = Color.Parse("#FFFFFF00"), Tag="SEMANTIC", Scheme = ColorScheme.Light },
-                new() { Name = "ErrorDark", Value = Color.Parse("#FFFF0000"), Tag="SEMANTIC", Scheme = ColorScheme.Dark },
-                new() { Name = "SuccessDark", Value = Color.Parse("#FF00FF00"), Tag="SEMANTIC", Scheme = ColorScheme.Dark },
-                new() { Name = "WarningDark", Value = Color.Parse("#FFFFFF00"), Tag="SEMANTIC", Scheme = ColorScheme.Dark },            
+                new() { Name = "ErrorCl", Value = Color.Parse("#FFFF0000"), Tag="SEMANTIC", Scheme = ColorScheme.Light },
+                new() { Name = "SuccessCl", Value = Color.Parse("#FF00FF00"), Tag="SEMANTIC", Scheme = ColorScheme.Light },
+                new() { Name = "WarningCl", Value = Color.Parse("#FFFFFF00"), Tag="SEMANTIC", Scheme = ColorScheme.Light },
+                new() { Name = "ErrorDarkCl", Value = Color.Parse("#FFFF0000"), Tag="SEMANTIC", Scheme = ColorScheme.Dark },
+                new() { Name = "SuccessDarkCl", Value = Color.Parse("#FF00FF00"), Tag="SEMANTIC", Scheme = ColorScheme.Dark },
+                new() { Name = "WarningDarkCl", Value = Color.Parse("#FFFFFF00"), Tag="SEMANTIC", Scheme = ColorScheme.Dark },            
                 // NEUTRAL
-                new() { Name = "Foreground", Value = Color.Parse("#FFF7F5FF"), Tag="NEUTRAL", Scheme = ColorScheme.Light },
-                new() { Name = "Background", Value = Color.Parse("#FF23135E"), Tag="NEUTRAL", Scheme = ColorScheme.Light },
-                new() { Name = "Gray250", Value = Color.Parse("#FFE1E1E1"), Tag="NEUTRAL", Scheme = ColorScheme.Light },
-                new() { Name = "Gray500", Value = Color.Parse("#FFACACAC"), Tag="NEUTRAL", Scheme = ColorScheme.Light },
-                new() { Name = "Gray750", Value = Color.Parse("#FF6E6E6E"), Tag="NEUTRAL", Scheme = ColorScheme.Light },
-                new() { Name = "ForegroundDark", Value = Color.Parse("#FFF7F5FF"), Tag="NEUTRAL", Scheme = ColorScheme.Dark },
-                new() { Name = "BackgroundDark", Value = Color.Parse("#FF23135E"), Tag="NEUTRAL", Scheme = ColorScheme.Dark },
-                new() { Name = "Gray250Dark", Value = Color.Parse("#FFE1E1E1"), Tag="NEUTRAL", Scheme = ColorScheme.Dark },
-                new() { Name = "Gray500Dark", Value = Color.Parse("#FFACACAC"), Tag="NEUTRAL", Scheme = ColorScheme.Dark },
-                new() { Name = "Gray750Dark", Value = Color.Parse("#FF6E6E6E"), Tag="NEUTRAL", Scheme = ColorScheme.Dark }
+                new() { Name = "ForegroundCl", Value = Color.Parse("#FFF7F5FF"), Tag="NEUTRAL", Scheme = ColorScheme.Light },
+                new() { Name = "BackgroundCl", Value = Color.Parse("#FF23135E"), Tag="NEUTRAL", Scheme = ColorScheme.Light },
+                new() { Name = "Gray250Cl", Value = Color.Parse("#FFE1E1E1"), Tag="NEUTRAL", Scheme = ColorScheme.Light },
+                new() { Name = "Gray500Cl", Value = Color.Parse("#FFACACAC"), Tag="NEUTRAL", Scheme = ColorScheme.Light },
+                new() { Name = "Gray750Cl", Value = Color.Parse("#FF6E6E6E"), Tag="NEUTRAL", Scheme = ColorScheme.Light },
+                new() { Name = "ForegroundDarkCl", Value = Color.Parse("#FFF7F5FF"), Tag="NEUTRAL", Scheme = ColorScheme.Dark },
+                new() { Name = "BackgroundDarkCl", Value = Color.Parse("#FF23135E"), Tag="NEUTRAL", Scheme = ColorScheme.Dark },
+                new() { Name = "Gray250DarkCl", Value = Color.Parse("#FFE1E1E1"), Tag="NEUTRAL", Scheme = ColorScheme.Dark },
+                new() { Name = "Gray500DarkCl", Value = Color.Parse("#FFACACAC"), Tag="NEUTRAL", Scheme = ColorScheme.Dark },
+                new() { Name = "Gray750DarkCl", Value = Color.Parse("#FF6E6E6E"), Tag="NEUTRAL", Scheme = ColorScheme.Dark }
             ];
 
             StyleTemplate mauiTemplate = new()

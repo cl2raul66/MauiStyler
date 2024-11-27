@@ -12,6 +12,7 @@ using System.Collections.ObjectModel;
 
 namespace MauiStylerApp.ViewModels;
 
+[QueryProperty(nameof(VMTokens), nameof(VMTokens))]
 [QueryProperty(nameof(CurrentTemplateId), nameof(CurrentTemplateId))]
 [QueryProperty(nameof(IsEdit), nameof(IsEdit))]
 public partial class PgStyleEditorViewModel : ObservableRecipient
@@ -20,6 +21,8 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
     readonly IDocumentService documentServ;
     readonly IStyleableComponentsService styleableComponentsServ;
     readonly ITargetTypeService targetTypeServ;
+
+    Dictionary<string, object> VMTokens;
 
     public PgStyleEditorViewModel(IStyleTemplateService styleTemplateService, IDocumentService documentService, IColorsPalettesService colorsPalettesService, IStyleableComponentsService styleableComponentsService, ITargetTypeService targetTypeService)
     {
@@ -52,8 +55,19 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
     }
 
     [RelayCommand]
-    async Task GoToBack()
+    async Task Cancel()
     {
+        _ = WeakReferenceMessenger.Default.Send(VMTokens["TokenCancel"].ToString()!, true.ToString());
+        await Shell.Current.GoToAsync("..", true);
+    }
+
+    [RelayCommand]
+    async Task Save()
+    {
+        var token = VMTokens["TokenNewTemplate"].ToString()!;
+
+        _ = WeakReferenceMessenger.Default.Send(token, true.ToString());
+
         await Shell.Current.GoToAsync("..", true);
     }
 
@@ -170,7 +184,6 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
         }
         await Task.CompletedTask;
     }
-
     #region PERSONALIZAR COLOR SELECCIONADO
     #region PALETAS DE COLORES
     readonly IColorsPalettesService colorsPalettesServ;

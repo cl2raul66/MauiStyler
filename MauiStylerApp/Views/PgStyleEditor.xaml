@@ -141,9 +141,9 @@
                 <Button
                     BackgroundColor="{StaticResource AccentCL}"
                     Text="Guardar"
-                    ToolTipProperties.Text="Guarda propiedades del estilo y color en una plantilla." />
+                    ToolTipProperties.Text="Guarda propiedades del estilo y color en una plantilla." Command="{Binding SaveCommand}"/>
                 <Button
-                    Command="{Binding GoToBackCommand}"
+                    Command="{Binding CancelCommand}"
                     Text="Cancelar"
                     ToolTipProperties.Text="Cancela las operaciones y regresa al inicio." />
             </HorizontalStackLayout>
@@ -191,7 +191,21 @@
         </Frame>
         <!--#endregion-->
         <!--#region ESTILOS-->
-        <Grid
+        <VerticalStackLayout
+            Grid.Row="2"
+            HorizontalOptions="Center"
+            VerticalOptions="Center">
+            <Label
+                FontFamily="icofont"
+                FontSize="64"
+                HorizontalOptions="Center"
+                Text="{StaticResource ico:ArchitectureAlt}" />
+            <Label
+                FontSize="24"
+                Text="{StaticResource lang:PgMain_LbUnderConstruction}"
+                TextTransform="Uppercase" />
+        </VerticalStackLayout>
+        <!--<Grid
             Grid.Row="2"
             Margin="8"
             IsVisible="{Binding IsVisibleStyle}"
@@ -242,7 +256,7 @@
                     </ScrollView>
                 </Grid>
             </Grid>
-        </Grid>
+        </Grid>-->
         <!--#endregion-->
         <!--#region COLORES-->
         <Grid

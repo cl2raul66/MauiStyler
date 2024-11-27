@@ -20,6 +20,7 @@
     <x:String x:Key="lang:PgMain_TtBtnNewModel">Crea nueva diseño.</x:String>
     <x:String x:Key="lang:PgMain_BtnNewTheme">Nuevo tema</x:String>
     <x:String x:Key="lang:PgMain_TtBtnNewTheme">Crea nuevo tema.</x:String>
+    <x:String x:Key="lang:PgMain_LbUnderConstruction">En construcción</x:String>
 
     <x:String x:Key="lang:PgLayouts_TtBtnGoToMain">Ir a la pagina principal.</x:String>
     <x:String x:Key="lang:PgLayouts_LbTitle">Diseños</x:String>

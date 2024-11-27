@@ -4,7 +4,7 @@ using MauiStylerApp.Tools;
 
 namespace MauiStylerApp.Services;
 
-public interface IStyleTemplateService
+public interface IStyleTemplateService : IDisposable
 {
     bool Exist { get; }
 
@@ -47,6 +47,8 @@ public class StyleTemplateService : IStyleTemplateService
     public void Commit() => db.Commit();
 
     public void Rollback() => db.Rollback();
+
+    public void Dispose() => db.Dispose();
 
     public bool Exist => collection.Count() > 0;
 

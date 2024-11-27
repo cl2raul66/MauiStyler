@@ -102,9 +102,9 @@ public class DocumentService : IDocumentService
         Directory.CreateDirectory(generatePath);
         if (Directory.Exists(generatePath))
         {
-            var principalsColors = template.ColorStyles!.Where(x => x.Scheme == ColorScheme.Light && x.Tag == "PRINCIPAL");
-            var semanticsColors = template.ColorStyles!.Where(x => x.Scheme == ColorScheme.Light && x.Tag == "SEMANTIC");
-            var neutralsColors = template.ColorStyles!.Where(x => x.Scheme == ColorScheme.Light && x.Tag == "NEUTRAL");
+            var principalsColors = template.ColorStyles!.Where(x => x.Tag == "PRINCIPAL");
+            var semanticsColors = template.ColorStyles!.Where(x => x.Tag == "SEMANTIC");
+            var neutralsColors = template.ColorStyles!.Where(x => x.Tag == "NEUTRAL");
             if (principalsColors is null && semanticsColors is null && neutralsColors is null)
             {
                 return [];
@@ -113,9 +113,9 @@ public class DocumentService : IDocumentService
             Task androidTask = Task.Run(() =>
             {
                 androidColorDocument = new XElement("resources");
-                androidColorDocument.Add(new XElement("color", new XAttribute("name", "colorPrimary"), principalsColors!.First(x => x.Name == "Primary").Value!.ToArgbHex()));
-                androidColorDocument.Add(new XElement("color", new XAttribute("name", "colorPrimaryDark"), principalsColors!.First(x => x.Name == "PrimaryDark").Value!.ToArgbHex()));
-                androidColorDocument.Add(new XElement("color", new XAttribute("name", "colorAccent"), principalsColors!.First(x => x.Name == "Accent").Value!.ToArgbHex()));
+                androidColorDocument.Add(new XElement("color", new XAttribute("name", "colorPrimary"), principalsColors!.First(x => x.Name == "PrimaryCl").Value!.ToArgbHex()));
+                androidColorDocument.Add(new XElement("color", new XAttribute("name", "colorPrimaryDark"), principalsColors!.First(x => x.Name == "PrimaryDarkCl").Value!.ToArgbHex()));
+                androidColorDocument.Add(new XElement("color", new XAttribute("name", "colorAccent"), principalsColors!.First(x => x.Name == "AccentCl").Value!.ToArgbHex()));
 
                 string androidColor = Path.Combine(generatePath, "colors.xml");
 
