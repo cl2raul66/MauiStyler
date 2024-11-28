@@ -22,7 +22,7 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
     readonly IStyleableComponentsService styleableComponentsServ;
     readonly ITargetTypeService targetTypeServ;
 
-    Dictionary<string, object> VMTokens = [];
+    Dictionary<string, string> Tokens = [];
 
     public PgStyleEditorViewModel(IStyleTemplateService styleTemplateService, IDocumentService documentService, IColorsPalettesService colorsPalettesService, IStyleableComponentsService styleableComponentsService, ITargetTypeService targetTypeService)
     {
@@ -32,6 +32,9 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
         styleableComponentsServ = styleableComponentsService;
         targetTypeServ = targetTypeService;
     }
+
+    [ObservableProperty]
+    string[] vMTokens = [];
 
     [ObservableProperty]
     string? currentTemplateId;
@@ -57,18 +60,20 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
     [RelayCommand]
     async Task Cancel()
     {
-        _ = WeakReferenceMessenger.Default.Send(VMTokens["TokenCancel"].ToString()!, true.ToString());
+        _ = WeakReferenceMessenger.Default.Send(Tokens["TokenCancel"].ToString()!, true.ToString());
         await Shell.Current.GoToAsync("..", true);
     }
 
     [RelayCommand]
     async Task Save()
     {
-        var token = bool.Parse(IsEdit) 
-            ? VMTokens["TokenEditTemplate"].ToString()! 
-            : string.IsNullOrEmpty(CurrentTemplateId!) ? VMTokens["TokenNewTemplate"].ToString()! : VMTokens["TokenNewTemplateBasedSelected"].ToString()!;
+        var token = bool.Parse(IsEdit ?? "false")
+            ? Tokens["TokenEditTemplate"].ToString()!
+            : string.IsNullOrEmpty(CurrentTemplateId!) ? Tokens["TokenNewTemplate"].ToString()! : Tokens["TokenNewTemplateBasedSelected"].ToString()!;
 
-        _ = WeakReferenceMessenger.Default.Send(token, true.ToString());
+        var sendObj = new StyleTemplate() { ColorStyles = [.. DefaultColorStyle!.SelectMany(x => x)], Description = "", Name = "", IsCustomTemplate = true };
+
+        _ = WeakReferenceMessenger.Default.Send(sendObj, token);
 
         await Shell.Current.GoToAsync("..", true);
     }
@@ -441,6 +446,11 @@ public partial class PgStyleEditorViewModel : ObservableRecipient
     }
     #endregion
     #endregion
+
+    partial void OnVMTokensChanged(string[] value)
+    {
+        Tokens = VMTokens.Select(x => x.Split(':')).ToDictionary(x => x[0], x => x[1]);
+    }
 
     partial void OnIsEditChanged(string? value)
     {

@@ -16,9 +16,12 @@ public partial class PgThemesViewModel : ObservableRecipient
     readonly IStyleTemplateService styleTemplateServ;
     readonly IDocumentService documentServ;
 
-    Dictionary<string, object> VMTokens = new()
+    Dictionary<string, string> VMTokens = new()
     {
-        { "TokenCancel", "901E87E2-856D-4DEB-BD16-B9102B0366AE" }
+        { "TokenCancel", "901E87E2-856D-4DEB-BD16-B9102B0366AE" },
+        { "TokenNewTemplate", "21FC9122-7466-4EC1-8E4E-0945BA952C76" },
+        { "TokenEditTemplate", "7FC8EDE9-B0FF-4106-9C30-C2D6A440E990" },
+        { "TokenNewTemplateBasedSelected", "DA3C5EC6-B78B-40E5-8E9B-10077DCC1B3C" }
     };
 
     public PgThemesViewModel(IStyleTemplateService styleTemplateService, IDocumentService documentService)
@@ -47,17 +50,20 @@ public partial class PgThemesViewModel : ObservableRecipient
     async Task GoToNewTemplate()
     {
         IsActive = true;
-        VMTokens["TokenNewTemplate"] = "21FC9122-7466-4EC1-8E4E-0945BA952C76";
-        await Shell.Current.GoToAsync(nameof(PgStyleEditor), true, VMTokens);
+        Dictionary<string, object> sendData = new()
+        {
+            { nameof(VMTokens), VMTokensForSend() }
+        };
+        await Shell.Current.GoToAsync(nameof(PgStyleEditor), true, sendData);
     }
 
     [RelayCommand]
     async Task GoToEditTemplate()
     {
         IsActive = true;
-        VMTokens["TokenEditTemplate"] = "7FC8EDE9-B0FF-4106-9C30-C2D6A440E990";
-        Dictionary<string, object> sendData = new(VMTokens)
+        Dictionary<string, object> sendData = new()
         {
+            { nameof(VMTokens), VMTokensForSend() },
             { "IsEdit", IsEdit.ToString() },
             { "CurrentTemplateId", SelectedTemplate!.Id! }
         };
@@ -68,9 +74,9 @@ public partial class PgThemesViewModel : ObservableRecipient
     async Task GoToNewTemplateBasedSelected()
     {
         IsActive = true;
-        VMTokens["TokenNewTemplateBasedSelected"] = "DA3C5EC6-B78B-40E5-8E9B-10077DCC1B3C";
-        Dictionary<string, object> sendData = new(VMTokens)
+        Dictionary<string, object> sendData = new()
         {
+            { nameof(VMTokens), VMTokensForSend() },
             { "IsEdit", IsEdit.ToString() },
             { "CurrentTemplateId", SelectedTemplate!.Id! }
         };
@@ -109,7 +115,7 @@ public partial class PgThemesViewModel : ObservableRecipient
     {
         base.OnActivated();
 
-        WeakReferenceMessenger.Default.Register<PgThemesViewModel, string, string>(this, VMTokens["TokenCancel"].ToString()!, (r, m) =>
+        WeakReferenceMessenger.Default.Register<PgThemesViewModel, string, string>(this, VMTokens["TokenCancel"].ToString(), (r, m) =>
         {
             IsActive = false;
             if (bool.Parse(m))
@@ -118,30 +124,39 @@ public partial class PgThemesViewModel : ObservableRecipient
             }
         });
 
-        WeakReferenceMessenger.Default.Register<PgThemesViewModel, string, string>(this, VMTokens["TokenNewTemplate"].ToString()!, (r, m) =>
+        WeakReferenceMessenger.Default.Register<PgThemesViewModel, StyleTemplate, string>(this, VMTokens["TokenNewTemplate"].ToString(), (r, m) =>
         {
             IsActive = false;
-
-            GetStyleTemplates();
+            var result = styleTemplateServ.Insert(m);
+            if (string.IsNullOrEmpty(result))
+            {
+                GetStyleTemplates();
+            }
         });
 
-        WeakReferenceMessenger.Default.Register<PgThemesViewModel, string, string>(this, VMTokens["TokenNewTemplateBasedSelected"].ToString()!, (r, m) =>
+        WeakReferenceMessenger.Default.Register<PgThemesViewModel, StyleTemplate, string>(this, VMTokens["TokenNewTemplateBasedSelected"].ToString()!, (r, m) =>
         {
             IsActive = false;
-
-            GetStyleTemplates();
+            var result = styleTemplateServ.Insert(m);
+            if (string.IsNullOrEmpty(result))
+            {
+                GetStyleTemplates();
+            }
         });
 
-        WeakReferenceMessenger.Default.Register<PgThemesViewModel, string, string>(this, VMTokens["TokenEditTemplate"].ToString()!, (r, m) =>
+        WeakReferenceMessenger.Default.Register<PgThemesViewModel, StyleTemplate, string>(this, VMTokens["TokenEditTemplate"].ToString(), (r, m) =>
         {
             IsActive = false;
-
-            GetStyleTemplates();
+            var result = styleTemplateServ.Update(m);
+            if (result)
+            {
+                GetStyleTemplates();
+            }
         });
     }
 
     #region EXTRA
-    public void GetStyleTemplates()
+    void GetStyleTemplates()
     {
         if (!styleTemplateServ.Exist)
         {
@@ -187,5 +202,7 @@ public partial class PgThemesViewModel : ObservableRecipient
 
         StyleTemplates = [.. styleTemplateServ.GetAll().Select(TemplateItemFactory.Create)];
     }
+
+    string[] VMTokensForSend() => [.. VMTokens.Select(x => $"{x.Key}:{x.Value}")];
     #endregion
 }
